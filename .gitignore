@@ -8,6 +8,8 @@
 # 4) the recommended gitignor from github java type.
 
 
+# A file that is for quicknotes and cnP.
+cut_and_paste_bin.md
 
 # Ignore Gradle project-specific cache directory
 .gradle

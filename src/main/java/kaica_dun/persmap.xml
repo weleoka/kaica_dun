@@ -15,7 +15,7 @@
       <mapping class="main.java.kaica_dun.Entities.Item"/>
       <mapping class="main.java.kaica_dun.Entities.PlayerAvatar"/>
       <!-- <property name="connection.username"/> -->
-    <!-- <property name="connection.password"/> -->
+      <!-- <property name="connection.password"/> -->
 
     <!-- DB schema will be updated if needed -->
     <!-- <property name="hbm2ddl.auto">update</property> -->
