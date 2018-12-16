@@ -1,4 +1,4 @@
-package main.java.kaica_dun.Entities;
+package kaica_dun.Entities;
 
 import javax.persistence.*;
 import java.util.ArrayList;

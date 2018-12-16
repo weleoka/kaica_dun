@@ -4,20 +4,22 @@
     "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
   <session-factory>
-    <property name="connection.url">jdbc:mysql://localhost:3306/kaicadungeon</property>
+    <property name="connection.url">jdbc:mysql://localhost:3306/kaica_dun_db</property>
     <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-      <mapping class="main.java.kaica_dun.Entities.Dungeon"/>
-      <mapping class="main.java.kaica_dun.Entities.Monster"/>
-      <mapping class="main.java.kaica_dun.Entities.Player"/>
-      <mapping class="main.java.kaica_dun.Entities.Room"/>
-      <mapping class="main.java.kaica_dun.Entities.ConsumableItem"/>
-      <mapping class="main.java.kaica_dun.Entities.EquippableItem"/>
-      <mapping class="main.java.kaica_dun.Entities.Item"/>
-      <mapping class="main.java.kaica_dun.Entities.PlayerAvatar"/>
+      <mapping class="kaica_dun.Entities.Dungeon"/>
+      <mapping class="kaica_dun.Entities.Monster"/>
+      <mapping class="kaica_dun.Entities.Player"/>
+      <mapping class="kaica_dun.Entities.Room"/>
+      <mapping class="kaica_dun.Entities.ConsumableItem"/>
+      <mapping class="kaica_dun.Entities.EquippableItem"/>
+      <mapping class="kaica_dun.Entities.Item"/>
+      <mapping class="kaica_dun.Entities.PlayerAvatar"/>
+      <mapping class="kaica_dun.Entities.Employee"/>
+      <!--<property name="show_sql">true</property>-->
       <!-- <property name="connection.username"/> -->
       <!-- <property name="connection.password"/> -->
 
     <!-- DB schema will be updated if needed -->
-    <!-- <property name="hbm2ddl.auto">update</property> -->
+    <!--<property name="hbm2ddl.auto">update</property> -->
   </session-factory>
 </hibernate-configuration>
