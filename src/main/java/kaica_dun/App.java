@@ -8,13 +8,14 @@ import org.apache.log4j.Logger;
 
 
 public class App {
-    private final Logger LOGGER = Log4jUtil.getMainLogger();
+    private final Logger LOGGER = Logger.getLogger(this.getClass());
 
     public static void main(String[] args) throws Exception {
-
+        
         System.out.println(new App().getGreeting());
 
         Item item = new Item();
+
         System.out.println(item.toString());
 
         TestDb testDb = new TestDb();

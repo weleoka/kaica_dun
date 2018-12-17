@@ -7,14 +7,15 @@ This is a dungeon adventure game for the java VM. It uses Java Persistance API v
 
 ## Last completed steps
 Full check and documentation of hibernate.cfg.xml with settings.
-Logging implemented but problem reading from log4j.properties file.
+Logging implemented. https://www.codejava.net/coding/how-to-configure-log4j-as-logging-mechanism-in-java
 
 
 ### Joblist & Questions
 
 todo: Make sure that we are happy with package, its naming and structure.
 todo: Put forth that contributors work with parameters in terms of: db, db user, password, port, and schema(DDL).
-todo: Initialise log4j from log4j.properties file. Currently the path is not recognised.
+todo: Make sure that log4j is reading from log4j.properties file.
+todo: log4j reduce debug output from specific modules/imports.
 todo: Inspection info: This inspection controls whether the Persistence ORM annotations are checked against configured Datasources (fails)
 
 
