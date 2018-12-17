@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD//EN"
+    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+
+<!-- Many different configurations for different server types can be found at:
+https://o7planning.org/en/10201/java-hibernate-tutorial-for-beginners -->
+
+<hibernate-configuration>
+
+    <session-factory>
+
+        <!-- Different connectors for mariaDB and mySQL. -->
+        <property name="connection.driver_class">org.mariadb.jdbc.Driver</property>
+        <!-- Different connectors for mariaDB and mySQL. -->
+        <!-- <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property> -->
+
+        <!-- Different url for mariaDB and mySQL -->
+        <!--<property name="connection.url">jdbc:mysql://localhost:3306/kaica_dun_db</property>-->
+        <!-- Different url for mariaDB and mySQL -->
+        <property name="connection.url">jdbc:mariadb://localhost:3306/kaica_dun_db</property>
+
+        <!-- Authentification -->
+        <property name="connection.username">kaica_dun_db_user</property>
+        <property name="connection.password">not_included_here</property>
+
+        <!-- SQL dialect usually autodetected but seems to complain if not set -->
+        <!-- MySQL55Dialect will work with InnoDB by default wheras the mySQLDialect is ISAM -->
+        <!-- <property name="dialect">org.hibernate.dialect.H2Dialect</property> -->
+        <!--<property name="dialect">org.hibernate.dialect.MySQLDialect</property>-->
+        <property name="dialect">org.hibernate.dialect.MySQL55Dialect</property>
+
+        <!-- JDBC connection pool (default is what?) -->
+        <!-- <property name="connection.pool_size">1</property> -->
+
+        <!-- Default property value is thread? -->
+        <!--<property name="hibernate.current_session_context_class">thread</property> -->
+
+        <!-- Disable the second-level cache (default is what?) -->
+        <!-- <property name="cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property> -->
+
+        <!-- Disable the cache -->
+        <property name="cache.provider_class">org.hibernate.cache.internal.DisabledCaching</property>
+
+        <!-- Echo all executed SQL to stdout. show_sql is not a recommended way of logging
+         please see more information for logging hibernate at https://thoughts-on-java.org/hibernate-logging-guide -->
+        <!-- <property name="show_sql">true</property> -->
+
+        <!-- Drop and re-create the database schema on startup (update or create?) -->
+        <!--<property name="hbm2ddl.auto">update</property> -->
+        <property name="hbm2ddl.auto">create</property>
+
+        <!-- Class annotations mapping. It's also possible to do with basic mapping files: <mapping resource="Employee.hbm.xml"/> -->
+        <mapping class="kaica_dun.Entities.Dungeon"/>
+        <mapping class="kaica_dun.Entities.Monster"/>
+        <mapping class="kaica_dun.Entities.Player"/>
+        <mapping class="kaica_dun.Entities.Room"/>
+        <mapping class="kaica_dun.Entities.ConsumableItem"/>
+        <mapping class="kaica_dun.Entities.EquippableItem"/>
+        <mapping class="kaica_dun.Entities.Item"/>
+        <mapping class="kaica_dun.Entities.PlayerAvatar"/>
+        <mapping class="kaica_dun.Entities.Employee"/>
+
+    </session-factory>
+
+</hibernate-configuration>

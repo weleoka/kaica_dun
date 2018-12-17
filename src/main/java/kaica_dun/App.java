@@ -4,15 +4,25 @@
 package kaica_dun;
 
 import kaica_dun.Entities.Item;
+import org.apache.log4j.Logger;
+
 
 public class App {
+    private final Logger LOGGER = Log4jUtil.getMainLogger();
+
+    public static void main(String[] args) throws Exception {
+
+        System.out.println(new App().getGreeting());
+
+        Item item = new Item();
+        System.out.println(item.toString());
+
+        TestDb testDb = new TestDb();
+        testDb.testDb();
+    }
+
     public String getGreeting() {
         return "Hello world.";
     }
 
-    public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
-
-        Item item = new Item();
-    }
 }

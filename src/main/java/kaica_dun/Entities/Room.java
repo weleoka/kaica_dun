@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 @Entity
-@Table(name = "room", schema = "kaicadungeon")
+@Table(name = "room")
 public class Room {
     private int roomId;
     private ArrayList<Monster> monsters = new ArrayList<>();

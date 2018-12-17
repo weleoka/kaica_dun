@@ -1,27 +1,64 @@
 package kaica_dun;
 
 import kaica_dun.Entities.Employee;
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 /**
- * @author Deepak Kumar
- * Web: http://www.roseindia.net
+ *
  */
 public class TestDb {
-    public static void main(String[] args) throws Exception {
+    private final Logger LOGGER = Logger.getLogger(this.getClass());
 
-        SessionFactory sessFact = HibernateUtil.getSessionFactory();
-        Session session = sessFact.getCurrentSession();
-        org.hibernate.Transaction tr = session.beginTransaction();
-        Employee emp = new Employee();
-        emp.setEmpName("Deepak Kumar");
-        emp.setEmpMobileNos("000000");
-        emp.setEmpAddress("Delhi - India");
-        session.save(emp);
-        tr.commit();
-        System.out.println("Successfully inserted");
-        sessFact.close();
+    public void main(String[] args) throws Exception {
+        testDb();
     }
 
+
+    public void testDb() throws Exception {
+        this.LOGGER.debug("This is a log message.");
+        HibernateUtil.setUpFactory();
+
+        Session session = HibernateUtil.getCurrentSession();   // Open the session
+
+        Transaction tr = session.beginTransaction(); // Open the transaction
+
+        Employee emp = new Employee();
+        emp.setEmpName("Tester Bob");
+        emp.setEmpMobileNos("9191992");
+        emp.setEmpAddress("Ingelstavägen 22");
+        session.save(emp);  // Save the new object
+
+        tr.commit();    // Close the transaction
+
+        this.LOGGER.debug("Successfully inserted object to DB.");
+
+        session.close();    // close the session
+
+        HibernateUtil.closeDownFactory();   // Close the SessionFactory
+    }
+
+
+    /* This is another example of usage of session and sessionFactory
+    public void testBasicUsage() {
+        // create a couple of events...
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.save( new Event( "Our very first event!", new Date() ) );
+        session.save( new Event( "A follow up event", new Date() ) );
+        session.getTransaction().commit();
+        session.close();
+
+        // now lets pull events from the database and list them
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        List result = session.createQuery( "from Event" ).list();
+        for ( Event event : (List<Event>) result ) {
+            System.out.println( "Event (" + event.getDate() + ") : " + event.getTitle() );
+        }
+        session.getTransaction().commit();
+        session.close();
+    }
+    */
 }

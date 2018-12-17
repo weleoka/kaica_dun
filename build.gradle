@@ -25,12 +25,13 @@ dependencies {
     // https://mvnrepository.com/artifact/org.hibernate/hibernate-core
     compile group: 'org.hibernate', name: 'hibernate-core', version: '5.4.0.Final'
 
-    // https://mvnrepository.com/artifact/org.hibernate/hibernate-gradle-plugin
-    // Kai: not sure what this does so disabling for now.
-    //compile group: 'org.hibernate', name: 'hibernate-gradle-plugin', version: '5.4.0.Final'
-
+    // If using mySQL change the hibernate.cfg.xml to use the driver and connection url.
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.13'
+
+    // If using MariaDB change the hibernate.cfg.xml to use the driver and connection url.
+    // https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client
+    compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.3.0'
 
     // https://mvnrepository.com/artifact/log4j/log4j
     compile group: 'log4j', name: 'log4j', version: '1.2.17'
@@ -40,7 +41,10 @@ dependencies {
     // Kai: Disabled now as don't need the Google things here.
     // implementation 'com.google.guava:guava:26.0-jre'
 
-
+    // https://mvnrepository.com/artifact/org.hibernate/hibernate-gradle-plugin
+    // Kai: not sure what this does so disabling for now.
+    //compile group: 'org.hibernate', name: 'hibernate-gradle-plugin', version: '5.4.0.Final'
+    
     // Use JUnit test framework
     // Kai: disabled here as testing is not implemented now.
     // testImplementation 'junit:junit:4.12'

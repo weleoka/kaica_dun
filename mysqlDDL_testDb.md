@@ -1,4 +1,9 @@
-# The following is the DDL for testing hiberante and JPA.
+# The following is the DDL for testing hibernate.
+
+CREATE DATABASE kaica_dun_db;
+CREATE USER 'kaica_dun_db_user'@'localhost' IDENTIFIED BY 'not_available_here';
+GRANT ALL ON kaica_dun_db.* TO 'kaica_dun_db_user'@'localhost';
+
 
 CREATE TABLE `employee` (                                
 `id` int(11) NOT NULL AUTO_INCREMENT,                  

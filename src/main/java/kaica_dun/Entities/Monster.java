@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "monster", schema = "kaicadungeon")
+@Table(name = "monster")
 public class Monster implements Describable, Lootable {
     private int monsterId;
     private int armor;

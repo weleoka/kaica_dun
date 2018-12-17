@@ -8,13 +8,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 /**
- * @author Deepak Kumar
- * Web: http://www.roseindia.net
+ *
  */
 @Entity
-//@Table(name = "player", schema = "kaicadungeon")
-@Table(name = "employee")
+//@Table(name = "employee", schema = "kaica_dun_db")
+@Table(name = "employee") // Don't need to specify schema usually.
 public class Employee implements Serializable{
 
     @Id

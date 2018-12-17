@@ -1,40 +1,63 @@
 package kaica_dun;
 
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
+
 
 
 /**
- * @author Deepak Kumar
- * Web: http://www.roseindia.net
+ * Sets up the configuration for hibernate and lets the application
+ * get current session objects easily.
  */
 public class HibernateUtil {
-    private static final SessionFactory sessionFactory;
+    private static SessionFactory sessionFactory;
 
-    private static ServiceRegistry serviceRegistry;
+    protected static void setUpFactory() throws Exception {
+        // A SessionFactory is set up once for an application!
+        final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+                .configure() // configures settings from hibernate.cfg.xml
+                .build();
 
-    static {
         try {
-            StandardServiceRegistry standardRegistry =
-                    new StandardServiceRegistryBuilder().configure("hibernate.cfg.xml").build();
-            Metadata metaData =
-                    new MetadataSources(standardRegistry).getMetadataBuilder().build();
-            sessionFactory = metaData.getSessionFactoryBuilder().build();
-        } catch (Throwable th) {
+            sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
 
-            System.err.println("Enitial SessionFactory creation failed" + th);
-            throw new ExceptionInInitializerError(th);
+        } catch (Exception e) {
+            System.err.println("Initial SessionFactory creation failed: " + e);
+            // The registry would be destroyed by the SessionFactory, but we had trouble building the SessionFactory
+            // so destroy it manually.
+            StandardServiceRegistryBuilder.destroy(registry);
 
+            throw new ExceptionInInitializerError(e);
         }
     }
-    public static SessionFactory getSessionFactory() {
 
-        return sessionFactory;
-
+    protected static void closeDownFactory() throws Exception {
+        if ( sessionFactory != null ) {
+            sessionFactory.close();
+        }
     }
+
+    /**
+     * Gets the current session. If there is no session set it opens a new one.
+     *
+     * @return
+     */
+    public static Session getCurrentSession() {
+        Session session;
+
+        try {
+            session = sessionFactory.getCurrentSession();
+
+        } catch (HibernateException e) {
+            System.out.println("No current session available. Staring a new one.");
+            session = sessionFactory.openSession();
+        }
+
+        return session;
+    }
+
 }
