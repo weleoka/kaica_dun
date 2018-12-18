@@ -4,26 +4,27 @@
 package kaica_dun;
 
 import kaica_dun.Entities.Item;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 
 public class App {
-    private final Logger LOGGER = Logger.getLogger(this.getClass());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static void main(String[] args) throws Exception {
-        
+
         System.out.println(new App().getGreeting());
-
-        Item item = new Item();
-
-        System.out.println(item.toString());
 
         TestDb testDb = new TestDb();
         testDb.testDb();
     }
 
     public String getGreeting() {
+        LOGGER.info("Writing one line to log.");
+
         return "Hello world.";
+
     }
 
 }

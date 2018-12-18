@@ -1,7 +1,8 @@
 package kaica_dun;
 
 import kaica_dun.Entities.Employee;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -9,7 +10,7 @@ import org.hibernate.Transaction;
  *
  */
 public class TestDb {
-    private final Logger LOGGER = Logger.getLogger(this.getClass());
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public void main(String[] args) throws Exception {
         testDb();
@@ -17,7 +18,9 @@ public class TestDb {
 
 
     public void testDb() throws Exception {
+
         this.LOGGER.debug("This is a log message.");
+
         HibernateUtil.setUpFactory();
 
         Session session = HibernateUtil.getCurrentSession();   // Open the session

@@ -51,7 +51,8 @@ https://o7planning.org/en/10201/java-hibernate-tutorial-for-beginners -->
         <!--<property name="hbm2ddl.auto">update</property> -->
         <property name="hbm2ddl.auto">create</property>
 
-        <!-- Class annotations mapping. It's also possible to do with basic mapping files: <mapping resource="Employee.hbm.xml"/> -->
+        <!-- Class annotations mapping. It's also possible to do with basic mapping files:
+        <mapping resource="Employee.hbm.xml"/> -->
         <mapping class="kaica_dun.Entities.Dungeon"/>
         <mapping class="kaica_dun.Entities.Monster"/>
         <mapping class="kaica_dun.Entities.Player"/>
