@@ -10,7 +10,7 @@ This is a dungeon adventure game for the java VM. It uses Java Persistance API v
 ## Joblist & QnA
 todo: Make sure that we are happy with package, its naming and structure.
 todo: Put forth that contributors work with parameters in terms of: db, db user, password, port, and schema(DDL).
-
+todo: put a global annotations file package-info.java file in a sensible place and make sure that it is read by Hibernate.
 
 Q: How to reduce log4j2 debug output from specific modules/imports
 A:<Logger name="org.hibernate.orm.connections.pooling" level="info"/> specify the package and change the level. 
@@ -73,6 +73,8 @@ The [directory structure](https://maven.apache.org/guides/introduction/introduct
 
 ### Style guide
 This project attempts to adhere to the following [style guide](https://github.com/weleoka/myJavaStyleGuide).
+
+An exception to the style guide is made with the constant LOGGER wich is allowed to be lowercase.
 
 
 

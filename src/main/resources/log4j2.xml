@@ -9,7 +9,7 @@
     <Appenders>
         <Appender type="Console" name="Console">
             <!-- <Layout type="PatternLayout" pattern="%d %p [%t] %m%n" /> -->
-            <Layout type="PatternLayout" pattern="%d{HH:mm:ss} %p [%t] %m%n" />
+            <Layout type="PatternLayout" pattern="%d{HH:mm:ss} %6p [%c] %m%n" />
         </Appender>
         <Appender type="File" name="File" fileName="${filename}">
             <Layout type="PatternLayout" pattern="%d %p %C{1.} [%t] %m%n" />
@@ -35,8 +35,11 @@
     %5p: It writes the level in the log. The 5 in the %5p is to set the width of the field to the 5 characters
     %d{yyyy-MM-dd HH:mm:ss.SSS}: It writes the date in the given date-time format
     %t: It writes the method name in the log
-    %c: It writes the absolute class name (For e.g. com.jcg.log4j2.demo) in the log
+    %C: It writes the absolute class name (For e.g. com.jcg.log4j2.demo) in the log
+    %c: Category name (or logger name)
     %m%n: It writes the message to the log
     %L: It writes the line number in the log
     %F: It writes the class name in the log
+
+    https://www.codejava.net/coding/common-conversion-patterns-for-log4js-patternlayout
 -->

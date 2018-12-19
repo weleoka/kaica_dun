@@ -1,5 +1,7 @@
 package kaica_dun;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -14,9 +16,14 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
  * get current session objects easily.
  */
 public class HibernateUtil {
+    private final Logger logger = LogManager.getLogger();
+
+    // Test fetching the main logger.
+    private final Logger logger_main = LogManager.getLogger("MAIN");
+
     private static SessionFactory sessionFactory;
 
-    protected static void setUpFactory() throws Exception {
+    protected void setUpFactory() throws Exception {
         // A SessionFactory is set up once for an application!
         final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                 .configure() // configures settings from hibernate.cfg.xml
@@ -26,7 +33,7 @@ public class HibernateUtil {
             sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
 
         } catch (Exception e) {
-            System.err.println("Initial SessionFactory creation failed: " + e);
+            this.logger.error("Initial SessionFactory creation failed: " + e);
             // The registry would be destroyed by the SessionFactory, but we had trouble building the SessionFactory
             // so destroy it manually.
             StandardServiceRegistryBuilder.destroy(registry);
@@ -35,7 +42,7 @@ public class HibernateUtil {
         }
     }
 
-    protected static void closeDownFactory() throws Exception {
+    protected void closeDownFactory() throws Exception {
         if ( sessionFactory != null ) {
             sessionFactory.close();
         }
@@ -46,14 +53,15 @@ public class HibernateUtil {
      *
      * @return
      */
-    public static Session getCurrentSession() {
+    public Session getCurrentSession() {
         Session session;
 
         try {
             session = sessionFactory.getCurrentSession();
 
         } catch (HibernateException e) {
-            System.out.println("No current session available. Staring a new one.");
+            this.logger.info("No current session available. Staring a new one.");
+            this.logger_main.info("This is the main logger again.");
             session = sessionFactory.openSession();
         }
 

@@ -23,7 +23,7 @@ https://o7planning.org/en/10201/java-hibernate-tutorial-for-beginners -->
 
         <!-- Authentification -->
         <property name="connection.username">kaica_dun_db_user</property>
-        <property name="connection.password">not_included_here</property>
+        <property name="connection.password">enter112</property>
 
         <!-- SQL dialect usually autodetected but seems to complain if not set -->
         <!-- MySQL55Dialect will work with InnoDB by default wheras the mySQLDialect is ISAM -->
@@ -46,22 +46,35 @@ https://o7planning.org/en/10201/java-hibernate-tutorial-for-beginners -->
         <!-- Echo all executed SQL to stdout. show_sql is not a recommended way of logging
          please see more information for logging hibernate at https://thoughts-on-java.org/hibernate-logging-guide -->
         <!-- <property name="show_sql">true</property> -->
+        <property name="hibernate.show_sql" value="false"/>
+        <property name="hibernate.format_sql" value="true"/>
+        <property name="use_sql_comments" value="true"/>
 
         <!-- Drop and re-create the database schema on startup (update or create?) -->
         <!--<property name="hbm2ddl.auto">update</property> -->
         <property name="hbm2ddl.auto">create</property>
 
+
+        <!-- Generate statistics for database queries -->
+        <property name=" hibernate.generate">true</property>
+
+        <!-- Statistics level. Default level is to print summary at end of each hibernate session. -->
+        <property name=" org.hibernate.stat">DEBUG</property>
+
+
+
+
         <!-- Class annotations mapping. It's also possible to do with basic mapping files:
         <mapping resource="Employee.hbm.xml"/> -->
-        <mapping class="kaica_dun.Entities.Dungeon"/>
-        <mapping class="kaica_dun.Entities.Monster"/>
-        <mapping class="kaica_dun.Entities.Player"/>
-        <mapping class="kaica_dun.Entities.Room"/>
-        <mapping class="kaica_dun.Entities.ConsumableItem"/>
-        <mapping class="kaica_dun.Entities.EquippableItem"/>
-        <mapping class="kaica_dun.Entities.Item"/>
-        <mapping class="kaica_dun.Entities.PlayerAvatar"/>
-        <mapping class="kaica_dun.Entities.Employee"/>
+        <mapping class="kaica_dun.entities.Dungeon"/>
+        <mapping class="kaica_dun.entities.Monster"/>
+        <mapping class="kaica_dun.entities.Player"/>
+        <mapping class="kaica_dun.entities.Room"/>
+        <mapping class="kaica_dun.entities.ConsumableItem"/>
+        <mapping class="kaica_dun.entities.EquippableItem"/>
+        <mapping class="kaica_dun.entities.Item"/>
+        <mapping class="kaica_dun.entities.PlayerAvatar"/>
+        <mapping class="kaica_dun.entities.Employee"/>
 
     </session-factory>
 
