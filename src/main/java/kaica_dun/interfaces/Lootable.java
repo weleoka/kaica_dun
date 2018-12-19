@@ -1,4 +1,4 @@
-package main.java.kaica_dun.Interfaces;
+package kaica_dun.interfaces;
 
 /**
  * Inteface for objects that can be looted for items and gold.

@@ -13,7 +13,7 @@ public class Player {
     private int totalScore;
     private int highScore;
 
-    protected Player(){}
+    public Player(){}
 
     @Id
     @Column(name = "playerID")

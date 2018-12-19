@@ -1,6 +1,6 @@
 package kaica_dun;
 
-import kaica_dun.entities.Employee;
+import kaica_dun.entities.Player;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
@@ -28,11 +28,12 @@ public class TestDb {
 
         Transaction tr = session.beginTransaction(); // Open the transaction
 
-        Employee emp = new Employee();
-        emp.setEmpName("Tester Bob");
-        emp.setEmpMobileNos("9191992");
-        emp.setEmpAddress("Ingelstavägen 22");
-        session.save(emp);  // Save the new object
+        Player player = new Player();
+
+        player.setPlayerName("Magic Mike");
+        player.setPassword("testing");
+
+        session.save(player);  // Save the new object
 
         tr.commit();    // Close the transaction
 

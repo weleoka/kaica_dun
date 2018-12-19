@@ -12,7 +12,7 @@ public class Room {
     private Dungeon dungeon;
     private ArrayList<Monster> monsters = new ArrayList<>();
 
-    protected Room(){}
+    public Room(){}
 
     //TODO: Keep working here!
     Room(boolean isStarter) {

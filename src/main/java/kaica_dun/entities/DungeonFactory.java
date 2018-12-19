@@ -5,7 +5,7 @@ package kaica_dun.entities;
  */
 public class DungeonFactory {
 
-    public static Dungeon createDungeon() {
+    public static void createDungeon() {
 
     }
 
