@@ -1,4 +1,4 @@
-package main.java.kaica_dun.Entities;
+package kaica_dun.entities;
 
 import main.java.kaica_dun.Interfaces.Describable;
 import main.java.kaica_dun.Interfaces.Lootable;
@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "monster", schema = "kaicadungeon")
+@Table(name = "monster")
 public class Monster implements Describable, Lootable {
     private int monsterId;
     private int armor;

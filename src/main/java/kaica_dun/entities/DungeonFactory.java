@@ -1,4 +1,4 @@
-package main.java.kaica_dun.Entities;
+package kaica_dun.entities;
 
 /**
  * Not sure this will be used, but here for now while I think.

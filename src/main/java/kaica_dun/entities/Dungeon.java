@@ -1,10 +1,10 @@
-package main.java.kaica_dun.Entities;
+package kaica_dun.entities;
 
 import javax.persistence.*;
 import java.util.*;
 
 @Entity
-@Table(name = "dungeon", schema = "kaicadungeon")
+@Table(name = "dungeon")
 public class Dungeon {
     private Player player;
     private int dungeonId;

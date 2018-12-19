@@ -1,11 +1,11 @@
-package main.java.kaica_dun.Entities;
+package kaica_dun.entities;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
 @Entity
-@Table(name = "room", schema = "kaicadungeon")
+@Table(name = "room")
 public class Room {
     private Direction incomingDoor;
     private int roomId;

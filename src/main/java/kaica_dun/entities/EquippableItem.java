@@ -1,10 +1,10 @@
-package main.java.kaica_dun.Entities;
+package kaica_dun.entities;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "equippableitem", schema = "kaicadungeon")
+@Table(name = "equippableitem")
 public class EquippableItem {
     private int itemId;
     private int slotId;

@@ -1,4 +1,4 @@
-package main.java.kaica_dun.Entities;
+package kaica_dun.entities;
 
 /**
  * Clockwise representation of the four directions with a string for printing and a number for basic algebra.

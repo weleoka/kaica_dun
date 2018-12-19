@@ -1,10 +1,10 @@
-package main.java.kaica_dun.Entities;
+package kaica_dun.entities;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "consumableitem", schema = "kaicadungeon")
+@Table(name = "consumableitem")
 public class ConsumableItem {
     private int itemId;
     private int uses;

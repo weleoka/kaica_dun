@@ -7,6 +7,7 @@
 # 3) files that are IDE specific for IntelliJ idea.
 # 4) the recommended gitignor from github java type.
 
+hibernate.cfg.xml
 
 # Ignore Gradle project-specific cache directory
 .gradle
