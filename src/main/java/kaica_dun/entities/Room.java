@@ -71,7 +71,7 @@ public class Room {
     //TODO: Possible refactor. This method has a thousand and one possible implementations, dunno which is the best.
     private Direction[] legalDirections(Direction incomingDoor) {
         boolean[] possibleDirections = new boolean[4];  //possibly replace with Direction[] from the start?
-
+        Direction[] dir = new Direction[10];            //TODO PLACEHOLDER
         //Check 1: remove incoming direction. Store possible outgoing directions as true in the boolean array.
         for (int i = 0; i < 4 ; i++) {
 
@@ -87,7 +87,7 @@ public class Room {
 
         //check for existing rooms
 
-        return
+        return dir;
     }
 
     /*
