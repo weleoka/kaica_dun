@@ -12,7 +12,7 @@ public class Room {
     private Dungeon dungeon;
     private int roomIndex;
     private Direction incomingDoor;
-    private Set<Direction> exits;
+    private List<Direction> exits;
     private int roomId;
     private List<Monster> monsters = new ArrayList<>();
 
@@ -25,7 +25,7 @@ public class Room {
      * @param exits         a List with the direction(s) of possible exits
      * @param monsters      a List of the monster(s) in the room
      */
-    Room(Dungeon dungeon, int roomIndex, Direction incomingDoor, Set<Direction> exits, List<Monster> monsters) {
+    Room(Dungeon dungeon, int roomIndex, Direction incomingDoor, List<Direction> exits, List<Monster> monsters) {
         this.dungeon = dungeon;
         this.roomIndex = roomIndex;
         this.incomingDoor = incomingDoor;
@@ -43,7 +43,7 @@ public class Room {
      * @param exits         a List with the direction(s) of possible exits
      * @param monsters      a List of the monster(s) in the room
      */
-    Room(int roomIndex, Direction incomingDoor, Set<Direction> exits, List<Monster> monsters) {
+    Room(int roomIndex, Direction incomingDoor, List<Direction> exits, List<Monster> monsters) {
         this.dungeon = dungeon;
         this.roomIndex = roomIndex;
         this.incomingDoor = incomingDoor;
@@ -52,12 +52,8 @@ public class Room {
     }
 
 
-<<<<<<< HEAD
-    @Id
-=======
 
     @Id @GeneratedValue
->>>>>>> refs/remotes/origin/master
     @Column(name = "roomID")
     public int getRoomId() {
         return roomId;
@@ -100,9 +96,15 @@ public class Room {
         this.roomIndex = roomIndex;
     }
 
-    @OneToMany
-    public Set<Direction> getExits() {
+    @ElementCollection(targetClass = Direction.class)
+    @CollectionTable(name = "room_direction", joinColumns = @JoinColumn(name = "roomID"))
+    @Column(name = "directionID")
+    public List<Direction> getExits() {
         return exits;
+    }
+
+    public void setExits(List<Direction> exits) {
+        this.exits = exits;
     }
 
     @Transient

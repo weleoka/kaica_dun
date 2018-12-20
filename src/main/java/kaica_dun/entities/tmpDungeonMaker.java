@@ -42,12 +42,11 @@ public class tmpDungeonMaker {
         //Make starter room
         rooms.set(0, tmpRoomMaker.makeStarterRoom());
         prevRoomIndex = 0;
-        nextRoomIndex = rooms.get(prevRoomIndex).;
         numRooms++;
 
         //Make all the other rooms TODO EVERYTHING! Atm the dungeon is only the entrance room.
         while (numRooms < maxRooms) {
-
+            rooms.get(prevRoomIndex).getExits();    //Fetch previously created room
         }
 
 

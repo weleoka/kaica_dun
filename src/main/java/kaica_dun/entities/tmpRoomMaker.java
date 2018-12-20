@@ -29,7 +29,7 @@ public class tmpRoomMaker {
     protected static Room makeRoom(Room prevRoom, int roomIndex, Direction incomingDoor){
         Random rGen = new Random();
 
-        Set<Direction> exits = new HashSet<Direction>(); //create List for directions leading out of the room.
+        List<Direction> exits = new ArrayList<Direction>(); //create List for directions leading out of the room.
         List<Monster> monsters = new ArrayList<Monster>();  //make no monsters in the starter room, empty monster list.
 
         exits.set(0, Direction.S);                          //always exit the starter room to the south
