@@ -23,7 +23,6 @@ public class Room {
     }
 
 
-
     @Id
     @Column(name = "roomID")
     public int getRoomId() {

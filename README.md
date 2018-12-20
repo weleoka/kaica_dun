@@ -11,15 +11,17 @@ This is a dungeon adventure game for the java VM. It uses Java Persistance API v
 todo: Make sure that we are happy with package, its naming and structure.
 todo: Put forth that contributors work with parameters in terms of: db, db user, password, port, and schema(DDL).
 todo: put a global annotations file package-info.java file in a sensible place and make sure that it is read by Hibernate.
+    This file will make it possible to have globally accessible queries etc.
+todo: Check the Hiberante requirement of a protected default no-arguments constructor. (Can it be public)?
 
 Q: How to reduce log4j2 debug output from specific modules/imports
 A:<Logger name="org.hibernate.orm.connections.pooling" level="info"/> specify the package and change the level. 
 
 Q: Where to store the hibernate.cfg.xml file. Different places mean different things. https://stackoverflow.com/questions/35725306/org-hibernate-internal-util-config-configurationexception-could-not-locate-cfg#35725560
-A: Not a great deal of differance. Classroot is easiest.
+A: Not a great deal of difference. Classroot is easiest.
 
 Q: What is the difference between the XML (hibernate.cfg.xml or persistance.xml) file using persistence-unit tags or sessionFactory tags?
-A: This is part of the differance between JPA and Hibernate.
+A: This is part of the difference between JPA and Hibernate.
 
 
 # Documentation
@@ -81,7 +83,7 @@ An exception to the style guide is made with the constant LOGGER wich is allowed
 # End, links, notes etc.
 
 *Log4j 2*
-log4j 2 does not work with hibernate. log4j v1.2 is the better candidate.
+log4j 2 with hibernate. log4j v1.2 is the better candidate, but I think the problems have been resolved.
 https://logging.apache.org/log4j/2.x/manual/configuration.html
 https://howtodoinjava.com/log4j2/
 https://stackify.com/java-logging-best-practices/

@@ -15,7 +15,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
  * Sets up the configuration for hibernate and lets the application
  * get current session objects easily.
  */
-public class HibernateUtil {
+public class SessionUtil {
     private final Logger logger = LogManager.getLogger();
 
     // Test fetching the main logger.
@@ -23,7 +23,7 @@ public class HibernateUtil {
 
     private static SessionFactory sessionFactory;
 
-    protected void setUpFactory() throws Exception {
+    protected void setUpSessionFactory() throws Exception {
         // A SessionFactory is set up once for an application!
         final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                 .configure() // configures settings from hibernate.cfg.xml
@@ -42,7 +42,7 @@ public class HibernateUtil {
         }
     }
 
-    protected void closeDownFactory() throws Exception {
+    protected void closeDownSessionFactory() {
         if ( sessionFactory != null ) {
             sessionFactory.close();
         }
@@ -68,4 +68,7 @@ public class HibernateUtil {
         return session;
     }
 
+    public static SessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
 }

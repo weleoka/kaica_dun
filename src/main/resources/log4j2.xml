@@ -16,9 +16,12 @@
         </Appender>
     </Appenders>
     <Loggers>
+        <!-- Modify logging levels of noisy Loggers -->
         <!--<Logger name="com.memorynotfound" level="debug"/>-->
         <!--<Logger name="com.mchange.v2.c3p0" level="warn"/>-->
         <Logger name="org.hibernate" level="warn"/>-->
+        <!--<Logger name="org.jboss.ejb3.timerservice.jboss.JBossTimerServiceFactory" level="ERROR"/>-->
+        <!--<Logger name="org.hibernate.ejb.Ejb3Configuration" level="ERROR"/>-->
 
         <Root level="debug">
             <AppenderRef ref="File" />
