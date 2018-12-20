@@ -1,7 +1,9 @@
 package kaica_dun.entities;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Trying something smarter to make the dungeon, and separating that from the persistence mechanism
@@ -12,6 +14,7 @@ public class tmpDungeonMaker {
     private int roomColumns;
     private int maxRooms;
     private int numRooms = 0;
+    private Random rand = new Random();
 
     /**
      * Create a new dungeon, belonging to a player, that we can then save to the db.
@@ -46,7 +49,25 @@ public class tmpDungeonMaker {
 
         //Make all the other rooms TODO EVERYTHING! Atm the dungeon is only the entrance room.
         while (numRooms < maxRooms) {
-            rooms.get(prevRoomIndex).getExits();    //Fetch previously created room
+            Room prevRoom = rooms.get(prevRoomIndex);        //Fetch the previous room
+            List<Direction> incoming = prevRoom.getExits();  //Fetch previously created room's exit list
+            nextRoomIndex = -1;                              //Index of next room to be created, -1 sentinel
+            for (Direction d : incoming) {
+                int directionInt = d.getDirectionNumber();
+                //create a list of the indexes for the possible rooms
+                LinkedList<Integer> nextRoomIndexes = new LinkedList<Integer>();
+                if ((getPossibleRoomIndex(directionInt, prevRoomIndex)) >= 0 && (getPossibleRoomIndex(directionInt, prevRoomIndex)) < 5) {
+                    nextRoomIndexes.add(getPossibleRoomIndex(directionInt, prevRoomIndex));
+                }
+                //random, legal, direction for the next room
+
+                //random, legal, index for the next room
+                nextRoomIndex = nextRoomIndexes.get(rand.nextInt(nextRoomIndexes.size()));
+            }
+            //TODO PLACEHOLDER DIRECTION!
+            //TODO Need to rethink how the room creation keeps track of the entrances and exits
+            rooms.set(nextRoomIndex, tmpRoomMaker.makeRoom(prevRoom, nextRoomIndex, Direction.N));
+
         }
 
 
@@ -126,4 +147,23 @@ public class tmpDungeonMaker {
         return roomPosition - 1;
     }
 
+    /**
+     * Get a list of all possible room indexes to make the next room.
+     */
+    private int getPossibleRoomIndex(int directionInt, int roomIndex) {
+        //TODO this is not clean, possible refactor
+        int possibleRoomIndex = -1; //-1 sentinel
+
+        if ((directionInt == 0) && (hasNorth(roomIndex))) {
+            possibleRoomIndex = getNorth(roomIndex);
+        } else if ((directionInt == 1) && (hasEast(roomIndex))) {
+            possibleRoomIndex = getEast(roomIndex);
+        } else if ((directionInt == 2) && (hasSouth(roomIndex))) {
+            possibleRoomIndex = getSouth(roomIndex);
+        } else if ((directionInt == 3) && (hasWest(roomIndex))) {
+            possibleRoomIndex = getWest(roomIndex);
+        }
+
+        return possibleRoomIndex;
+    }
 }

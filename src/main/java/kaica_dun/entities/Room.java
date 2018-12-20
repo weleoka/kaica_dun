@@ -97,7 +97,9 @@ public class Room {
     }
 
     @ElementCollection(targetClass = Direction.class)
-    @CollectionTable(name = "room_direction", joinColumns = @JoinColumn(name = "roomID"))
+    @CollectionTable(
+            name = "room_direction",
+            joinColumns = @JoinColumn(name = "roomID"))
     @Column(name = "directionID")
     public List<Direction> getExits() {
         return exits;

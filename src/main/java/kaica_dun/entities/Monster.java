@@ -21,7 +21,7 @@ public class Monster implements Describable, Lootable {
     protected Monster(){}
 
     @Id
-    @Column(name = "monster_id")
+    @Column(name = "monsterID")
     public int getMonsterId() {
         return monsterId;
     }

@@ -30,10 +30,9 @@ public class tmpRoomMaker {
         Random rGen = new Random();
 
         List<Direction> exits = new ArrayList<Direction>(); //create List for directions leading out of the room.
-        List<Monster> monsters = new ArrayList<Monster>();  //make no monsters in the starter room, empty monster list.
+        List<Monster> monsters = new ArrayList<Monster>();        //make monsters-list to be populated
+        exits.set(0, Direction.S);                          //set exit direction
 
-        exits.set(0, Direction.S);                          //always exit the starter room to the south
-
-        return new Room(0, Direction.N, exits, monsters);   //create the room using the params created above
+        return new Room(0, incomingDoor, exits, monsters);   //create the room using the params created above
     }
 }
