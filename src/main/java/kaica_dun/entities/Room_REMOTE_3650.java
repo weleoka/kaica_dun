@@ -52,12 +52,8 @@ public class Room {
     }
 
 
-<<<<<<< HEAD
-    @Id
-=======
 
     @Id @GeneratedValue
->>>>>>> refs/remotes/origin/master
     @Column(name = "roomID")
     public int getRoomId() {
         return roomId;
