@@ -2,29 +2,58 @@ package kaica_dun.entities;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "room")
 public class Room {
-    private Direction incomingDoor;
-    private int roomId;
     private Dungeon dungeon;
-    private ArrayList<Monster> monsters = new ArrayList<>();
+    private int roomIndex;
+    private Direction incomingDoor;
+    private Set<Direction> exits;
+    private int roomId;
+    private List<Monster> monsters = new ArrayList<>();
 
     public Room(){}
 
-    //TODO: Keep working here!
-    Room(boolean isStarter) {
-
+    /**
+     * @param dungeon       the dungeon that the Room belongs to
+     * @param roomIndex     the index of the Room in the Dungeon-matrix
+     * @param incomingDoor  the direction of the door that leads backwards in the dungeon to the starter room
+     * @param exits         a List with the direction(s) of possible exits
+     * @param monsters      a List of the monster(s) in the room
+     */
+    Room(Dungeon dungeon, int roomIndex, Direction incomingDoor, Set<Direction> exits, List<Monster> monsters) {
+        this.dungeon = dungeon;
+        this.roomIndex = roomIndex;
+        this.incomingDoor = incomingDoor;
+        this.exits = exits;
+        this.monsters = monsters;
     }
-    Room(Direction incomingDoor) {
 
+    /**
+     * This constructor is used by the tmpRoomMaker to make a List<Room> to be used in dungeon creation later
+     *
+     * Watch out for invalid states of Rooms without Dungeon references!
+     *
+     * @param roomIndex     the index of the Room in the Dungeon-matrix
+     * @param incomingDoor  the direction of the door that leads backwards in the dungeon to the starter room
+     * @param exits         a List with the direction(s) of possible exits
+     * @param monsters      a List of the monster(s) in the room
+     */
+    Room(int roomIndex, Direction incomingDoor, Set<Direction> exits, List<Monster> monsters) {
+        this.dungeon = dungeon;
+        this.roomIndex = roomIndex;
+        this.incomingDoor = incomingDoor;
+        this.exits = exits;
+        this.monsters = monsters;
     }
 
 
 
-    @Id
+    @Id @GeneratedValue
     @Column(name = "roomID")
     public int getRoomId() {
         return roomId;
@@ -58,6 +87,20 @@ public class Room {
         this.dungeon = dungeon;
     }
 
+    //TODO unsure of correct annotation here
+    public int getRoomIndex() {
+        return roomIndex;
+    }
+
+    public void setRoomIndex(int roomIndex) {
+        this.roomIndex = roomIndex;
+    }
+
+    @OneToMany
+    public Set<Direction> getExits() {
+        return exits;
+    }
+
     @Transient
     public Direction getIncomingDoor() {
         return incomingDoor;
@@ -69,13 +112,14 @@ public class Room {
 
     //Return an array of possible outgoing door directions
     //TODO: Possible refactor. This method has a thousand and one possible implementations, dunno which is the best.
-    private Direction[] legalDirections(Direction incomingDoor) {
+    private Direction[] legalDirections() {
+
         boolean[] possibleDirections = new boolean[4];  //possibly replace with Direction[] from the start?
         Direction[] dir = new Direction[10];            //TODO PLACEHOLDER
         //Check 1: remove incoming direction. Store possible outgoing directions as true in the boolean array.
         for (int i = 0; i < 4 ; i++) {
 
-            if (incomingDoor.getDirectionNumber() != i) {
+            if (this.incomingDoor.getDirectionNumber() != i) {
                 possibleDirections[i] = true;
             }
 
@@ -87,44 +131,6 @@ public class Room {
 
         //check for existing rooms
 
-        return dir;
+        return dir;                                     //TODO PH
     }
-
-    /*
-    Make sure the dungeon has a possible position to the correct direction
-    Below code is only for position inside the room matrix, not for checking against other rooms
-    TODO use in method that also checks for already created rooms
-    TODO use switch to allow a direction input instead/as well? Think about logic.
-    */
-    private boolean hasNorth(int roomPosition) {
-        boolean hasNorth = false;
-        if ((roomPosition + 1) > dungeon.getRoomColumns()) { hasNorth = true; }
-        return hasNorth;
-    }
-
-    private boolean hasEast(int roomPosition) {
-        boolean hasEast = false;
-        if ((roomPosition + 1) % (dungeon.getRoomColumns()) != 0) {
-            hasEast = true;
-        }
-        return hasEast;
-    }
-
-    private boolean hasSouth(int roomPosition) {
-        boolean hasSouth = false;
-        int numRooms = dungeon.getRoomColumns() * dungeon.getRoomRows();
-        if (roomPosition < numRooms - dungeon.getRoomColumns()) {
-            hasSouth = true;
-        }
-        return hasSouth;
-    }
-
-    private boolean hasWest(int roomPosition) {
-        boolean hasWest = false;
-        if (roomPosition % dungeon.getRoomColumns() != 0) {
-            hasWest = true;
-        }
-        return hasWest;
-    }
-
 }

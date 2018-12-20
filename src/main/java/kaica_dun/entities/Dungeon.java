@@ -6,31 +6,31 @@ import java.util.*;
 @Entity
 @Table(name = "dungeon")
 public class Dungeon {
-    private Player player;
     private int dungeonId;
+    private Player player;
     private int roomRows;
     private int roomColumns;
     private List<Room> rooms= new ArrayList<>();
     protected Dungeon() {}
 
-    public Dungeon(Player player, int roomRows, int roomColumns, int numRooms, int maxRooms){
+    /**
+     * Constructor to recreate dungeon state from database.
+     *
+     * @param player        the player who owns the dungeon
+     * @param roomRows      number of rows in the dungeon matrix
+     * @param roomColumns   number of columns in the dungeon matrix
+     * @param rooms         a list of all rooms in the dungeon, with null-values for empty spaces in the room-matrix
+     */
+    public Dungeon(Player player, int roomRows, int roomColumns, List<Room> rooms){
 
-        //TODO: think about auto-generating strategy for dungeonID
         this.player = player;
         this.roomRows = roomRows;
         this.roomColumns = roomColumns;
-
-        //loop for room-list creation, initialised to null.
-        for (int i = 0; i < (roomRows * roomColumns); i++ ) {
-            rooms.add(null);
-        }
-
-        //TODO: Figure out all the logic of how to control which kind of room gets created
-        rooms.set(0, new Room(true));
+        this.rooms = rooms;
 
     }
 
-    @Id
+    @Id @GeneratedValue
     @Column(name = "dungeonID")
     public int getDungeonId() {
         return dungeonId;
@@ -54,8 +54,6 @@ public class Dungeon {
         room.setDungeon(this);
         rooms.add(room);
     }
-
-
 
     //TODO: think about if this(m*n-stuff) is needed or how it can be solved cleaner.
     @Transient
