@@ -62,11 +62,11 @@ Building and running will likely be within the realms of the IDE in these instan
 * log4j2
 
 ### UML diagram
-This is the logical model for the database and object persistance.
+This is the logical model for the the application object oriented design (not necessarily 100% up to date).
 ![ . . . ](model_uml_app.png)
 
 ### Logical Database diagram
-This is a diagram of the logical database model resulting from forward engineering database tables using Hibernate and JPA.
+This is a diagram of the logical database model (not necessarily 100% up to date) resulting from forward engineering database tables using Hibernate and JPA.
 Other aspects to the projects logical design are the method for autoincrementing the Primary Key values wich in this case follows the SEQUENCE method where Java will dictate the sequencing.  [Auto-incrementing and Java Persistence API](https://thoughts-on-java.org/jpa-generate-primary-keys/)
 ![ . . . ](model_db_logical.png)
 

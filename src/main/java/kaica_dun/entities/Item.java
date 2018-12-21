@@ -9,14 +9,13 @@ public class Item {
 
     // Field variable declarations and Hibernate annotation scheme
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "itemID", updatable = false, nullable = false)
-    private Long itemId;
+    private Long id;
 
     @Basic
     @Column(name = "itemName")
     private String itemName;
-
 
     @Basic
     @Column(name = "description")
@@ -35,11 +34,11 @@ public class Item {
 
 
     public Long getItemId() {
-        return itemId;
+        return id;
     }
 
     public void setItemId(Long itemId) {
-        this.itemId = itemId;
+        this.id = itemId;
     }
 
     public String getItemName() {
@@ -70,7 +69,7 @@ public class Item {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Item that = (Item) o;
-        return itemId == that.itemId &&
+        return id.equals(that.id) &&
                 Objects.equals(itemName, that.itemName) &&
                 Objects.equals(description, that.description) &&
                 Objects.equals(playerId, that.playerId);
@@ -78,6 +77,6 @@ public class Item {
 
     @Override
     public int hashCode() {
-        return Objects.hash(itemId, itemName, description, playerId);
+        return Objects.hash(id, itemName, description, playerId);
     }
 }

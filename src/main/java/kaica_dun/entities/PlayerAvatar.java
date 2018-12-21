@@ -8,9 +8,10 @@ import java.util.Objects;
 public class PlayerAvatar {
 
     // Field variable declarations and Hibernate annotation scheme
-    @Id @GeneratedValue
-    @Column(name = "avatar_id")
-    private Long avatarId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "avatarID", updatable = false, nullable = false)
+    private Long id;
 
     @Basic
     @Column(name = "avatar_name")
@@ -45,11 +46,11 @@ public class PlayerAvatar {
 
 
     public Long getAvatarId() {
-        return avatarId;
+        return id;
     }
 
     public void setAvatarId(Long avatarId) {
-        this.avatarId = avatarId;
+        this.id = avatarId;
     }
 
     public String getAvatarName() {
@@ -105,7 +106,7 @@ public class PlayerAvatar {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PlayerAvatar that = (PlayerAvatar) o;
-        return avatarId == that.avatarId &&
+        return id.equals(that.id) &&
                 currHealth == that.currHealth &&
                 maxHealth == that.maxHealth &&
                 baseArmor == that.baseArmor &&
@@ -116,6 +117,6 @@ public class PlayerAvatar {
 
     @Override
     public int hashCode() {
-        return Objects.hash(avatarId, avatarName, currHealth, maxHealth, baseArmor, baseDamage, description);
+        return Objects.hash(id, avatarName, currHealth, maxHealth, baseArmor, baseDamage, description);
     }
 }

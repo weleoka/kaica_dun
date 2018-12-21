@@ -8,9 +8,10 @@ import java.util.*;
 public class Dungeon {
 
     // Field variable declarations and Hibernate annotation scheme
-    @Id @GeneratedValue
-    @Column(name = "dungeonID")
-    private Long dungeonId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "dungeonID", updatable = false, nullable = false)
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "playerID", nullable = false, updatable = false, insertable = false)
@@ -52,10 +53,10 @@ public class Dungeon {
     }
 
     public Long getDungeonId() {
-        return dungeonId;
+        return id;
     }
 
-    public void setDungeonId(Long dungeonId) { this.dungeonId = dungeonId; }
+    public void setDungeonId(Long dungeonId) { this.id = dungeonId; }
 
     public List<Room> getRooms() {
         return this.rooms;
@@ -101,11 +102,11 @@ public class Dungeon {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Dungeon that = (Dungeon) o;
-        return dungeonId == that.dungeonId;
+        return id.equals(that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(dungeonId);
+        return Objects.hash(id);
     }
 }

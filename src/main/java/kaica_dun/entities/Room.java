@@ -10,10 +10,11 @@ import java.util.Set;
 @Table(name = "room")
 public class Room {
 
-
-    @Id @GeneratedValue
-    @Column(name = "roomID")
-    private Long roomId;
+    // Field variable declarations and Hibernate annotation scheme
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "roomID", updatable = false, nullable = false)
+    private Long id;
 
     //Mapping to the dungeon entity that holds the rooms.
     @ManyToOne
@@ -37,7 +38,10 @@ public class Room {
     private List<Monster> monsters;
 
 
+    // Default empty constructor
     public Room(){}
+
+
 
     /**
      * @param dungeon       the dungeon that the Room belongs to
@@ -76,11 +80,11 @@ public class Room {
 
 
     public Long getRoomId() {
-        return roomId;
+        return id;
     }
 
     public void setRoomId(Long roomId) {
-        this.roomId = roomId;
+        this.id = roomId;
     }
 
     @Override
@@ -88,12 +92,12 @@ public class Room {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Room that = (Room) o;
-        return roomId == that.roomId;
+        return id.equals(that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(roomId);
+        return Objects.hash(id);
     }
 
 

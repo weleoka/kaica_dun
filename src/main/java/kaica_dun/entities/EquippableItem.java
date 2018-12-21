@@ -8,9 +8,10 @@ import java.util.Objects;
 public class EquippableItem {
 
     // Field variable declarations and Hibernate annotation scheme
-    @Id @GeneratedValue
-    @Column(name = "itemID")
-    private Long itemId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "equippableItemID", updatable = false, nullable = false)
+    private Long id;
 
     @Basic
     @Column(name = "slotID")
@@ -30,11 +31,11 @@ public class EquippableItem {
 
 
     public Long getItemId() {
-        return itemId;
+        return id;
     }
 
     public void setItemId(Long itemId) {
-        this.itemId = itemId;
+        this.id = itemId;
     }
 
     public int getSlotId() {
@@ -66,7 +67,7 @@ public class EquippableItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EquippableItem that = (EquippableItem) o;
-        return itemId == that.itemId &&
+        return id.equals(that.id) &&
                 slotId == that.slotId &&
                 armor == that.armor &&
                 damage == that.damage;
@@ -74,6 +75,6 @@ public class EquippableItem {
 
     @Override
     public int hashCode() {
-        return Objects.hash(itemId, slotId, armor, damage);
+        return Objects.hash(id, slotId, armor, damage);
     }
 }

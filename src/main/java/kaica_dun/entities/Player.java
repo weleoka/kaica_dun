@@ -9,9 +9,10 @@ import java.util.Objects;
 public class Player {
 
     // Field variable declarations and Hibernate annotation scheme
-    @Id @GeneratedValue
-    @Column(name = "playerID")
-    private Long playerId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "playerID", updatable = false, nullable = false)
+    private Long id;
 
     @Basic
     @Column(name = "playerName")
@@ -44,11 +45,11 @@ public class Player {
 
 
     public Long getPlayerId() {
-        return playerId;
+        return id;
     }
 
     public void setPlayerId(Long playerId) {
-        this.playerId = playerId;
+        this.id = playerId;
     }
 
     public String getPlayerName() {
@@ -64,13 +65,13 @@ public class Player {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Player that = (Player) o;
-        return playerId == that.playerId &&
+        return id.equals(that.id) &&
                 Objects.equals(playerName, that.playerName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(playerId, playerName);
+        return Objects.hash(id, playerName);
     }
 
 

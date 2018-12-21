@@ -8,9 +8,10 @@ import java.util.Objects;
 public class ConsumableItem {
 
     // Field variable declarations and Hibernate annotation scheme
-    @Id @GeneratedValue
-    @Column(name = "itemID")
-    private Long itemId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "consumableItemID", updatable = false, nullable = false)
+    private Long id;
 
     @Basic
     @Column(name = "uses")
@@ -20,14 +21,12 @@ public class ConsumableItem {
     // Default empty constructor
     protected ConsumableItem(){}
 
-
-
     public Long getItemId() {
-        return itemId;
+        return id;
     }
 
     public void setItemId(Long itemId) {
-        this.itemId = itemId;
+        this.id = itemId;
     }
 
 
@@ -44,12 +43,12 @@ public class ConsumableItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ConsumableItem that = (ConsumableItem) o;
-        return itemId == that.itemId &&
+        return id.equals(that.id) &&
                 uses == that.uses;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(itemId, uses);
+        return Objects.hash(id, uses);
     }
 }

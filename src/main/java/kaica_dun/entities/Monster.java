@@ -11,9 +11,10 @@ import java.util.Objects;
 public class Monster implements Describable, Lootable {
 
     // Field variable declarations and Hibernate annotation scheme
-    @Id @GeneratedValue
-    @Column(name = "monsterID")
-    private Long monsterId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "monsterID", updatable = false, nullable = false)
+    private Long id;
 
     //TODO unsure of mapping strategy
     @OneToOne(optional = false)
@@ -77,11 +78,11 @@ public class Monster implements Describable, Lootable {
     }
 
     public Long getMonsterId() {
-        return monsterId;
+        return id;
     }
 
     public void setMonsterId(Long monsterId) {
-        this.monsterId = monsterId;
+        this.id = monsterId;
     }
 
 
@@ -163,7 +164,7 @@ public class Monster implements Describable, Lootable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Monster that = (Monster) o;
-        return monsterId == that.monsterId &&
+        return id.equals(that.id) &&
                 armor == that.armor &&
                 currHealth == that.currHealth &&
                 damage == that.damage &&
@@ -175,7 +176,7 @@ public class Monster implements Describable, Lootable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(monsterId, armor, currHealth, damage, description, maxHealth, name, type);
+        return Objects.hash(id, armor, currHealth, damage, description, maxHealth, name, type);
     }
 
     @Override
