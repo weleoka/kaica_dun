@@ -1,6 +1,6 @@
 package kaica_dun.dao;
 
-import kaica_dun.entities_BACKUP.Item;
+import kaica_dun.entities.Item;
 
 public interface ItemDao extends DaoGenericInterface<Item, Long> {
 

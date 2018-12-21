@@ -1,4 +1,4 @@
-package kaica_dun;
+package kaica_dun.entities;
 
 import kaica_dun.entities.*;
 
@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public final class testStaticDungeon {
+public final class makeStaticDungeon {
     private Player player;
     private int roomRows = 5;
     private int roomColumns = 5;
@@ -16,7 +16,7 @@ public final class testStaticDungeon {
      *
      * @param player        the Player that the Dungeon belongs to
      */
-    public testStaticDungeon(Player player){
+    public makeStaticDungeon(Player player){
         this.player = player;
     }
 

@@ -1,7 +1,7 @@
 package kaica_dun.dao;
 
 
-import kaica_dun.entities_BACKUP.ConsumableItem;
+import kaica_dun.entities.ConsumableItem;
 
 import java.util.List;
 

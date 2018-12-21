@@ -1,7 +1,7 @@
 package kaica_dun.dao;
 
 
-import kaica_dun.entities_BACKUP.Room;
+import kaica_dun.entities.Room;
 
 import java.util.List;
 

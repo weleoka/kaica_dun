@@ -2,7 +2,7 @@ package kaica_dun;
 
 import kaica_dun.dao.DaoFactory;
 import kaica_dun.dao.RoomDao;
-import kaica_dun.entities_BACKUP.Room;
+import kaica_dun.entities.Room;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;

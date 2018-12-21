@@ -1,7 +1,7 @@
 package kaica_dun.dao;
 
 
-import kaica_dun.entities_BACKUP.Dungeon;
+import kaica_dun.entities.Dungeon;
 
 import java.util.List;
 

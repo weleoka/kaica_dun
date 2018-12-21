@@ -1,4 +1,4 @@
-package kaica_dun.entities_BACKUP;
+package kaica_dun.entities;
 
 import kaica_dun.interfaces.Describable;
 import kaica_dun.interfaces.Lootable;

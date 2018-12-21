@@ -1,4 +1,4 @@
-package kaica_dun.entities_BACKUP;
+package kaica_dun.entities;
 
 import javax.persistence.*;
 import java.util.List;
@@ -15,7 +15,7 @@ public class Player {
     private int highScore;
     private List<Dungeon> dungeons;
 
-    protected Player(){}
+    public Player(){}
 
     @Id
     @Column(name = "playerID")
