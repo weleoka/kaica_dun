@@ -3,6 +3,9 @@
  */
 package kaica_dun;
 
+import kaica_dun.entities.Dungeon;
+import kaica_dun.entities.Player;
+import kaica_dun.entities.makeStaticDungeon;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,6 +15,11 @@ public class App {
 
     public static void main(String[] args) throws Exception {
         LOGGER.info("- - - K A I C A - - -");
+
+        //Player player = new Player();
+        //makeStaticDungeon msd = new makeStaticDungeon(player);
+
+        //Dungeon d = msd.makeDungeon();
 
         TestDb testDb = new TestDb();
 

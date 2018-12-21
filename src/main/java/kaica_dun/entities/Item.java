@@ -6,15 +6,34 @@ import java.util.Objects;
 @Entity
 @Table(name = "item")
 public class Item {
-    private Long itemId;
-    private String itemName;
-    private String description;
-    private Integer playerId;
 
+    // Field variable declarations and Hibernate annotation scheme
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "itemID", updatable = false, nullable = false)
+    private Long itemId;
+
+    @Basic
+    @Column(name = "itemName")
+    private String itemName;
+
+
+    @Basic
+    @Column(name = "description")
+    private String description;
+
+    @Basic
+    @Column(name = "playerID")
+    private Long playerId;
+
+
+
+
+    // Default empty constructor
     protected Item(){}
 
-    @Id @GeneratedValue
-    @Column(name = "itemID")
+
+
     public Long getItemId() {
         return itemId;
     }
@@ -23,8 +42,6 @@ public class Item {
         this.itemId = itemId;
     }
 
-    @Basic
-    @Column(name = "itemName")
     public String getItemName() {
         return itemName;
     }
@@ -33,8 +50,6 @@ public class Item {
         this.itemName = itemName;
     }
 
-    @Basic
-    @Column(name = "description")
     public String getDescription() {
         return description;
     }
@@ -42,14 +57,11 @@ public class Item {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    @Basic
-    @Column(name = "playerID")
-    public Integer getPlayerId() {
+    public Long getPlayerId() {
         return playerId;
     }
 
-    public void setPlayerId(Integer playerId) {
+    public void setPlayerId(Long playerId) {
         this.playerId = playerId;
     }
 

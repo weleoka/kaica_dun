@@ -6,18 +6,44 @@ import java.util.Objects;
 @Entity
 @Table(name = "playeravatar")
 public class PlayerAvatar {
-    private Long avatarId;
-    private String avatarName;
-    private int currHealth;
-    private int maxHealth;
-    private int baseArmor;
-    private int baseDamage;
-    private String description;
 
-    protected PlayerAvatar(){}
-
+    // Field variable declarations and Hibernate annotation scheme
     @Id @GeneratedValue
     @Column(name = "avatar_id")
+    private Long avatarId;
+
+    @Basic
+    @Column(name = "avatar_name")
+    private String avatarName;
+
+    @Basic
+    @Column(name = "curr_health")
+    private int currHealth;
+
+    @Basic
+    @Column(name = "max_health")
+    private int maxHealth;
+
+    @Basic
+    @Column(name = "base_armor")
+    private int baseArmor;
+
+    @Basic
+    @Column(name = "base_damage")
+    private int baseDamage;
+
+    @Basic
+    @Column(name = "description")
+    private String description;
+
+
+
+    // Default empty constructor
+    protected PlayerAvatar(){}
+
+
+
+
     public Long getAvatarId() {
         return avatarId;
     }
@@ -26,8 +52,6 @@ public class PlayerAvatar {
         this.avatarId = avatarId;
     }
 
-    @Basic
-    @Column(name = "avatar_name")
     public String getAvatarName() {
         return avatarName;
     }
@@ -36,8 +60,6 @@ public class PlayerAvatar {
         this.avatarName = avatarName;
     }
 
-    @Basic
-    @Column(name = "curr_health")
     public int getCurrHealth() {
         return currHealth;
     }
@@ -46,8 +68,6 @@ public class PlayerAvatar {
         this.currHealth = currHealth;
     }
 
-    @Basic
-    @Column(name = "max_health")
     public int getMaxHealth() {
         return maxHealth;
     }
@@ -56,8 +76,6 @@ public class PlayerAvatar {
         this.maxHealth = maxHealth;
     }
 
-    @Basic
-    @Column(name = "base_armor")
     public int getBaseArmor() {
         return baseArmor;
     }
@@ -66,8 +84,6 @@ public class PlayerAvatar {
         this.baseArmor = baseArmor;
     }
 
-    @Basic
-    @Column(name = "base_damage")
     public int getBaseDamage() {
         return baseDamage;
     }
@@ -76,8 +92,6 @@ public class PlayerAvatar {
         this.baseDamage = baseDamage;
     }
 
-    @Basic
-    @Column(name = "description")
     public String getDescription() {
         return description;
     }

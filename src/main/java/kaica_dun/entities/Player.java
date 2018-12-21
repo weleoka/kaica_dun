@@ -7,18 +7,42 @@ import java.util.Objects;
 @Entity
 @Table(name = "player")
 public class Player {
-    private Long playerId;
-    private String playerName;
-    private String password;
-    private int totalDeaths;
-    private int totalScore;
-    private int highScore;
-    private List<Dungeon> dungeons;
 
-    public Player(){}
-
+    // Field variable declarations and Hibernate annotation scheme
     @Id @GeneratedValue
     @Column(name = "playerID")
+    private Long playerId;
+
+    @Basic
+    @Column(name = "playerName")
+    private String playerName;
+
+    @Basic
+    @Column(name = "password")
+    private String password;
+
+    @Basic
+    @Column(name = "totalDeaths")
+    private int totalDeaths;
+
+    @Basic
+    @Column(name = "totalScore")
+    private int totalScore;
+
+    @Basic
+    @Column(name = "highScore")
+    private int highScore;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "playerID", nullable = false)
+    private List<Dungeon> dungeons;
+
+
+    // Default empty constructor
+    public Player(){}
+
+
+
     public Long getPlayerId() {
         return playerId;
     }
@@ -27,8 +51,6 @@ public class Player {
         this.playerId = playerId;
     }
 
-    @Basic
-    @Column(name = "playerName")
     public String getPlayerName() {
         return playerName;
     }
@@ -51,28 +73,27 @@ public class Player {
         return Objects.hash(playerId, playerName);
     }
 
-    @Basic
-    @Column(name = "password")
+
     public String getPassword() {
         return password;
     }
+
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    @Basic
-    @Column(name = "totalDeaths")
+
     public int getTotalDeaths() {
         return totalDeaths;
     }
+
 
     public void setTotalDeaths(int totalDeaths) {
         this.totalDeaths = totalDeaths;
     }
 
-    @Basic
-    @Column(name = "totalScore")
+
     public int getTotalScore() {
         return totalScore;
     }
@@ -81,8 +102,7 @@ public class Player {
         this.totalScore = totalScore;
     }
 
-    @Basic
-    @Column(name = "highScore")
+
     public int getHighScore() {
         return highScore;
     }
@@ -91,8 +111,7 @@ public class Player {
         this.highScore = highScore;
     }
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "playerID", nullable = false)
+
     public List<Dungeon> getDungeons() {
         return this.dungeons;
     }

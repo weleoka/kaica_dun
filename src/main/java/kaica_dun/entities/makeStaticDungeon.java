@@ -20,7 +20,7 @@ public final class makeStaticDungeon {
         this.player = player;
     }
 
-    private Dungeon makeDungeon() {
+    public Dungeon makeDungeon() {
         List<Room> rooms = new ArrayList<Room>();
         //loop for room-list creation, initialised to null.
         for (int i = 0; i < (roomRows * roomColumns); i++) {

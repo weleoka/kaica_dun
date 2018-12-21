@@ -9,12 +9,33 @@ import java.util.Set;
 @Entity
 @Table(name = "room")
 public class Room {
-    private Dungeon dungeon;
-    private int roomIndex;
-    private Direction incomingDoor;
-    private List<Direction> exits;
+
+
+    @Id @GeneratedValue
+    @Column(name = "roomID")
     private Long roomId;
-    private List<Monster> monsters = new ArrayList<>();
+
+    //Mapping to the dungeon entity that holds the rooms.
+    @ManyToOne
+    @JoinColumn(name = "dungeonID", nullable = false, updatable = false)
+    private Dungeon dungeon;
+
+    @Transient
+    private int roomIndex;
+
+    @Transient
+    private Direction incomingDoor;
+
+    @ElementCollection(targetClass = Direction.class)
+    @CollectionTable(
+            name = "room_direction",
+            joinColumns = @JoinColumn(name = "roomID"))
+    @Column(name = "directionID")
+    private List<Direction> exits;
+
+    @Transient
+    private List<Monster> monsters;
+
 
     public Room(){}
 
@@ -44,7 +65,7 @@ public class Room {
      * @param monsters      a List of the monster(s) in the room
      */
     public Room(int roomIndex, Direction incomingDoor, List<Direction> exits, List<Monster> monsters) {
-        this.dungeon = dungeon;
+        //this.dungeon = dungeon;
         this.roomIndex = roomIndex;
         this.incomingDoor = incomingDoor;
         this.exits = exits;
@@ -53,8 +74,7 @@ public class Room {
 
 
 
-    @Id @GeneratedValue
-    @Column(name = "roomID")
+
     public Long getRoomId() {
         return roomId;
     }
@@ -76,9 +96,7 @@ public class Room {
         return Objects.hash(roomId);
     }
 
-    //Mapping to the dungeon entity that holds the rooms.
-    @ManyToOne
-    @JoinColumn(name = "dungeonID", nullable = false, updatable = false)
+
     public Dungeon getDungeon() {
         return this.dungeon;
     }
@@ -96,11 +114,7 @@ public class Room {
         this.roomIndex = roomIndex;
     }
 
-    @ElementCollection(targetClass = Direction.class)
-    @CollectionTable(
-            name = "room_direction",
-            joinColumns = @JoinColumn(name = "roomID"))
-    @Column(name = "directionID")
+
     public List<Direction> getExits() {
         return exits;
     }

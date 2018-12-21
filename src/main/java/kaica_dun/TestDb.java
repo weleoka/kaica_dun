@@ -44,7 +44,7 @@ public class TestDb {
     public void testDb()  {
         Logger l = this.LOGGER; // Convenience formatting for readability.
 
-        Long roomID = Long.valueOf(11);
+        Long roomID = Long.valueOf(1);
 
         Session sess = beginSession();
 

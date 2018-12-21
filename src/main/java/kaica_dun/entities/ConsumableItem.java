@@ -6,13 +6,22 @@ import java.util.Objects;
 @Entity
 @Table(name = "consumableitem")
 public class ConsumableItem {
-    private Long itemId;
-    private int uses;
 
-    protected ConsumableItem(){}
-
+    // Field variable declarations and Hibernate annotation scheme
     @Id @GeneratedValue
     @Column(name = "itemID")
+    private Long itemId;
+
+    @Basic
+    @Column(name = "uses")
+    private int uses;
+
+
+    // Default empty constructor
+    protected ConsumableItem(){}
+
+
+
     public Long getItemId() {
         return itemId;
     }
@@ -21,8 +30,7 @@ public class ConsumableItem {
         this.itemId = itemId;
     }
 
-    @Basic
-    @Column(name = "uses")
+
     public int getUses() {
         return uses;
     }

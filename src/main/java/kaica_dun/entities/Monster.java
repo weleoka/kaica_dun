@@ -9,17 +9,51 @@ import java.util.Objects;
 @Entity
 @Table(name = "monster")
 public class Monster implements Describable, Lootable {
+
+    // Field variable declarations and Hibernate annotation scheme
+    @Id @GeneratedValue
+    @Column(name = "monsterID")
     private Long monsterId;
+
+    //TODO unsure of mapping strategy
+    @OneToOne(optional = false)
+    @PrimaryKeyJoinColumn
     private Room room;
+
+    @Basic
+    @Column(name = "armor")
     private int armor;
+
+    @Basic
+    @Column(name = "curr_health")
     private int currHealth;
+
+    @Basic
+    @Column(name = "damage")
     private int damage;
+
+    @Basic
+    @Column(name = "description")
     private String description;
+
+    @Basic
+    @Column(name = "max_health")
     private int maxHealth;
+
+    @Basic
+    @Column(name = "monster_name")
     private String name;
+
+    @Basic
+    @Column(name = "monster_type")
     private String type;
 
+
+
+    // Default empty constructor
     protected Monster(){}
+
+
 
     public Monster(Room room, int armor, int currHealth, int damage, String description, int maxHealth, String name, String type) {
         this.room = room;
@@ -42,8 +76,6 @@ public class Monster implements Describable, Lootable {
         this.type = type;
     }
 
-    @Id @GeneratedValue
-    @Column(name = "monsterID")
     public Long getMonsterId() {
         return monsterId;
     }
@@ -52,9 +84,8 @@ public class Monster implements Describable, Lootable {
         this.monsterId = monsterId;
     }
 
-    //TODO unsure of mapping strategy
-    @OneToOne(optional = false)
-    @PrimaryKeyJoinColumn
+
+
     public Room getRoom() {
         return room;
     }
@@ -63,8 +94,7 @@ public class Monster implements Describable, Lootable {
         this.room = room;
     }
 
-    @Basic
-    @Column(name = "armor")
+
     public int getArmor() {
         return armor;
     }
@@ -73,8 +103,7 @@ public class Monster implements Describable, Lootable {
         this.armor = armor;
     }
 
-    @Basic
-    @Column(name = "curr_health")
+
     public int getCurrHealth() {
         return currHealth;
     }
@@ -83,8 +112,7 @@ public class Monster implements Describable, Lootable {
         this.currHealth = currHealth;
     }
 
-    @Basic
-    @Column(name = "damage")
+
     public int getDamage() {
         return damage;
     }
@@ -94,8 +122,6 @@ public class Monster implements Describable, Lootable {
     }
 
     @Override
-    @Basic
-    @Column(name = "description")
     public String getDescription() {
         if(this.getCurrHealth() <= 0) {
             return description + " It's dead.";
@@ -106,8 +132,6 @@ public class Monster implements Describable, Lootable {
         this.description = description;
     }
 
-    @Basic
-    @Column(name = "max_health")
     public int getMaxHealth() {
         return maxHealth;
     }
@@ -116,8 +140,7 @@ public class Monster implements Describable, Lootable {
         this.maxHealth = maxHealth;
     }
 
-    @Basic
-    @Column(name = "monster_name")
+
     public String getName() {
         return name;
     }
@@ -126,8 +149,7 @@ public class Monster implements Describable, Lootable {
         this.name = name;
     }
 
-    @Basic
-    @Column(name = "monster_type")
+
     public String getType() {
         return type;
     }

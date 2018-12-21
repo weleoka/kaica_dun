@@ -39,7 +39,6 @@ These steps are one way of getting the repository ready for development.
 
 To build and run the project with gradle using the gradle wrapper `./gradlew build` and then `./gradlew run` to run the application.
 
-
 ### Setup for development - automatic with IJ idea
 This is probably the usual method for work on this project
 
@@ -62,26 +61,23 @@ Building and running will likely be within the realms of the IDE in these instan
 * mysql-connector-java
 * log4j2
 
-
 ### UML diagram
 This is the logical model for the database and object persistance.
+![ . . . ](model_uml_app.png)
 
-![ . . . ](uml01.png)
-
+### Logical Database diagram
+This is a diagram of the logical database model resulting from forward engineering database tables using Hibernate and JPA.
+Other aspects to the projects logical design are the method for autoincrementing the Primary Key values wich in this case follows the SEQUENCE method where Java will dictate the sequencing.  [Auto-incrementing and Java Persistence API](https://thoughts-on-java.org/jpa-generate-primary-keys/)
+![ . . . ](model_db_logical.png)
 
 ### Project directory structure
 The [directory structure](https://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html) for tthis project follows the default structure of Maven and Gradle.
 
-
 ### Style guide
-This project attempts to adhere to the following [style guide](https://github.com/weleoka/myJavaStyleGuide).
-
+This project attempts to adhere to the following [style guide](https://github.com/weleoka/myJavaStyleGuide).  
 An exception to the style guide is made with the constant LOGGER wich is allowed to be lowercase.
 
-
-
 # End, links, notes etc.
-
 *Log4j 2*
 log4j 2 with hibernate. log4j v1.2 is the better candidate, but I think the problems have been resolved.
 https://logging.apache.org/log4j/2.x/manual/configuration.html

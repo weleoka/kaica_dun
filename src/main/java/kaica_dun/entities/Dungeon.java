@@ -6,12 +6,34 @@ import java.util.*;
 @Entity
 @Table(name = "dungeon")
 public class Dungeon {
+
+    // Field variable declarations and Hibernate annotation scheme
+    @Id @GeneratedValue
+    @Column(name = "dungeonID")
     private Long dungeonId;
+
+    @ManyToOne
+    @JoinColumn(name = "playerID", nullable = false, updatable = false, insertable = false)
+    @org.hibernate.annotations.ForeignKey(name = "FK_PLAYER_ID")
     private Player player;
+
+    @Transient
     private int roomRows;
+
+    @Transient
     private int roomColumns;
+
+    @OneToMany(cascade = { CascadeType.PERSIST,
+            CascadeType.MERGE,
+            CascadeType.REMOVE },
+            mappedBy = "dungeon")
     private List<Room> rooms= new ArrayList<>();
+
+
+    // Default empty constructor
     protected Dungeon() {}
+
+
 
     /**
      * Constructor to recreate dungeon state from database.
@@ -22,7 +44,6 @@ public class Dungeon {
      * @param rooms         a list of all rooms in the dungeon, with null-values for empty spaces in the room-matrix
      */
     public Dungeon(Player player, int roomRows, int roomColumns, List<Room> rooms){
-
         this.player = player;
         this.roomRows = roomRows;
         this.roomColumns = roomColumns;
@@ -30,18 +51,12 @@ public class Dungeon {
 
     }
 
-    @Id @GeneratedValue
-    @Column(name = "dungeonID")
     public Long getDungeonId() {
         return dungeonId;
     }
 
     public void setDungeonId(Long dungeonId) { this.dungeonId = dungeonId; }
 
-    @OneToMany(cascade = { CascadeType.PERSIST,
-                           CascadeType.MERGE,
-                           CascadeType.REMOVE },
-               mappedBy = "dungeon")
     public List<Room> getRooms() {
         return this.rooms;
     }
@@ -55,9 +70,6 @@ public class Dungeon {
         rooms.add(room);
     }
 
-    @ManyToOne
-    @JoinColumn(name = "playerID", nullable = false, updatable = false, insertable = false)
-    @org.hibernate.annotations.ForeignKey(name = "FK_PLAYER_ID")
     public Player getPlayer(){
         return player;
     }
@@ -67,7 +79,7 @@ public class Dungeon {
     }
 
     //TODO: think about if this(m*n-stuff) is needed or how it can be solved cleaner.
-    @Transient
+
     protected int getRoomRows() {
         return roomRows;
     }
@@ -76,7 +88,6 @@ public class Dungeon {
         this.roomRows = roomRows;
     }
 
-    @Transient
     protected int getRoomColumns() {
         return roomColumns;
     }

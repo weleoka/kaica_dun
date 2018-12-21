@@ -6,15 +6,29 @@ import java.util.Objects;
 @Entity
 @Table(name = "equippableitem")
 public class EquippableItem {
-    private Long itemId;
-    private int slotId;
-    private int armor;
-    private int damage;
 
-    public EquippableItem(){}
-
+    // Field variable declarations and Hibernate annotation scheme
     @Id @GeneratedValue
     @Column(name = "itemID")
+    private Long itemId;
+
+    @Basic
+    @Column(name = "slotID")
+    private int slotId;
+
+    @Basic
+    @Column(name = "armor")
+    private int armor;
+
+    @Basic
+    @Column(name = "damage")
+    private int damage;
+
+
+    // Default empty constructor
+    public EquippableItem(){}
+
+
     public Long getItemId() {
         return itemId;
     }
@@ -23,8 +37,6 @@ public class EquippableItem {
         this.itemId = itemId;
     }
 
-    @Basic
-    @Column(name = "slotID")
     public int getSlotId() {
         return slotId;
     }
@@ -33,8 +45,6 @@ public class EquippableItem {
         this.slotId = slotId;
     }
 
-    @Basic
-    @Column(name = "armor")
     public int getArmor() {
         return armor;
     }
@@ -43,8 +53,6 @@ public class EquippableItem {
         this.armor = armor;
     }
 
-    @Basic
-    @Column(name = "damage")
     public int getDamage() {
         return damage;
     }
