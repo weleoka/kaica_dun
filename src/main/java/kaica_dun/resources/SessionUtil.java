@@ -33,7 +33,7 @@ public class SessionUtil {
     public static Session getSession() {
 
         // Please: this needs working on and there is a twist:
-        //  https://stackoverflow.com/questions/19971098/nullpointerexception-in-sessionfactory-opensession
+        // https://stackoverflow.com/questions/19971098/nullpointerexception-in-sessionfactory-opensession
         // goodNight.
 
         try {
