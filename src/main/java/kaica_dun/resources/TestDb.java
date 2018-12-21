@@ -2,7 +2,9 @@ package kaica_dun.resources;
 
 import kaica_dun.dao.DaoFactory;
 import kaica_dun.dao.RoomDao;
+import kaica_dun.entities.Dungeon;
 import kaica_dun.entities.Monster;
+import kaica_dun.entities.Player;
 import kaica_dun.entities.Room;
 import kaica_dun.util.Util;
 import org.apache.logging.log4j.LogManager;
@@ -10,6 +12,8 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -29,9 +33,9 @@ public class TestDb {
      * @param args              an array of strings of arguments
      */
     public static void main(String[] args) {
-        testDb_Room();
-
-        testDb_Monster();
+        //testDb_Room();
+        testDb_Dungeon();
+        //testDb_Monster();
     }
 
 
@@ -116,6 +120,38 @@ public class TestDb {
 
         log.debug("Closing the session.");
         SessionUtil.closeSession();    // close the session
+    }
+
+    /**
+     * Testing creation of static Dungeon
+     */
+    public static void testDb_Dungeon() {
+        Session session = SessionUtil.getSession();
+
+        log.debug("Beginning new transaction in session.");
+        Transaction tr = session.beginTransaction(); // Open the transaction
+
+        List<Dungeon> dl = new ArrayList<Dungeon>();
+        //Make Player
+        Player p = new Player("Carl", "password", dl);
+        // Make static dungeon
+        Dungeon d = new makeStaticDungeon(p).makeDungeon();
+        session.save(d);
+        // Sleep for a while to see how the transaction is done
+        //      is it in a burst or at each sess.save() call?
+        Util.sleeper(1200);
+
+
+        log.debug("Commit the transaction.");
+        tr.commit();    // Close the transaction
+
+        log.debug("Closing the session.");
+        SessionUtil.closeSession();    // close the session
+
+        // Disabled because we dont have to close the session except on program exit.
+        //log.debug("Closing the SessionFactory.");
+        //SessionUtil.closeDownSessionFactory();   // Close the SessionFactory
+
     }
 
     /* This is another example of usage of session and sessionFactory
