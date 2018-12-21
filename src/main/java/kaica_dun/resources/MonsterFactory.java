@@ -1,4 +1,4 @@
-package kaica_dun.entities2;
+package kaica_dun.resources;
 
 import kaica_dun.entities.Monster;
 

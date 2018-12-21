@@ -1,4 +1,8 @@
-package kaica_dun.entities;
+package kaica_dun.resources;
+
+import kaica_dun.entities.Direction;
+import kaica_dun.entities.Monster;
+import kaica_dun.entities.Room;
 
 import java.util.*;
 

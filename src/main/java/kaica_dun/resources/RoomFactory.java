@@ -1,4 +1,6 @@
-package kaica_dun.entities;
+package kaica_dun.resources;
+
+import kaica_dun.entities.Direction;
 
 public class RoomFactory {
 

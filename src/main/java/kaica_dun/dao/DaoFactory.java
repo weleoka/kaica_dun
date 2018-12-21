@@ -25,4 +25,12 @@ public abstract class DaoFactory {
 
     // Add your DAO interfaces here
     public abstract RoomDao getRoomDao();
+
+    public abstract MonsterDao getMonsterDao();
+
+    //public abstract ItemDao getItemDao();
+
+    //public abstract RoomDao getRoomDao();
+
+    //public abstract RoomDao getRoomDao();
 }

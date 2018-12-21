@@ -1,7 +1,7 @@
 package kaica_dun.dao;
 
 
-import kaica_dun.SessionUtil;
+import kaica_dun.resources.SessionUtil;
 import org.hibernate.Session;
 
 
@@ -29,11 +29,16 @@ public class DaoFactoryHibernate extends DaoFactory {
 
     // You could override this if you don't want SessionUtil for lookup
     protected Session getCurrentSession() {
-        return SessionUtil.getSessionFactory().getCurrentSession();
+        return SessionUtil.getSession();
     }
 
     @Override
     public RoomDao getRoomDao() {
+        return null;
+    }
+
+    @Override
+    public MonsterDao getMonsterDao() {
         return null;
     }
 }
