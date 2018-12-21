@@ -10,6 +10,7 @@ import java.util.Objects;
 @Table(name = "monster")
 public class Monster implements Describable, Lootable {
     private Long monsterId;
+    private Room room;
     private int armor;
     private int currHealth;
     private int damage;
@@ -20,6 +21,27 @@ public class Monster implements Describable, Lootable {
 
     protected Monster(){}
 
+    public Monster(Room room, int armor, int currHealth, int damage, String description, int maxHealth, String name, String type) {
+        this.room = room;
+        this.armor = armor;
+        this.currHealth = currHealth;
+        this.damage = damage;
+        this.description = description;
+        this.maxHealth = maxHealth;
+        this.name = name;
+        this.type = type;
+    }
+
+    public Monster(int armor, int currHealth, int damage, String description, int maxHealth, String name, String type) {
+        this.armor = armor;
+        this.currHealth = currHealth;
+        this.damage = damage;
+        this.description = description;
+        this.maxHealth = maxHealth;
+        this.name = name;
+        this.type = type;
+    }
+
     @Id @GeneratedValue
     @Column(name = "monsterID")
     public Long getMonsterId() {
@@ -28,6 +50,17 @@ public class Monster implements Describable, Lootable {
 
     public void setMonsterId(Long monsterId) {
         this.monsterId = monsterId;
+    }
+
+    //TODO unsure of mapping strategy
+    @OneToOne(optional = false)
+    @PrimaryKeyJoinColumn
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
     }
 
     @Basic
@@ -125,6 +158,7 @@ public class Monster implements Describable, Lootable {
 
     @Override
     public void lootItem() {
-        //Needs to be rethought, should be a one->many DB relation.
+        //Needs to be rethought. Needs to change the state of the looted Object as well as the PlayerAvatar and then
+        // update db.
     }
 }
