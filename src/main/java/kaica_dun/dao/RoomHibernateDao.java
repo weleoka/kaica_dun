@@ -7,7 +7,7 @@ import java.util.List;
 
 
 public class RoomHibernateDao
-        extends     GenericHibernateDao<Room, Long>
+        extends DaoGenericHibernate<Room, Long>
         implements  RoomDao {
 
 

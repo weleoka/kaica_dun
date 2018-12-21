@@ -6,25 +6,17 @@ package kaica_dun;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
-
 public class App {
     // This logger has a name so that it can retrieved for use from anywhere in the application.
     private static final Logger LOGGER = LogManager.getLogger("MAIN");
 
     public static void main(String[] args) throws Exception {
-
-        System.out.println(new App().getGreeting());
+        LOGGER.info("- - - K A I C A - - -");
 
         TestDb testDb = new TestDb();
+
         testDb.testDb();
     }
 
-    public String getGreeting() {
-        LOGGER.info("Writing one line to log.");
-
-        return "Hello world.";
-
-    }
 
 }

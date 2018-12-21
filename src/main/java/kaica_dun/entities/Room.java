@@ -12,8 +12,8 @@ public class Room {
     private Dungeon dungeon;
     private int roomIndex;
     private Direction incomingDoor;
-    private List<Direction> exits;
-    private int roomId;
+    private Set<Direction> exits;
+    private Long roomId;
     private List<Monster> monsters = new ArrayList<>();
 
     public Room(){}
@@ -25,7 +25,7 @@ public class Room {
      * @param exits         a List with the direction(s) of possible exits
      * @param monsters      a List of the monster(s) in the room
      */
-    Room(Dungeon dungeon, int roomIndex, Direction incomingDoor, List<Direction> exits, List<Monster> monsters) {
+    Room(Dungeon dungeon, int roomIndex, Direction incomingDoor, Set<Direction> exits, List<Monster> monsters) {
         this.dungeon = dungeon;
         this.roomIndex = roomIndex;
         this.incomingDoor = incomingDoor;
@@ -43,7 +43,7 @@ public class Room {
      * @param exits         a List with the direction(s) of possible exits
      * @param monsters      a List of the monster(s) in the room
      */
-    Room(int roomIndex, Direction incomingDoor, List<Direction> exits, List<Monster> monsters) {
+    Room(int roomIndex, Direction incomingDoor, Set<Direction> exits, List<Monster> monsters) {
         this.dungeon = dungeon;
         this.roomIndex = roomIndex;
         this.incomingDoor = incomingDoor;
@@ -52,14 +52,13 @@ public class Room {
     }
 
 
-
     @Id @GeneratedValue
     @Column(name = "roomID")
-    public int getRoomId() {
+    public Long getRoomId() {
         return roomId;
     }
 
-    public void setRoomId(int roomId) {
+    public void setRoomId(Long roomId) {
         this.roomId = roomId;
     }
 
@@ -101,13 +100,14 @@ public class Room {
             name = "room_direction",
             joinColumns = @JoinColumn(name = "roomID"))
     @Column(name = "directionID")
-    public List<Direction> getExits() {
-        return exits;
+    public Set<Direction> getExits() {
+        return exits; // TODO: Why not this.exits?
     }
 
-    public void setExits(List<Direction> exits) {
+    public void setExits(Set<Direction> exits) {
         this.exits = exits;
     }
+
 
     @Transient
     public Direction getIncomingDoor() {

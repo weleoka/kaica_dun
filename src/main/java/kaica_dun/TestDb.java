@@ -2,7 +2,6 @@ package kaica_dun;
 
 import kaica_dun.dao.DaoFactory;
 import kaica_dun.dao.RoomDao;
-import kaica_dun.entities.Player;
 import kaica_dun.entities.Room;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,13 +33,12 @@ public class TestDb {
         l.debug("Getting session from factory.");
         Session session = sessionUtil.getCurrentSession();   // Open the session
         return session;
-
     }
 
 
     /**
      * Currently having troubles with the DAO as due to it implementing serializable it requires a Long yet all the
-     * ID are in the DB as int. Cosisder changing the ddl to use long int for this??
+     * ID are in the DB as int. Consider changing the ddl to use long int for this??
      *
      */
     public void testDb()  {
@@ -93,11 +91,6 @@ public class TestDb {
 
         l.debug("Closing the SessionFactory.");
         sessionUtil.closeDownSessionFactory();   // Close the SessionFactory
-
-        Player player = new Player();
-        player.setPlayerName("Magic Mike");
-        player.setPassword("testing");
-
 
     }
 

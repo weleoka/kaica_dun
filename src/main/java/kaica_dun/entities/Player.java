@@ -6,22 +6,22 @@ import java.util.Objects;
 @Entity
 @Table(name = "player")
 public class Player {
-    private int playerId;
+    private Long playerId;
     private String playerName;
     private String password;
     private int totalDeaths;
     private int totalScore;
     private int highScore;
 
-    public Player(){}
+    protected Player(){}
 
     @Id
     @Column(name = "playerID")
-    public int getPlayerId() {
+    public Long getPlayerId() {
         return playerId;
     }
 
-    public void setPlayerId(int playerId) {
+    public void setPlayerId(Long playerId) {
         this.playerId = playerId;
     }
 

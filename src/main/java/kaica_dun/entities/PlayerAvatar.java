@@ -6,7 +6,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "playeravatar")
 public class PlayerAvatar {
-    private int avatarId;
+    private Long avatarId;
     private String avatarName;
     private int currHealth;
     private int maxHealth;
@@ -18,11 +18,11 @@ public class PlayerAvatar {
 
     @Id
     @Column(name = "avatar_id")
-    public int getAvatarId() {
+    public Long getAvatarId() {
         return avatarId;
     }
 
-    public void setAvatarId(int avatarId) {
+    public void setAvatarId(Long avatarId) {
         this.avatarId = avatarId;
     }
 
