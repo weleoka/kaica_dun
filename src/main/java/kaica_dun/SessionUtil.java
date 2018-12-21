@@ -18,12 +18,9 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 public class SessionUtil {
     private final Logger logger = LogManager.getLogger();
 
-    // Test fetching the main logger.
-    private final Logger logger_main = LogManager.getLogger("MAIN");
-
     private static SessionFactory sessionFactory;
 
-    protected void setUpSessionFactory() throws Exception {
+    void setUpSessionFactory() throws ExceptionInInitializerError {
         // A SessionFactory is set up once for an application!
         final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                 .configure() // configures settings from hibernate.cfg.xml
@@ -42,7 +39,7 @@ public class SessionUtil {
         }
     }
 
-    protected void closeDownSessionFactory() {
+    void closeDownSessionFactory() {
         if ( sessionFactory != null ) {
             sessionFactory.close();
         }
@@ -53,7 +50,7 @@ public class SessionUtil {
      *
      * @return
      */
-    public Session getCurrentSession() {
+    Session getCurrentSession() {
         Session session;
 
         try {
@@ -61,7 +58,6 @@ public class SessionUtil {
 
         } catch (HibernateException e) {
             this.logger.info("No current session available. Staring a new one.");
-            this.logger_main.info("This is the main logger again.");
             session = sessionFactory.openSession();
         }
 

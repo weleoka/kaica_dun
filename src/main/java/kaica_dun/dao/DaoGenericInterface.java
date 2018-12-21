@@ -6,7 +6,7 @@ import java.io.Serializable;
 /**
  * An interface shared by all business data access objects.
  * It is intended to be used as one interface per persistent entity,
- * with a super interface for common CRUD functionality and that is this.
+ * with a super interface for common CRUD functionality and that is this file.
  *
  * All CRUD (create, read, update, delete) basic data access operations are found in this interface.
  *
@@ -18,6 +18,8 @@ import java.io.Serializable;
  * The findById method takes in an instance of whatever you substitute for ID. Note that whatever
  * type you give for ID must implement Serializable.
  *
+ * http://www.giuseppeurso.eu/en/dao-factory-patterns-with-hibernate/
+ *
  * todo: if the object has changed in its persistant state then checks for that should
  *  be made before the object is updated. Very Important if there are multiple systems
  *  working with the same database.
@@ -27,7 +29,7 @@ import java.io.Serializable;
  */
 
 
-public interface GenericDaoInterface <T, ID extends Serializable> {
+public interface DaoGenericInterface<T, ID extends Serializable> {
 
     /** Persist the newInstance object into database */
     ID create(T newInstance);

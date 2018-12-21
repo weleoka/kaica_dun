@@ -1,13 +1,13 @@
 package kaica_dun.dao;
 
 
-import kaica_dun.entities.Room;
+import kaica_dun.entities_BACKUP.Room;
 
 import java.util.List;
 
 
 public class RoomHibernateDao
-        extends     GenericHibernateDao<Room, Long>
+        extends DaoGenericHibernate<Room, Long>
         implements  RoomDao {
 
 

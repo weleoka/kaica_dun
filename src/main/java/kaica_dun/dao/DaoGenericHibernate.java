@@ -4,7 +4,6 @@ package kaica_dun.dao;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Example;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -21,12 +20,12 @@ import java.util.List;
  *
  * A DAO should not control transactions or the Session scope.
  */
-public abstract class GenericHibernateDao<T, ID extends Serializable> implements GenericDaoInterface<T, ID> {
+public abstract class DaoGenericHibernate<T, ID extends Serializable> implements DaoGenericInterface<T, ID> {
 
     private Class<T> persistentClass;
     private Session session;
 
-    public GenericHibernateDao() {
+    public DaoGenericHibernate() {
         this.persistentClass = (Class<T>) ((ParameterizedType) getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[0];
     }

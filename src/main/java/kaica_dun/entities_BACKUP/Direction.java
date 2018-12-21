@@ -1,4 +1,4 @@
-package kaica_dun.entities;
+package kaica_dun.entities_BACKUP;
 
 /**
  * Clockwise representation of the four directions with a string for printing and a number for basic algebra.

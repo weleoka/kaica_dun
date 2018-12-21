@@ -5,7 +5,7 @@ import kaica_dun.SessionUtil;
 import org.hibernate.Session;
 
 
-public class DaoHibernateFactory extends DaoFactory {
+public class DaoFactoryHibernate extends DaoFactory {
 
     /**
      *
@@ -13,10 +13,10 @@ public class DaoHibernateFactory extends DaoFactory {
      * @param daoClass
      * @return
      */
-    private GenericHibernateDao instantiateDao(Class daoClass) {
+    private DaoGenericHibernate instantiateDao(Class daoClass) {
 
         try {
-            GenericHibernateDao dao = (GenericHibernateDao)daoClass.getConstructor().newInstance();
+            DaoGenericHibernate dao = (DaoGenericHibernate)daoClass.getConstructor().newInstance();
             dao.setSession(getCurrentSession());
 
             return dao;

@@ -9,7 +9,7 @@ public abstract class DaoFactory {
      * propagation (CurrentSessionContext), thread-bound or transaction-bound,
      * and transaction scoped.
      */
-    public static final Class HIBERNATE = DaoHibernateFactory.class;
+    public static final Class HIBERNATE = DaoFactoryHibernate.class;
 
     /**
      * Factory method for instantiation of concrete factories.
