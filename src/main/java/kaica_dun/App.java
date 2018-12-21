@@ -3,9 +3,7 @@
  */
 package kaica_dun;
 
-import kaica_dun.entities.Dungeon;
-import kaica_dun.entities.Player;
-import kaica_dun.entities.makeStaticDungeon;
+import kaica_dun.entities2.TestDb;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,9 +19,12 @@ public class App {
 
         //Dungeon d = msd.makeDungeon();
 
-        TestDb testDb = new TestDb();
+        String[] i = {};
+        TestDb.main(i);
 
-        testDb.testDb();
+        //TestDb testDb = new TestDb();
+
+        //testDb.testDb();
     }
 
 

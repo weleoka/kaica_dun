@@ -16,10 +16,12 @@ public class Monster implements Describable, Lootable {
     @Column(name = "monsterID", updatable = false, nullable = false)
     private Long id;
 
-    //TODO unsure of mapping strategy
-    @OneToOne(optional = false)
-    @PrimaryKeyJoinColumn
-    private Room room;
+    //TODO This should be a table join but currently is simply a non-important column.
+    /*@OneToOne(optional = false)
+    @PrimaryKeyJoinColumn*/
+    @Basic
+    @Column(name = "roomID")
+    private Long roomID;
 
     @Basic
     @Column(name = "armor")
@@ -56,18 +58,18 @@ public class Monster implements Describable, Lootable {
 
 
 
-    public Monster(Room room, int armor, int currHealth, int damage, String description, int maxHealth, String name, String type) {
-        this.room = room;
+    public Monster(Long roomID, int armor, int maxHealth, int currHealth, int damage, String description, String name, String type) {
+        this.roomID = roomID;
         this.armor = armor;
+        this.maxHealth = maxHealth;
         this.currHealth = currHealth;
         this.damage = damage;
         this.description = description;
-        this.maxHealth = maxHealth;
         this.name = name;
         this.type = type;
     }
 
-    public Monster(int armor, int currHealth, int damage, String description, int maxHealth, String name, String type) {
+    public Monster(int armor, int maxHealth, int currHealth, int damage, String description, String name, String type) {
         this.armor = armor;
         this.currHealth = currHealth;
         this.damage = damage;
@@ -87,12 +89,12 @@ public class Monster implements Describable, Lootable {
 
 
 
-    public Room getRoom() {
-        return room;
+    public Long getRoom() {
+        return roomID;
     }
 
-    public void setRoom(Room room) {
-        this.room = room;
+    public void setRoom(Long newRoomID) {
+        this.roomID = newRoomID;
     }
 
 

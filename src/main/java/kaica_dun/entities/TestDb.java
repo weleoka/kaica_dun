@@ -1,5 +1,6 @@
-package kaica_dun;
+package kaica_dun.entities;
 
+import kaica_dun.SessionUtil;
 import kaica_dun.dao.DaoFactory;
 import kaica_dun.dao.RoomDao;
 import kaica_dun.entities.Room;
@@ -13,14 +14,15 @@ import org.hibernate.Transaction;
  */
 public class TestDb {
     private final Logger LOGGER = LogManager.getLogger();
+    Logger l = this.LOGGER; // Convenience formatting for readability.
     private final SessionUtil sessionUtil = new SessionUtil();
 
     public void main(String[] args) throws Exception {
-        testDb();
+        testDb_Room();
     }
 
+
     public Session beginSession() {
-        Logger l = this.LOGGER; // Convenience formatting for readability.
 
         l.debug("Starting new SessionFactory.");
 
@@ -41,20 +43,18 @@ public class TestDb {
      * ID are in the DB as int. Consider changing the ddl to use long int for this??
      *
      */
-    public void testDb()  {
-        Logger l = this.LOGGER; // Convenience formatting for readability.
+    public void testDb_Room() {
+        Session sess = beginSession();
 
         Long roomID = Long.valueOf(1);
 
-        Session sess = beginSession();
+
 
         /// Searching with only Hibernate
         l.debug("Using Hibernate no DAO to search for an entity by ID: " + roomID);
         Room room = (Room) sess.get(Room.class, roomID);
 
         l.debug("Room found: " + room.toString());
-
-
 
         /// Searching with the DAO process
         l.debug("Starting up a DAO Factory for Hibernate infrastructure.");
@@ -67,33 +67,10 @@ public class TestDb {
         try {
             Room roomFoundByDao = roomDao.findById(roomID, true);
             l.debug("Found a Room by ID: " + roomFoundByDao.toString());
-        }
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             l.debug("No room found with that ID: " + e);
         }
-
-
-
-
-
-        l.debug("Beginning new transaction in session.");
-        Transaction tr = sess.beginTransaction(); // Open the transaction
-
-        // Set the room id without calling session.save()
-        //l.debug("Changing the value of one of the entity attributes.");
-        //room.setRoomId(999);
-
-        l.debug("Commit the transaction.");
-        tr.commit();    // Close the transaction
-
-        l.debug("Closing the session.");
-        sessionUtil.getCurrentSession().close();    // close the session
-
-        l.debug("Closing the SessionFactory.");
-        sessionUtil.closeDownSessionFactory();   // Close the SessionFactory
-
     }
-
 
     /* This is another example of usage of session and sessionFactory
     public void testBasicUsage() {

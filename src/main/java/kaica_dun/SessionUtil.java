@@ -20,7 +20,10 @@ public class SessionUtil {
 
     private static SessionFactory sessionFactory;
 
-    void setUpSessionFactory() throws ExceptionInInitializerError {
+
+
+
+    public void setUpSessionFactory() throws ExceptionInInitializerError {
         // A SessionFactory is set up once for an application!
         final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                 .configure() // configures settings from hibernate.cfg.xml
@@ -39,18 +42,24 @@ public class SessionUtil {
         }
     }
 
-    void closeDownSessionFactory() {
+
+
+
+    public void closeDownSessionFactory() {
         if ( sessionFactory != null ) {
             sessionFactory.close();
         }
     }
+
+
+
 
     /**
      * Gets the current session. If there is no session set it opens a new one.
      *
      * @return
      */
-    Session getCurrentSession() {
+    public Session getCurrentSession() {
         Session session;
 
         try {
@@ -63,6 +72,9 @@ public class SessionUtil {
 
         return session;
     }
+
+
+
 
     public static SessionFactory getSessionFactory() {
         return sessionFactory;

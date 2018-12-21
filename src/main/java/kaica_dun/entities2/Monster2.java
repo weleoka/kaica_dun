@@ -1,13 +1,10 @@
 package kaica_dun.entities2;
 
-import kaica_dun.interfaces.Describable;
-import kaica_dun.interfaces.Lootable;
-
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "monster2")
+@Table(name = "monster")
 public class Monster2 {
 
     // Field variable declarations and Hibernate annotation scheme
