@@ -36,6 +36,8 @@ lib/
 .idea/**/shelf
 .idea/**/misc.xml
 .idea/**/compiler.xml
+.idea/**/vcs.xml
+.idea/**/encodings.xml
 
 # Generated files
 .idea/**/contentModel.xml
