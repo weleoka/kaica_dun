@@ -16,7 +16,7 @@ public class PlayerAvatar {
 
     protected PlayerAvatar(){}
 
-    @Id
+    @Id @GeneratedValue
     @Column(name = "avatar_id")
     public Long getAvatarId() {
         return avatarId;

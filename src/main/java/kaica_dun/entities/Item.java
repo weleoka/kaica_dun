@@ -13,7 +13,7 @@ public class Item {
 
     protected Item(){}
 
-    @Id
+    @Id @GeneratedValue
     @Column(name = "itemID")
     public Long getItemId() {
         return itemId;

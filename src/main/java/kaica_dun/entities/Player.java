@@ -17,7 +17,7 @@ public class Player {
 
     public Player(){}
 
-    @Id
+    @Id @GeneratedValue
     @Column(name = "playerID")
     public Long getPlayerId() {
         return playerId;

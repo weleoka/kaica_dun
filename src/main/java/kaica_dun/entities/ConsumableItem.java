@@ -11,7 +11,7 @@ public class ConsumableItem {
 
     protected ConsumableItem(){}
 
-    @Id
+    @Id @GeneratedValue
     @Column(name = "itemID")
     public Long getItemId() {
         return itemId;

@@ -20,7 +20,7 @@ public class Monster implements Describable, Lootable {
 
     protected Monster(){}
 
-    @Id
+    @Id @GeneratedValue
     @Column(name = "monsterID")
     public Long getMonsterId() {
         return monsterId;
