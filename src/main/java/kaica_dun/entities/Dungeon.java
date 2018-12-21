@@ -49,7 +49,6 @@ public class Dungeon {
         this.roomRows = roomRows;
         this.roomColumns = roomColumns;
         this.rooms = rooms;
-
     }
 
     public Long getDungeonId() {

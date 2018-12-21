@@ -50,8 +50,16 @@ public class TestDb {
         MonsterFactory monsterFactory = new MonsterFactory();
 
         Monster monster = monsterFactory.makeMonster();
+        Monster monster2 = monsterFactory.makeMonster();
+        Monster monster3 = monsterFactory.makeMonster();
+        Monster monster4 = monsterFactory.makeMonster();
+        Monster monster5 = monsterFactory.makeMonster();
 
         sess.save(monster);     // Question: why cant we tr.save(monster); ????
+        sess.save(monster2);
+        sess.save(monster3);
+        sess.save(monster4);
+        sess.save(monster5);
 
 
         l.debug("Commit the transaction.");
