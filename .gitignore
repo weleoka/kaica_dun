@@ -2,17 +2,20 @@
 # See README for information about setting up the development environment.
 #
 # Ignores:
+# 0) Database specifics due to redentials.
 # 1) files specific for gradle builds
 # 2) lib folder in project root (be aware of this if manually importing dependencies)
 # 3) files that are IDE specific for IntelliJ idea.
-# 4) the recommended gitignor from github java type.
+# 4) the recommended gitignore from github java type.
 
+# 5) The whole .idea/ folder because its always changing.
+
+# Contains database acces details
 hibernate.cfg.xml
 
-# Ignore Gradle project-specific cache directory
+#1 Ignore Gradle project-specific cache directory and Gradle build output directory
 .gradle
 
-# Ignore Gradle build output directory
 build
 
 

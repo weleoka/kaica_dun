@@ -1,4 +1,4 @@
-package kaica_dun.entities;
+package kaica_dun.entities_BACKUP;
 
 import javax.persistence.*;
 import java.util.*;
