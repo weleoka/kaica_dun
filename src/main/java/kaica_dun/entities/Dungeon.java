@@ -6,7 +6,7 @@ import java.util.*;
 @Entity
 @Table(name = "dungeon")
 public class Dungeon {
-    private int dungeonId;
+    private Long dungeonId;
     private Player player;
     private int roomRows;
     private int roomColumns;
@@ -32,11 +32,11 @@ public class Dungeon {
 
     @Id @GeneratedValue
     @Column(name = "dungeonID")
-    public int getDungeonId() {
+    public Long getDungeonId() {
         return dungeonId;
     }
 
-    public void setDungeonId(int dungeonId) { this.dungeonId = dungeonId; }
+    public void setDungeonId(Long dungeonId) { this.dungeonId = dungeonId; }
 
     @OneToMany(cascade = { CascadeType.PERSIST,
                            CascadeType.MERGE,
@@ -53,6 +53,17 @@ public class Dungeon {
     public void addRoom(Room room) {
         room.setDungeon(this);
         rooms.add(room);
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "playerID", nullable = false, updatable = false, insertable = false)
+    @org.hibernate.annotations.ForeignKey(name = "FK_PLAYER_ID")
+    public Player getPlayer(){
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     //TODO: think about if this(m*n-stuff) is needed or how it can be solved cleaner.

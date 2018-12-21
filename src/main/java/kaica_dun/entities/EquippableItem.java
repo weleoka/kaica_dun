@@ -6,7 +6,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "equippableitem")
 public class EquippableItem {
-    private int itemId;
+    private Long itemId;
     private int slotId;
     private int armor;
     private int damage;
@@ -15,11 +15,11 @@ public class EquippableItem {
 
     @Id
     @Column(name = "itemID")
-    public int getItemId() {
+    public Long getItemId() {
         return itemId;
     }
 
-    public void setItemId(int itemId) {
+    public void setItemId(Long itemId) {
         this.itemId = itemId;
     }
 

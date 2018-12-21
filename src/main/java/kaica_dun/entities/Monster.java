@@ -9,7 +9,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "monster")
 public class Monster implements Describable, Lootable {
-    private int monsterId;
+    private Long monsterId;
     private int armor;
     private int currHealth;
     private int damage;
@@ -22,11 +22,11 @@ public class Monster implements Describable, Lootable {
 
     @Id
     @Column(name = "monsterID")
-    public int getMonsterId() {
+    public Long getMonsterId() {
         return monsterId;
     }
 
-    public void setMonsterId(int monsterId) {
+    public void setMonsterId(Long monsterId) {
         this.monsterId = monsterId;
     }
 

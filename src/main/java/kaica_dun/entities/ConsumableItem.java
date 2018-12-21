@@ -6,18 +6,18 @@ import java.util.Objects;
 @Entity
 @Table(name = "consumableitem")
 public class ConsumableItem {
-    private int itemId;
+    private Long itemId;
     private int uses;
 
     protected ConsumableItem(){}
 
     @Id
     @Column(name = "itemID")
-    public int getItemId() {
+    public Long getItemId() {
         return itemId;
     }
 
-    public void setItemId(int itemId) {
+    public void setItemId(Long itemId) {
         this.itemId = itemId;
     }
 

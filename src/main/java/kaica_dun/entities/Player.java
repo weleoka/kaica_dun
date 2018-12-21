@@ -1,27 +1,29 @@
 package kaica_dun.entities;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "player")
 public class Player {
-    private int playerId;
+    private Long playerId;
     private String playerName;
     private String password;
     private int totalDeaths;
     private int totalScore;
     private int highScore;
+    private List<Dungeon> dungeons;
 
     public Player(){}
 
     @Id
     @Column(name = "playerID")
-    public int getPlayerId() {
+    public Long getPlayerId() {
         return playerId;
     }
 
-    public void setPlayerId(int playerId) {
+    public void setPlayerId(Long playerId) {
         this.playerId = playerId;
     }
 
@@ -87,5 +89,15 @@ public class Player {
 
     public void setHighScore(int highScore) {
         this.highScore = highScore;
+    }
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "playerID", nullable = false)
+    public List<Dungeon> getDungeons() {
+        return this.dungeons;
+    }
+
+    public void setDungeons(List<Dungeon> dungeons) {
+        this.dungeons = dungeons;
     }
 }
