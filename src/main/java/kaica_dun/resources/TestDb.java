@@ -118,7 +118,7 @@ public class TestDb {
         SessionUtil.closeSession();    // close the session
     }
 
-    /* This is another example of usage of session and sessionFactory
+    /* - - - Example 1 - Usage of session and sessionFactory
     public void testBasicUsage() {
         // create a couple of events...
         Session session = sessionFactory.openSession();
@@ -138,5 +138,58 @@ public class TestDb {
         session.getTransaction().commit();
         session.close();
     }
+
+
+
+        // - - - Example 2 - Usage of JPA EntityManager
+        EntityManager em = null;
+
+        // TM is a class bundled with the example code of Hibernate 5 book.
+        UserTransaction tx = TM.getUserTransaction();
+
+        try {
+            tx.begin();
+            em = JPA.createEntityManager();
+
+
+            tx.commit();
+
+        } catch (Exception ex) {
+
+            // Transaction rollback, exception handling
+            // ...
+
+        } finally {
+
+            if (em != null && em.isOpen())
+                em.close(); // You create it, you close it!
+
+        }
+
+
+        // - - - Example 3 - Seting an item to persist
+        Item item = new Item();
+        item.setName("Some Item");
+
+        em.persist(item);
+        Long ITEM_ID = item.getId();
+
+
+### Detecting entity state using the identifier
+Sometimes you need to know whether an entity instance is transient, persistent, or
+detached. An entity instance is in persistent state if EntityManager#contains(e)
+returns true. It’s in transient state if PersistenceUnitUtil#getIdentifier(e)
+returns null. It’s in detached state if it’s not persistent, and Persistence-
+UnitUtil#getIdentifier(e) returns the value of the entity’s identifier property.
+You can get to the PersistenceUnitUtil from the EntityManagerFactory.
+
+There are two issues to look out for. First, be aware that the identifier value may not
+be assigned and available until the persistence context is flushed. Second, Hibernate
+(unlike some other JPA providers) never returns null from Persistence-
+UnitUtil#getIdentifier() if your identifier property is a primitive (a long and not
+a Long).
+
+
+
     */
 }

@@ -7,9 +7,11 @@ This is a dungeon adventure game for the java VM. It uses Java Persistance API v
 
 ## Joblist & QnA
 
-
-todo: put a global annotations file package-info.java file in a sensible place and make sure that it is read by Hibernate.
+todo: enhanced sequence strategy (Hibernate) for auto incrementing primary keys to replace IDENTITY strategy.
+    The current strategy is employed for benefits of direct SQL inserts with DBMS. I.e. PK's are AI by the DBMS not the application. 
+todo: put a global annotations file package-info.java file in a sensible place (maybe `/src/main/resources`) and make sure that it is read by Hibernate.
     This file will make it possible to have globally accessible special queries etc.
+    This file is also the location for the enhanced sequence strategy defenition.
 
 
 Q: How do transactions work in Hibernate. Does a call to Session.save() execute a query directly or will they be batched for execution only after a Transaction.commit() call?
