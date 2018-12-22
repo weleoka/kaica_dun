@@ -1,15 +1,22 @@
 package kaica_dun.resources;
 
+
 import kaica_dun.dao.DaoFactory;
+import kaica_dun.dao.MonsterDao;
 import kaica_dun.dao.RoomDao;
+
+import kaica_dun.entities.Dungeon;
 import kaica_dun.entities.Monster;
+import kaica_dun.entities.Player;
 import kaica_dun.entities.Room;
 import kaica_dun.util.Util;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -23,15 +30,22 @@ public class TestDb {
     // The application logger is set here.
     private static final Logger log = LogManager.getLogger();
 
+
     /**
      * This class is static and can be called directly.
      *
      * @param args              an array of strings of arguments
      */
     public static void main(String[] args) {
-        testDb_Room();
 
+        log.info("MONSTER_CREATION_TEST:");
         testDb_Monster();
+
+        log.info("MONSTER_FINDER_TEST:");
+        testDb_MonsterFinder();
+
+        log.info("DUNGEON_TEST:");
+        testDb_Dungeon();
     }
 
 
@@ -40,9 +54,7 @@ public class TestDb {
      */
     public static void testDb_Monster() {
         Session session = SessionUtil.getSession();
-
-        log.debug("Beginning new transaction in session.");
-        Transaction tr = session.beginTransaction(); // Open the transaction
+        log.debug("Fetched a session.");
 
         // Make 5 monsters - get ready to run!!
         for (int i = 0; i < 4; i++) {
@@ -50,75 +62,75 @@ public class TestDb {
             session.save(monster);     // Question: why cant we tr.save(monster) ?
         }
 
-        // Sleep for a while to see how the transaction is done
-        //      is it in a burst or at each sess.save() call?
-        Util.sleeper(1200);
-
-
-        log.debug("Commit the transaction.");
-        tr.commit();    // Close the transaction
+        Util.sleeper(1200); // Artificial delay
 
         log.debug("Closing the session.");
-        SessionUtil.closeSession();    // close the session
-
-        // Disabled because we dont have to close the session except on program exit.
-        //log.debug("Closing the SessionFactory.");
-        //SessionUtil.closeDownSessionFactory();   // Close the SessionFactory
-
+        SessionUtil.closeSession(session);    // close the session
     }
 
 
     /**
-     *  A test for searching for a room ID using the DAO system.
+     *  A test for searching for a monster using the DAO system.
      */
-    public static void testDb_Room() {
-        Long roomID = Long.valueOf(1);
+    public static void testDb_MonsterFinder() {
+        Long monsterID = 1L;   // L is marks it as long
         Session session = SessionUtil.getSession();
-
-        log.debug("Beginning new transaction in session.");
-        Transaction tr = session.beginTransaction(); // Open the transaction
+        log.debug("Fetched a session.");
 
 
         /// Searching with only Hibernate
-        log.debug("Using Hibernate no DAO to search for an entity by ID: " + roomID);
-        Room room = session.get(Room.class, roomID);
+        log.debug("Using Hibernate no DAO to search for an entity by ID: " + monsterID);
+        Monster monster = session.get(Monster.class, monsterID);
 
-        if (room != null) { // Have to test if this works, am I forgetting something.
-            log.debug("Room found: " + room.toString());
+        if (monster != null) { // Have to test if this works, am I forgetting something.
+            log.debug("Monster found: " + monster.toString());
         }
 
 
         /// Searching with the DAO processes
-        // Many options for DAO's can exist. Select the Hibernate one.
-        log.debug("Using DAO to search for an entity by ID: " + roomID);
+        log.debug("Using DAO to search for an monster by ID: " + monsterID);
         log.debug("Starting up a DAO Factory for Hibernate infrastructure.");
-        DaoFactory daoFactory = DaoFactory.instance(DaoFactory.HIBERNATE);
+        DaoFactory daoFactory = DaoFactory.instance(DaoFactory.HIBERNATE); // Hibernate Dao.
 
-        log.debug("Getting a specific DAO (RoomDao) from Hibernate DAO Factory.");
-        RoomDao roomDao = daoFactory.getRoomDao();
+        log.debug("Getting a specific DAO (MonsterDao) from Hibernate DAO Factory.");
+        MonsterDao monsterDao = daoFactory.getMonsterDao();
 
-        log.debug("Searching for roomID: " + roomID);
-
+        log.debug("Searching for monsterID through DAO: " + monsterID);
         try {
-            Room roomFoundByDao = roomDao.findById(roomID, true);
-            log.debug("Found a Room by ID: " + roomFoundByDao.toString());
+            Monster monsterFoundByDao = monsterDao.findById(monsterID, true);
+            log.debug("Found a Room by ID: " + monsterFoundByDao.toString());
 
         } catch (NullPointerException e) {
-            log.debug("No room found with that ID: " + e);
+            log.debug("No monster found with that ID: " + e);
         }
-
-        // Sleep for a while to see how the transaction is done.
-        Util.sleeper(1200);
-
-
-        log.debug("Commit the transaction.");
-        tr.commit();    // Close the transaction
-
         log.debug("Closing the session.");
-        SessionUtil.closeSession();    // close the session
+        SessionUtil.closeSession(session);    // close the session
     }
 
+
+    /**
+     * Testing creation of static Dungeon
+     */
+    public static void testDb_Dungeon() {
+        Session session = SessionUtil.getSession();
+        log.debug("Fetched a session.");
+
+        List<Dungeon> dl = new ArrayList<Dungeon>();
+        //Make Player
+        Player p = new Player("Carl", "password", dl);
+        // Make static dungeon
+        Dungeon d = new makeStaticDungeon(p).makeDungeon();
+        session.save(d);
+
+        Util.sleeper(1200); // Artificial sleep.
+
+        log.debug("Closing the session.");
+        SessionUtil.closeSession(session);    // close the session
+    }
+}
+
     /* - - - Example 1 - Usage of session and sessionFactory
+
     public void testBasicUsage() {
         // create a couple of events...
         Session session = sessionFactory.openSession();
@@ -192,4 +204,3 @@ a Long).
 
 
     */
-}

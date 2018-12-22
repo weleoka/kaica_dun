@@ -17,6 +17,7 @@ todo: put a global annotations file package-info.java file in a sensible place (
 Q: How do transactions work in Hibernate. Does a call to Session.save() execute a query directly or will they be batched for execution only after a Transaction.commit() call?
 
 Q: Hiberante requirement of a protected default no-arguments constructor. (Can it be public)?
+    // todo: Is for example not Room's constructor supposed to be protected according to Hibernate's standards?
 
 
 Q: How to reduce log4j2 debug output from specific modules/imports

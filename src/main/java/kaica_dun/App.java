@@ -26,8 +26,8 @@ public class App {
 
         // Testing scenarios:
 
-        //TestDb.main(arguments); // Run all the tests.
-        TestDb.testDb_Monster();
+        TestDb.main(arguments); // Run all the tests.
+        //TestDb.testDb_Monster();
         //TestDb.testDb_Room();
     }
 

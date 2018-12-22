@@ -22,18 +22,6 @@ public class Player {
     @Column(name = "password")
     private String password;
 
-    @Basic
-    @Column(name = "totalDeaths")
-    private int totalDeaths;
-
-    @Basic
-    @Column(name = "totalScore")
-    private int totalScore;
-
-    @Basic
-    @Column(name = "highScore")
-    private int highScore;
-
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "playerID", nullable = false)
     private List<Dungeon> dungeons;
@@ -42,7 +30,9 @@ public class Player {
     // Default empty constructor
     public Player(){}
 
+    public Player(String playerName, String password, List<Dungeon> dungeons) {
 
+    }
 
     public Long getPlayerId() {
         return id;
@@ -74,44 +64,13 @@ public class Player {
         return Objects.hash(id, playerName);
     }
 
-
     public String getPassword() {
         return password;
     }
 
-
     public void setPassword(String password) {
         this.password = password;
     }
-
-
-    public int getTotalDeaths() {
-        return totalDeaths;
-    }
-
-
-    public void setTotalDeaths(int totalDeaths) {
-        this.totalDeaths = totalDeaths;
-    }
-
-
-    public int getTotalScore() {
-        return totalScore;
-    }
-
-    public void setTotalScore(int totalScore) {
-        this.totalScore = totalScore;
-    }
-
-
-    public int getHighScore() {
-        return highScore;
-    }
-
-    public void setHighScore(int highScore) {
-        this.highScore = highScore;
-    }
-
 
     public List<Dungeon> getDungeons() {
         return this.dungeons;

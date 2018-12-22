@@ -25,6 +25,16 @@ dependencies {
     // https://mvnrepository.com/artifact/org.hibernate/hibernate-core
     compile group: 'org.hibernate', name: 'hibernate-core', version: '5.4.0.Final'
 
+    // https://mvnrepository.com/artifact/com.github.marcus-nl.btm/btm
+    // Also available at: https://mvnrepository.com/artifact/org.codehaus.btm/btm
+    // The second option has many more users but last uploaded 2013 instead of 2016
+    //compile group: 'com.github.marcus-nl.btm', name: 'btm', version: '3.0.0-mk1'
+
+    // https://mvnrepository.com/artifact/org.testng/testng
+    // Added to test database transactions. Removable later.
+    //testCompile group: 'org.testng', name: 'testng', version: '6.14.3'
+
+
     // If using mySQL change the hibernate.cfg.xml to use the driver and connection url.
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.13'
