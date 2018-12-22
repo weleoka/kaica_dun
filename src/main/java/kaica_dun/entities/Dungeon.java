@@ -13,22 +13,21 @@ public class Dungeon {
     @Column(name = "dungeonID", updatable = false, nullable = false)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "playerID", nullable = false, updatable = false, insertable = false)
-    @org.hibernate.annotations.ForeignKey(name = "FK_PLAYER_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "playerID")
     private Player player;
 
-    @Transient
+    @Basic
+    @Column(name = "room_rows")
     private int roomRows;
 
-    @Transient
+    @Basic
+    @Column(name = "room_columns")
     private int roomColumns;
 
-    @OneToMany(cascade = { CascadeType.PERSIST,
-            CascadeType.MERGE,
-            CascadeType.REMOVE },
-            mappedBy = "dungeon")
-    private List<Room> rooms= new ArrayList<>();
+    @JoinTable(name = "dungeon_room")
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Room> rooms = new ArrayList<Room>();
 
 
     // Default empty constructor

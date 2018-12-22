@@ -1,6 +1,7 @@
 package kaica_dun.entities;
 
 import javax.persistence.*;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,16 +23,17 @@ public class Player {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "playerID", nullable = false)
-    private List<Dungeon> dungeons;
+    @JoinTable(name = "player_dungeon")
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Dungeon> dungeons = new LinkedList<Dungeon>();
 
 
     // Default empty constructor
     public Player(){}
 
-    public Player(String playerName, String password, List<Dungeon> dungeons) {
-
+    public Player(String playerName, String password) {
+        this.playerName = playerName;
+        this.password = password;
     }
 
     public Long getPlayerId() {
@@ -76,7 +78,11 @@ public class Player {
         return this.dungeons;
     }
 
-    public void setDungeons(List<Dungeon> dungeons) {
-        this.dungeons = dungeons;
+    public void addDungeon(Dungeon dungeon) {
+        if (dungeon == null) {
+            throw new IllegalArgumentException("Can't add a null Dungeon.");
+        }
+        this.getDungeons().add(dungeon);
+        dungeon.setPlayer(this);
     }
 }

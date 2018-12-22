@@ -64,8 +64,12 @@ public final class makeStaticDungeon {
         Dungeon dungeon = new Dungeon(player, roomRows, roomColumns, rooms);
         //Referential integrity, make sure the rooms point at the dungeon
         for (Room r : dungeon.getRooms()) {
-            r.setDungeon(dungeon);
+            if (r != null) {
+                r.setDungeon(dungeon);
+            }
         }
         return dungeon;
     }
+
+    public Player getPlayer() { return this.player; }
 }

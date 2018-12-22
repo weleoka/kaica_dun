@@ -30,7 +30,6 @@ public class TestDb {
     // The application logger is set here.
     private static final Logger log = LogManager.getLogger();
 
-
     /**
      * This class is static and can be called directly.
      *
@@ -38,11 +37,11 @@ public class TestDb {
      */
     public static void main(String[] args) {
 
-        log.info("MONSTER_CREATION_TEST:");
-        testDb_Monster();
+        //log.info("MONSTER_CREATION_TEST:");
+        //testDb_Monster();
 
-        log.info("MONSTER_FINDER_TEST:");
-        testDb_MonsterFinder();
+        //log.info("MONSTER_FINDER_TEST:");
+        //testDb_MonsterFinder();
 
         log.info("DUNGEON_TEST:");
         testDb_Dungeon();
@@ -115,17 +114,39 @@ public class TestDb {
         Session session = SessionUtil.getSession();
         log.debug("Fetched a session.");
 
-        List<Dungeon> dl = new ArrayList<Dungeon>();
+
         //Make Player
-        Player p = new Player("Carl", "password", dl);
+        log.info("making Player...");
+        Util.sleeper(1200);
+        Player carl = new Player("carl", "password");
+        session.save(carl);
+        log.info(carl.getPlayerName() + " " + carl.getPlayerId().toString());
+
+        log.debug("Closing the session.");
+        SessionUtil.closeSession(session);    // close the session
+
+
+        Session session2 = SessionUtil.getSession();
+        log.debug("Fetched a session.");
+
         // Make static dungeon
-        Dungeon d = new makeStaticDungeon(p).makeDungeon();
+        log.info("making Dungeon...");
+        Util.sleeper(1200);
+        makeStaticDungeon msd = new makeStaticDungeon(carl);
+        log.info("playername of makeStaticDungeon");
+        log.info(msd.getPlayer().getPlayerName());
+        Util.sleeper(1200);
+        Dungeon d = msd.makeDungeon();
+        log.info("playername of the Player that owns Dungeon: ");
+        log.info(d.getPlayer().getPlayerName());
+        Util.sleeper(1200);
         session.save(d);
 
         Util.sleeper(1200); // Artificial sleep.
 
         log.debug("Closing the session.");
-        SessionUtil.closeSession(session);    // close the session
+        SessionUtil.closeSession(session2);    // close the session
+
     }
 }
 

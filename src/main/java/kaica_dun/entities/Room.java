@@ -17,7 +17,7 @@ public class Room {
     private Long id;
 
     //Mapping to the dungeon entity that holds the rooms.
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dungeonID", nullable = false, updatable = false)
     private Dungeon dungeon;
 
