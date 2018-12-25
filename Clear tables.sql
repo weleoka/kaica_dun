@@ -1,0 +1,10 @@
+SET FOREIGN_KEY_CHECKS=0;
+
+DELETE FROM dungeon_room;
+DELETE FROM player_dungeon;
+DELETE FROM dungeon;
+DELETE FROM monster;
+DELETE FROM room;
+DELETE FROM player;
+
+SET FOREIGN_KEY_CHECKS=1;

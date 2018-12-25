@@ -5,9 +5,12 @@ import kaica_dun.entities.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 public final class makeStaticDungeon {
     private Player player;
+    private Random rand = new Random();
+    private MonsterFactory mf = new MonsterFactory();
     private int roomRows = 5;
     private int roomColumns = 5;
 
@@ -38,26 +41,32 @@ public final class makeStaticDungeon {
         List<Direction> tmpU = new LinkedList<>();
         tmpU.add(Direction.U);
 
-        //make empty monster list
-        List<Monster> emptyMonsters = new LinkedList<Monster>();
-
         // int roomIndex, Direction incomingDoor, List<Direction> exits, List<Monster> monsters
         // rooms named after their index in the 5x5 matrix.
-        Room r0 = new Room(0, Direction.U, tmpS, emptyMonsters);
+        Room r0 = new Room(0, Direction.U, tmpS, randomMonsterList());
+        updateMonsters(r0);
         rooms.add(0, r0);
-        Room r5 = new Room(5, Direction.N, tmpE, emptyMonsters);
+        Room r5 = new Room(5, Direction.N, tmpE, randomMonsterList());
+        updateMonsters(r5);
         rooms.add(5, r5);
-        Room r6 = new Room(6, Direction.W, tmpE, emptyMonsters);
+        System.out.println(r5.getMonsters().get(0).getRoom().getRoomId());
+        Room r6 = new Room(6, Direction.W, tmpE, randomMonsterList());
+        updateMonsters(r6);
         rooms.add(6, r6);
-        Room r7 = new Room(7, Direction.W, tmpS, emptyMonsters);
+        Room r7 = new Room(7, Direction.W, tmpS, randomMonsterList());
+        updateMonsters(r7);
         rooms.add(7, r7);
-        Room r12 = new Room(12, Direction.N, tmpE, emptyMonsters);
+        Room r12 = new Room(12, Direction.N, tmpE, randomMonsterList());
+        updateMonsters(r12);
         rooms.add(12, r12);
-        Room r13 = new Room(13, Direction.W, tmpW, emptyMonsters);
+        Room r13 = new Room(13, Direction.W, tmpW, randomMonsterList());
+        updateMonsters(r13);
         rooms.add(13, r13);
-        Room r14 = new Room(14, Direction.W, tmpN, emptyMonsters);
+        Room r14 = new Room(14, Direction.W, tmpN, randomMonsterList());
+        updateMonsters(r14);
         rooms.add(14, r14);
-        Room r9 = new Room(9, Direction.S, tmpU, emptyMonsters);
+        Room r9 = new Room(9, Direction.S, tmpU, randomMonsterList());
+        updateMonsters(r9);
         rooms.add(9, r9);
 
         //Player player, int roomRows, int roomColumns, List<Room> rooms
@@ -72,4 +81,21 @@ public final class makeStaticDungeon {
     }
 
     public Player getPlayer() { return this.player; }
+
+    public List<Monster> randomMonsterList() {
+        List<Monster> randomMonsters = new LinkedList<Monster>();
+
+        for (int i = 0; i <= rand.nextInt(4); i++) {
+            randomMonsters.add(mf.makeMonster());
+        }
+        //TODO ADD ROOM TO MONSTER INSTANCES!
+        return randomMonsters;
+    }
+
+    public void updateMonsters(Room r) {
+        for (Monster m : r.getMonsters()) {
+            System.out.println(m.getDescription());
+            m.setRoom(r);
+        }
+    }
 }

@@ -1,10 +1,7 @@
 package kaica_dun.entities;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "room")
@@ -34,8 +31,9 @@ public class Room {
     @Column(name = "directionID")
     private List<Direction> exits;
 
-    @Transient
-    private List<Monster> monsters;
+    //TODO FIX!?
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)    //CascadeType.ALL is possibly bad, check later.
+    private List<Monster> monsters = new LinkedList<Monster>();
 
 
     // Default empty constructor
@@ -109,7 +107,6 @@ public class Room {
         this.dungeon = dungeon;
     }
 
-    //TODO unsure of correct annotation here
     public int getRoomIndex() {
         return roomIndex;
     }
@@ -118,6 +115,18 @@ public class Room {
         this.roomIndex = roomIndex;
     }
 
+    public List<Monster> getMonsters() {
+        return this.monsters;
+    }
+
+    public void setMonsters(List<Monster> monsters) {
+        this.monsters = monsters;
+    }
+
+    public void addMonster(Monster monster) {
+        this.monsters.add(monster);
+        monster.setRoom(this);
+    }
 
     public List<Direction> getExits() {
         return exits;
@@ -127,7 +136,6 @@ public class Room {
         this.exits = exits;
     }
 
-    @Transient
     public Direction getIncomingDoor() {
         return incomingDoor;
     }

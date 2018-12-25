@@ -16,13 +16,6 @@ public class Monster implements Describable, Lootable {
     @Column(name = "monsterID", updatable = false, nullable = false)
     private Long id;
 
-    //TODO This should be a table join but currently is simply a non-important column.
-    /*@OneToOne(optional = false)
-    @PrimaryKeyJoinColumn*/
-    @Basic
-    @Column(name = "roomID")
-    private Long roomID;
-
     @Basic
     @Column(name = "armor")
     private int armor;
@@ -51,6 +44,9 @@ public class Monster implements Describable, Lootable {
     @Column(name = "monster_type")
     private String type;
 
+    @ManyToOne
+    @JoinColumn(name = "roomID", nullable = false, updatable = false)
+    private Room room;
 
 
     // Default empty constructor
@@ -58,23 +54,12 @@ public class Monster implements Describable, Lootable {
 
 
 
-    public Monster(Long roomID, int armor, int maxHealth, int currHealth, int damage, String description, String name, String type) {
-        this.roomID = roomID;
-        this.armor = armor;
-        this.maxHealth = maxHealth;
-        this.currHealth = currHealth;
-        this.damage = damage;
-        this.description = description;
-        this.name = name;
-        this.type = type;
-    }
-
     public Monster(int armor, int maxHealth, int currHealth, int damage, String description, String name, String type) {
         this.armor = armor;
+        this.maxHealth = maxHealth;
         this.currHealth = currHealth;
         this.damage = damage;
         this.description = description;
-        this.maxHealth = maxHealth;
         this.name = name;
         this.type = type;
     }
@@ -89,12 +74,12 @@ public class Monster implements Describable, Lootable {
 
 
 
-    public Long getRoom() {
-        return roomID;
+    public Room getRoom() {
+        return room;
     }
 
-    public void setRoom(Long newRoomID) {
-        this.roomID = newRoomID;
+    public void setRoom(Room room) {
+        this.room = room;
     }
 
 

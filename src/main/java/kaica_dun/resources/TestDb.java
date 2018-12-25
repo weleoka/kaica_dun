@@ -117,35 +117,29 @@ public class TestDb {
 
         //Make Player
         log.info("making Player...");
-        Util.sleeper(1200);
+        Util.sleeper(800);
         Player carl = new Player("carl", "password");
         session.save(carl);
         log.info(carl.getPlayerName() + " " + carl.getPlayerId().toString());
 
-        log.debug("Closing the session.");
-        SessionUtil.closeSession(session);    // close the session
-
-
-        Session session2 = SessionUtil.getSession();
-        log.debug("Fetched a session.");
 
         // Make static dungeon
         log.info("making Dungeon...");
-        Util.sleeper(1200);
+        Util.sleeper(800);
         makeStaticDungeon msd = new makeStaticDungeon(carl);
         log.info("playername of makeStaticDungeon");
         log.info(msd.getPlayer().getPlayerName());
-        Util.sleeper(1200);
+        Util.sleeper(800);
         Dungeon d = msd.makeDungeon();
         log.info("playername of the Player that owns Dungeon: ");
         log.info(d.getPlayer().getPlayerName());
-        Util.sleeper(1200);
+        Util.sleeper(800);
         session.save(d);
 
-        Util.sleeper(1200); // Artificial sleep.
+        Util.sleeper(800); // Artificial sleep.
 
         log.debug("Closing the session.");
-        SessionUtil.closeSession(session2);    // close the session
+        SessionUtil.closeSession(session);    // close the session
 
     }
 }
