@@ -14,6 +14,7 @@ public class Room {
     private Long id;
 
     //Mapping to the dungeon entity that holds the rooms.
+    //TODO Fetchtype? Eager or Lazy? More research.
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dungeonID", nullable = false, updatable = false)
     private Dungeon dungeon;
@@ -31,7 +32,6 @@ public class Room {
     @Column(name = "directionID")
     private List<Direction> exits;
 
-    //TODO FIX!?
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)    //CascadeType.ALL is possibly bad, check later.
     private List<Monster> monsters = new LinkedList<Monster>();
 

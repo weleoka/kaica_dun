@@ -14,7 +14,7 @@ public class Dungeon {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "playerID")
+    @JoinColumn(name = "playerID", updatable = false, nullable = false)
     private Player player;
 
     @Basic
@@ -25,8 +25,7 @@ public class Dungeon {
     @Column(name = "room_columns")
     private int roomColumns;
 
-    @JoinTable(name = "dungeon_room")
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "dungeon", cascade = CascadeType.ALL)
     private List<Room> rooms = new ArrayList<Room>();
 
 

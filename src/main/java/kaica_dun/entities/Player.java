@@ -23,8 +23,7 @@ public class Player {
     @Column(name = "password")
     private String password;
 
-    @JoinTable(name = "player_dungeon")
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
     private List<Dungeon> dungeons = new LinkedList<Dungeon>();
 
 
