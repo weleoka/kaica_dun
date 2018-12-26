@@ -32,16 +32,16 @@ public class Room {
     @Column(name = "directionID")
     private List<Direction> exits;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)    //CascadeType.ALL is possibly bad, check later.
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)    //TODO CascadeType.ALL is possibly bad, check later.
     private List<Monster> monsters = new LinkedList<Monster>();
 
 
     // Default empty constructor
     public Room(){}
 
-
-
     /**
+     * The standard construtor for a room in the dungeon existing on a 2D-matrix. Empty room positions are null valued.
+     *
      * @param dungeon       the dungeon that the Room belongs to
      * @param roomIndex     the index of the Room in the Dungeon-matrix
      * @param incomingDoor  the direction of the door that leads backwards in the dungeon to the starter room
