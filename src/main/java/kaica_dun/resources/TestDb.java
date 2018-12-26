@@ -182,6 +182,7 @@ public class TestDb {
         //saving the persistent PlayerAvatar
         session.save(pa1);
         session.save(pa2);
+        session.save(wep2);
 
         //TODO test to unequipp weapon and update database to see if it works as planned
 
