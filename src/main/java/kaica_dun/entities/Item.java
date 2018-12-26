@@ -22,16 +22,27 @@ public class Item {
     private String description;
 
     @Basic
-    @Column(name = "playerID")
-    private Long playerId;
+    @Column(name = "low_damage")
+    private int lowDamage;
+
+    @Basic
+    @Column(name = "high_damage")
+    private int highDamage;
 
 
-
+    @OneToOne(optional = true)
+    @JoinColumn(name = "fighterID")
+    private PlayerAvatarInherited wielder;
 
     // Default empty constructor
-    protected Item(){}
+    public Item(){}
 
-
+    public Item(String itemName, String description, int lowDamage, int highDamage) {
+        this.itemName = itemName;
+        this.description = description;
+        this.lowDamage = lowDamage;
+        this.highDamage = highDamage;
+    }
 
     public Long getItemId() {
         return id;
@@ -56,13 +67,15 @@ public class Item {
     public void setDescription(String description) {
         this.description = description;
     }
-    public Long getPlayerId() {
-        return playerId;
+
+    public PlayerAvatarInherited getWielder() {
+        return this.wielder;
     }
 
-    public void setPlayerId(Long playerId) {
-        this.playerId = playerId;
+    public void setWielder(PlayerAvatarInherited wielder) {
+        this.wielder = wielder;
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -72,11 +85,14 @@ public class Item {
         return id.equals(that.id) &&
                 Objects.equals(itemName, that.itemName) &&
                 Objects.equals(description, that.description) &&
-                Objects.equals(playerId, that.playerId);
+                lowDamage == that.lowDamage &&
+                highDamage == that.highDamage &&
+                Objects.equals(wielder, that.wielder);
+
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, itemName, description, playerId);
+        return Objects.hash(id, itemName, description, lowDamage, highDamage, wielder);
     }
 }
