@@ -26,8 +26,8 @@ public class Item {
     private int lowDamage;
 
     @Basic
-    @Column(name = "high_damage")
-    private int highDamage;
+    @Column(name = "damage_range")
+    private int damageRange;
 
 
     @OneToOne(optional = true)
@@ -41,7 +41,7 @@ public class Item {
         this.itemName = itemName;
         this.description = description;
         this.lowDamage = lowDamage;
-        this.highDamage = highDamage;
+        this.damageRange = highDamage;
     }
 
     public Long getItemId() {
@@ -86,13 +86,13 @@ public class Item {
                 Objects.equals(itemName, that.itemName) &&
                 Objects.equals(description, that.description) &&
                 lowDamage == that.lowDamage &&
-                highDamage == that.highDamage &&
+                damageRange == that.damageRange &&
                 Objects.equals(wielder, that.wielder);
 
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, itemName, description, lowDamage, highDamage, wielder);
+        return Objects.hash(id, itemName, description, lowDamage, damageRange, wielder);
     }
 }
