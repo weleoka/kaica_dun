@@ -136,6 +136,9 @@ public abstract class Fighter implements Describable {
         this.armor = armor;
     }
 
+    abstract void takeDamage(int damage);
+
+    abstract int dealDamage();
 
     @Override
     public boolean equals(Object o) {

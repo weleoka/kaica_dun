@@ -168,7 +168,7 @@ public class TestDb {
 
 
         //Make Item (weapon PH, needs more inheritance)
-        Item wep1 = new Item("The Smashanizer","Smashing!", 4, 6);
+        Item wep1 = new Item("The Smashanizer","Smashing!", 4, 2);
         //Make item that is not to be equipped to PlayerAvatar to check optionality of OneToOne
         Item wep2 = new Item("Rusty Sword", "Nobody wants to equipp a rusty sword...", 0, 1);
         //Make and item to be equipped immediately through constructor
