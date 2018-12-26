@@ -2,9 +2,8 @@ package kaica_dun.resources;
 
 import kaica_dun.entities.Direction;
 import kaica_dun.entities.Dungeon;
-import kaica_dun.entities.Player;
+import kaica_dun_system.User;
 import kaica_dun.entities.Room;
-import kaica_dun.resources.tmpRoomMaker;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -15,7 +14,7 @@ import java.util.Random;
  * Trying something smarter to make the dungeon, and separating that from the persistence mechanism
  */
 public class tmpDungeonMaker {
-    private Player player;
+    private User user;
     private int roomRows;
     private int roomColumns;
     private int maxRooms;
@@ -23,18 +22,18 @@ public class tmpDungeonMaker {
     private Random rand = new Random();
 
     /**
-     * Create a new dungeon, belonging to a player, that we can then save to the db.
+     * Create a new dungeon, belonging to a user, that we can then save to the db.
      *
      * This class constructs values/datastructures for the parameters of the Dungeon-constructor,
      * which it then calls using those values/datastructures as parameters.
      *
-     * @param player        the Player that the Dungeon belongs to
+     * @param user        the User that the Dungeon belongs to
      * @param roomRows      the number of Room rows in the dungeon matrix
      * @param roomColumns   the number of Room columns in the dungeon matrix
      * @param maxRooms      max number of Rooms in the dungeon, including the start and boss room, excluding null rooms
      */
-    public tmpDungeonMaker(Player player, int roomRows, int roomColumns, int maxRooms){
-        this.player = player;
+    public tmpDungeonMaker(User user, int roomRows, int roomColumns, int maxRooms){
+        this.user = user;
         this.roomRows = roomRows;
         this.roomColumns = roomColumns;
         this.maxRooms = maxRooms;
@@ -82,7 +81,7 @@ public class tmpDungeonMaker {
         //make a Dungeon using the saved parameters
         //TODO Think about this, the Dungeon exists in an invalid state here until the Dungeon references of its Rooms
         // are updated.
-        Dungeon newDungeon = new Dungeon(player, roomRows, roomColumns, rooms);
+        Dungeon newDungeon = new Dungeon(user, roomRows, roomColumns, rooms);
 
         //update the dungeon reference in the rooms of the new dungeon
         for (Room r : newDungeon.getRooms()) {

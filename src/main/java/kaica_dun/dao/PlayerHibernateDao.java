@@ -1,36 +1,36 @@
 package kaica_dun.dao;
 
 
-import kaica_dun.entities.Player;
+import kaica_dun_system.User;
 
 import java.util.List;
 
 
 public class PlayerHibernateDao
-        extends DaoGenericHibernate<Player, Long>
+        extends DaoGenericHibernate<User, Long>
         implements  PlayerDao {
 
 
     @Override
-    public Long create(Player newInstance) {
+    public Long create(User newInstance) {
         return null;
     }
 
     @Override
-    public Player read(Long aLong) {
+    public User read(Long aLong) {
         return null;
     }
 
     @Override
-    public void update(Player transientObject) {
+    public void update(User transientObject) {
     }
 
     @Override
-    public void delete(Player persistentObject) {
+    public void delete(User persistentObject) {
     }
 
     @Override
-    public List<Player> findByExample(Player exampleInstance) {
+    public List<User> findByExample(User exampleInstance) {
         return null;
     }
 }

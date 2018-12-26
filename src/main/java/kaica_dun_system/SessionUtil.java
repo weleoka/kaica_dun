@@ -1,4 +1,4 @@
-package kaica_dun.resources;
+package kaica_dun_system;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

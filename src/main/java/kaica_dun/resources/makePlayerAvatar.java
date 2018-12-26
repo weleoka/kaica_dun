@@ -1,27 +1,21 @@
 package kaica_dun.resources;
 
-import kaica_dun.entities.Dungeon;
-import kaica_dun.entities.Player;
-import kaica_dun.entities.PlayerAvatarInherited;
-import kaica_dun.entities.Room;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import kaica_dun.entities.Avatar;
+import kaica_dun_system.User;
 
 public class makePlayerAvatar {
-    private Player player;
+    private User user;
 
     /**
-     * Create a new dungeon with static structure for testing, belonging to a player, that we can then save to the db.
+     * Create a new dungeon with static structure for testing, belonging to a user, that we can then save to the db.
      *
-     * @param player        the Player that the Dungeon belongs to
+     * @param user        the User that the Dungeon belongs to
      */
-    public makePlayerAvatar(Player player){
-        this.player = player;
+    public makePlayerAvatar(User user){
+        this.user = user;
     }
 
-    public PlayerAvatarInherited makePlayerAvatar() {
+    public Avatar makePlayerAvatar() {
 
         //TODO PH-return
         return null;

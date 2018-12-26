@@ -1,5 +1,7 @@
 package kaica_dun.entities;
 
+import kaica_dun_system.User;
+
 import javax.persistence.*;
 import java.util.*;
 
@@ -15,7 +17,7 @@ public class Dungeon {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "playerID", updatable = false, nullable = false)
-    private Player player;
+    private User user;
 
     @Basic
     @Column(name = "room_rows")
@@ -37,13 +39,13 @@ public class Dungeon {
     /**
      * Constructor to recreate dungeon state from database.
      *
-     * @param player        the player who owns the dungeon
+     * @param user        the user who owns the dungeon
      * @param roomRows      number of rows in the dungeon matrix
      * @param roomColumns   number of columns in the dungeon matrix
      * @param rooms         a list of all rooms in the dungeon, with null-values for empty spaces in the room-matrix
      */
-    public Dungeon(Player player, int roomRows, int roomColumns, List<Room> rooms){
-        this.player = player;
+    public Dungeon(User user, int roomRows, int roomColumns, List<Room> rooms){
+        this.user = user;
         this.roomRows = roomRows;
         this.roomColumns = roomColumns;
         this.rooms = rooms;
@@ -68,12 +70,12 @@ public class Dungeon {
         rooms.add(room);
     }
 
-    public Player getPlayer(){
-        return player;
+    public User getUser(){
+        return user;
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     //TODO: think about if this(m*n-stuff) is needed or how it can be solved cleaner.

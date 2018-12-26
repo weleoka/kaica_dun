@@ -1,4 +1,6 @@
-package kaica_dun.entities;
+package kaica_dun_system;
+
+import kaica_dun.entities.Dungeon;
 
 import javax.persistence.*;
 import java.util.LinkedList;
@@ -6,63 +8,63 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "player")
-public class Player {
+@Table(name = "user")
+public class User {
 
     // Field variable declarations and Hibernate annotation scheme
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "playerID", updatable = false, nullable = false)
+    @Column(name = "userID", updatable = false, nullable = false)
     private Long id;
 
     @Basic
-    @Column(name = "playerName")
-    private String playerName;
+    @Column(name = "user_name")
+    private String userName;
 
     @Basic
     @Column(name = "password")
     private String password;
 
-    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Dungeon> dungeons = new LinkedList<Dungeon>();
 
 
     // Default empty constructor
-    public Player(){}
+    public User(){}
 
-    public Player(String playerName, String password) {
-        this.playerName = playerName;
+    public User(String playerName, String password) {
+        this.userName = playerName;
         this.password = password;
     }
 
-    public Long getPlayerId() {
+    public Long getId() {
         return id;
     }
 
-    public void setPlayerId(Long playerId) {
-        this.id = playerId;
+    public void setId(Long userId) {
+        this.id = userId;
     }
 
-    public String getPlayerName() {
-        return playerName;
+    public String getName() {
+        return userName;
     }
 
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
+    public void setName(String userName) {
+        this.userName = userName;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Player that = (Player) o;
+        User that = (User) o;
         return id.equals(that.id) &&
-                Objects.equals(playerName, that.playerName);
+                Objects.equals(userName, that.userName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, playerName);
+        return Objects.hash(id, userName);
     }
 
     public String getPassword() {
@@ -82,6 +84,6 @@ public class Player {
             throw new IllegalArgumentException("Can't add a null Dungeon.");
         }
         this.getDungeons().add(dungeon);
-        dungeon.setPlayer(this);
+        dungeon.setUser(this);
     }
 }

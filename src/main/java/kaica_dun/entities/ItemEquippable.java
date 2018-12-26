@@ -5,7 +5,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "equippableitem")
-public class EquippableItem {
+public class ItemEquippable {
 
     // Field variable declarations and Hibernate annotation scheme
     @Id
@@ -27,7 +27,7 @@ public class EquippableItem {
 
 
     // Default empty constructor
-    public EquippableItem(){}
+    public ItemEquippable(){}
 
 
     public Long getItemId() {
@@ -66,7 +66,7 @@ public class EquippableItem {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        EquippableItem that = (EquippableItem) o;
+        ItemEquippable that = (ItemEquippable) o;
         return id.equals(that.id) &&
                 slotId == that.slotId &&
                 armor == that.armor &&

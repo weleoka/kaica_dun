@@ -1,8 +1,11 @@
 # The following is the DDL for testing hibernate.
 
 CREATE DATABASE kaica_dun_db;
-CREATE USER 'kaica_dun_db_user'@'localhost' IDENTIFIED BY 'not_available_here';
+CREATE USER 'kaica_dun_db_user'@'localhost' IDENTIFIED BY 'enter112';
 GRANT ALL ON kaica_dun_db.* TO 'kaica_dun_db_user'@'localhost';
+
+ALTER USER 'kaica_dun_db_user'@'localhost' IDENTIFIED BY 'enter112';
+
 
 
 CREATE TABLE `employee` (                                

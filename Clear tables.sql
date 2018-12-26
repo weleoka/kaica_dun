@@ -5,6 +5,6 @@ DELETE FROM player_dungeon;
 DELETE FROM dungeon;
 DELETE FROM monster;
 DELETE FROM room;
-DELETE FROM player;
+DELETE FROM user;
 
 SET FOREIGN_KEY_CHECKS=1;

@@ -9,7 +9,7 @@ import java.util.Objects;
  */
 @Entity
 @DiscriminatorValue("PA")
-public class PlayerAvatarInherited extends Fighter {
+public class Avatar extends Fighter {
 
 
     //TODO Very uncertain about correct cascades here! Think more!
@@ -18,13 +18,13 @@ public class PlayerAvatarInherited extends Fighter {
 
 
     // Default empty constructor
-    public PlayerAvatarInherited(){}
+    public Avatar(){}
 
-    public PlayerAvatarInherited(String name, String description, String type, int currHealth, int maxHealth, int damage, int armor) {
+    public Avatar(String name, String description, String type, int currHealth, int maxHealth, int damage, int armor) {
         super(name, description, type, currHealth, maxHealth, damage, armor);
     }
 
-    public PlayerAvatarInherited(String name, String description, String type, int currHealth, int maxHealth, int damage, int armor, Item equippedWeapon) {
+    public Avatar(String name, String description, String type, int currHealth, int maxHealth, int damage, int armor, Item equippedWeapon) {
         super(name, description, type, currHealth, maxHealth, damage, armor);
         equippWeapon(equippedWeapon);
     }

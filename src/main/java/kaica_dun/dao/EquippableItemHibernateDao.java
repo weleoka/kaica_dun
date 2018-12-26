@@ -1,38 +1,38 @@
 package kaica_dun.dao;
 
 
-import kaica_dun.entities.EquippableItem;
+import kaica_dun.entities.ItemEquippable;
 
 import java.util.List;
 
 
 public class EquippableItemHibernateDao
-        extends DaoGenericHibernate<EquippableItem, Long>
+        extends DaoGenericHibernate<ItemEquippable, Long>
         implements  EquippableItemDao {
 
 
     @Override
-    public Long create(EquippableItem newInstance) {
+    public Long create(ItemEquippable newInstance) {
         return null;
     }
 
     @Override
-    public EquippableItem read(Long aLong) {
+    public ItemEquippable read(Long aLong) {
         return null;
     }
 
     @Override
-    public void update(EquippableItem transientObject) {
+    public void update(ItemEquippable transientObject) {
 
     }
 
     @Override
-    public void delete(EquippableItem persistentObject) {
+    public void delete(ItemEquippable persistentObject) {
 
     }
 
     @Override
-    public List<EquippableItem> findByExample(EquippableItem exampleInstance) {
+    public List<ItemEquippable> findByExample(ItemEquippable exampleInstance) {
         return null;
     }
 }

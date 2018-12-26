@@ -32,7 +32,7 @@ public class Item {
 
     @OneToOne(optional = true)
     @JoinColumn(name = "fighterID")
-    private PlayerAvatarInherited wielder;
+    private Avatar wielder;
 
     // Default empty constructor
     public Item(){}
@@ -68,11 +68,11 @@ public class Item {
         this.description = description;
     }
 
-    public PlayerAvatarInherited getWielder() {
+    public Avatar getWielder() {
         return this.wielder;
     }
 
-    public void setWielder(PlayerAvatarInherited wielder) {
+    public void setWielder(Avatar wielder) {
         this.wielder = wielder;
     }
 

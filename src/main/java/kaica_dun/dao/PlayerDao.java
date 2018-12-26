@@ -1,8 +1,8 @@
 package kaica_dun.dao;
 
-import kaica_dun.entities.Player;
+import kaica_dun_system.User;
 
-public interface PlayerDao extends DaoGenericInterface<Player, Long> {
+public interface PlayerDao extends DaoGenericInterface<User, Long> {
 
 }
 

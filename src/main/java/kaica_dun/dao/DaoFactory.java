@@ -2,8 +2,9 @@ package kaica_dun.dao;
 
 public abstract class DaoFactory {
 
+
     /**
-     * Creates a standalone DAOFactory that returns unmanaged DAO
+     * Creates a standalone DAOFactory that returns un-managed DAO
      * beans for use in any environment Hibernate has been configured
      * for. Uses SessionUtil/SessionFactory and Hibernate context
      * propagation (CurrentSessionContext), thread-bound or transaction-bound,
@@ -11,9 +12,10 @@ public abstract class DaoFactory {
      */
     public static final Class HIBERNATE = DaoFactoryHibernate.class;
 
+
     /**
      * Factory method for instantiation of concrete factories.
-     * This is using reflection to create classes dynamicaly at runtime.
+     * This is using reflection to create classes dynamically at runtime.
      */
     public static DaoFactory instance(Class factory) {
         try {

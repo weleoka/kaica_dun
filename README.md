@@ -77,12 +77,29 @@ This is the logical model for the the application object oriented design (not ne
 ### Logical Database Design
 The primary keys of tables are created by the database server. This means that the annotation `@GeneratedValue(strategy = GenerationType.IDENTITY)` is used. There are significant drawback to this method as it can be substantially slower due to Hibernate not knowing which is the next PK value before the INSERT is made.
 
+#### Entities mappings
+```java
+<mapping class="kaica_dun.entities.Avatar"/>
+<mapping class="kaica_dun.entities.Direction"/>
+<mapping class="kaica_dun.entities.Dungeon"/>
+<mapping class="kaica_dun.entities.Fighter"/>
+<mapping class="kaica_dun.entities.Item"/>
+<mapping class="kaica_dun.entities.ItemConsumable"/>
+<mapping class="kaica_dun.entities.ItemEquippable"/>
+<mapping class="kaica_dun.entities.Monster"/>
+<mapping class="kaica_dun.entities.Room"/>
+
+<mapping class="kaica_dun_system.User"/>
+```
+        
 #### Logical Diagram
 This is a diagram of the logical database model (not necessarily 100% up to date) resulting from forward engineering database tables using Hibernate and JPA.
 Other aspects to the projects logical design are the method for autoincrementing the Primary Key values wich in this case follows the SEQUENCE method where Java will dictate the sequencing.  [Auto-incrementing and Java Persistence API](https://thoughts-on-java.org/jpa-generate-primary-keys/)
 ![ . . . ](model_db_logical.png)
 
 
+
+###
 ### Application logging
 Log can be written to stdout, but also to file `log/app.log`. Settings concerning application logging are specified in `resources/log4j2.xml`.
 

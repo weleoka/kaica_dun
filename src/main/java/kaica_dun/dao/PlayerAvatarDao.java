@@ -1,16 +1,16 @@
 package kaica_dun.dao;
 
 import kaica_dun.entities.Item;
-import kaica_dun.entities.PlayerAvatar;
+import kaica_dun.entities.Avatar;
 
-public interface PlayerAvatarDao extends DaoGenericInterface<PlayerAvatar, Long> {
+public interface PlayerAvatarDao extends DaoGenericInterface<Avatar, Long> {
 
     /**
      *
      * @param currentPlayer
      * @param inventoryItem
      */
-    void moveItem(PlayerAvatar currentPlayer, Item inventoryItem);
+    void moveItem(Avatar currentPlayer, Item inventoryItem);
 }
 
 

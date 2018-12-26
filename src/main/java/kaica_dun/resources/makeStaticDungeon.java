@@ -1,6 +1,7 @@
 package kaica_dun.resources;
 
 import kaica_dun.entities.*;
+import kaica_dun_system.User;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -8,19 +9,19 @@ import java.util.List;
 import java.util.Random;
 
 public final class makeStaticDungeon {
-    private Player player;
+    private User user;
     private Random rand = new Random();
     private MonsterFactory mf = new MonsterFactory();
     private int roomRows = 5;
     private int roomColumns = 5;
 
     /**
-     * Create a new dungeon with static structure for testing, belonging to a player, that we can then save to the db.
+     * Create a new dungeon with static structure for testing, belonging to a user, that we can then save to the db.
      *
-     * @param player        the Player that the Dungeon belongs to
+     * @param user        the User that the Dungeon belongs to
      */
-    public makeStaticDungeon(Player player){
-        this.player = player;
+    public makeStaticDungeon(User user){
+        this.user = user;
     }
 
     public Dungeon makeDungeon() {
@@ -69,8 +70,8 @@ public final class makeStaticDungeon {
         updateMonsters(r9);
         rooms.add(9, r9);
 
-        //Player player, int roomRows, int roomColumns, List<Room> rooms
-        Dungeon dungeon = new Dungeon(player, roomRows, roomColumns, rooms);
+        //User user, int roomRows, int roomColumns, List<Room> rooms
+        Dungeon dungeon = new Dungeon(user, roomRows, roomColumns, rooms);
         //Referential integrity, make sure the rooms point at the dungeon
         for (Room r : dungeon.getRooms()) {
             if (r != null) {
@@ -80,7 +81,7 @@ public final class makeStaticDungeon {
         return dungeon;
     }
 
-    public Player getPlayer() { return this.player; }
+    public User getUser() { return this.user; }
 
     public List<Monster> randomMonsterList() {
         List<Monster> randomMonsters = new LinkedList<Monster>();

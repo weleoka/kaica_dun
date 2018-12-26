@@ -1,8 +1,8 @@
 package kaica_dun.dao;
 
-import kaica_dun.entities.ConsumableItem;
+import kaica_dun.entities.ItemConsumable;
 
-public interface ConsumableItemDao extends DaoGenericInterface<ConsumableItem, Long> {
+public interface ConsumableItemDao extends DaoGenericInterface<ItemConsumable, Long> {
 
 }
 

@@ -3,17 +3,15 @@ package kaica_dun.resources;
 
 import kaica_dun.dao.DaoFactory;
 import kaica_dun.dao.MonsterDao;
-import kaica_dun.dao.RoomDao;
 
 import kaica_dun.entities.*;
 import kaica_dun.util.Util;
 
+import kaica_dun_system.SessionUtil;
+import kaica_dun_system.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -26,6 +24,9 @@ public class TestDb {
 
     // The application logger is set here.
     private static final Logger log = LogManager.getLogger();
+
+
+
 
     /**
      * This class is static and can be called directly.
@@ -40,8 +41,8 @@ public class TestDb {
         //log.info("MONSTER_FINDER_TEST:");
         //testDb_MonsterFinder();
 
-        //log.info("DUNGEON_TEST:");
-        //testDb_Dungeon();
+        log.info("DUNGEON_TEST:");
+        testDb_Dungeon();
 
         log.info("PlayerAvatar and Item test:");
         testDb_EqItem();
@@ -58,7 +59,7 @@ public class TestDb {
         // Make 5 monsters - get ready to run!!
         for (int i = 0; i < 4; i++) {
             Monster monster = MonsterFactory.makeMonster();
-            session.save(monster);     // Question: why cant we tr.save(monster) ?
+            session.save(monster);
         }
 
         Util.sleeper(1200); // Artificial delay
@@ -66,6 +67,8 @@ public class TestDb {
         log.debug("Closing the session.");
         SessionUtil.closeSession(session);    // close the session
     }
+
+
 
 
     /**
@@ -107,6 +110,8 @@ public class TestDb {
     }
 
 
+
+
     /**
      * Testing creation of static Dungeon
      */
@@ -115,12 +120,12 @@ public class TestDb {
         log.debug("Fetched a session.");
 
 
-        //Make Player
-        log.info("making Player...");
+        //Make User
+        log.info("making User...");
         Util.sleeper(800);
-        Player carl = new Player("carl", "password");
+        User carl = new User("carl", "password");
         session.save(carl);
-        log.info(carl.getPlayerName() + " " + carl.getPlayerId().toString());
+        log.info(carl.getName() + " " + carl.getName().toString());
 
 
         // Make static dungeon
@@ -128,11 +133,11 @@ public class TestDb {
         Util.sleeper(800);
         makeStaticDungeon msd = new makeStaticDungeon(carl);
         log.info("playername of makeStaticDungeon");
-        log.info(msd.getPlayer().getPlayerName());
+        log.info(msd.getUser().getName());
         Util.sleeper(800);
         Dungeon d = msd.makeDungeon();
-        log.info("playername of the Player that owns Dungeon: ");
-        log.info(d.getPlayer().getPlayerName());
+        log.info("playername of the User that owns Dungeon: ");
+        log.info(d.getUser().getName());
         Util.sleeper(800);
         session.save(d);
 
@@ -143,20 +148,23 @@ public class TestDb {
 
     }
 
+
+
+
     /**
-     * Testing creation of PlayerAvatarInherited with weapon
+     * Testing creation of Avatar with weapon
      */
     public static void testDb_EqItem() {
         Session session = SessionUtil.getSession();
         log.debug("Fetched a session.");
 
 
-        //Make Player
-        log.info("making Player...");
+        //Make Avatar
+        log.info("Making a new User...");
         Util.sleeper(800);
-        Player kai = new Player("kai", "12345");
+        User kai = new User("kai", "12345");
         session.save(kai);
-        log.info(kai.getPlayerName() + " " + kai.getPlayerId().toString());
+        log.info(kai.getName() + " " + kai.getId().toString());
 
 
         //Make Item (weapon PH, needs more inheritance)
@@ -166,11 +174,11 @@ public class TestDb {
         //Make and item to be equipped immediately through constructor
         Item wep3 = new Item("Sharp Sword", "Ah, much better!", 3, 5);
         //Make static PlayerAvatar without weapon Equipped
-        PlayerAvatarInherited pa1 = new PlayerAvatarInherited("Kai", "Run!", "Player Avatar", 90, 90, 1, 2);
+        Avatar pa1 = new Avatar("Kai", "Run!", "User Avatar", 90, 90, 1, 2);
         //Equip weapon to PlayerAvatar
         pa1.equippWeapon(wep3);
         //Make static PlayerAvatar with weapon Equipped
-        PlayerAvatarInherited pa2 = new PlayerAvatarInherited("KaiWithWeapon", "Oh, yeah!", "Player Avatar", 90, 90, 1, 2, wep1);
+        Avatar pa2 = new Avatar("KaiWithWeapon", "Oh, yeah!", "User Avatar", 90, 90, 1, 2, wep1);
         //saving the persistent PlayerAvatar
         session.save(pa1);
         session.save(pa2);
