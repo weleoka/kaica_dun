@@ -43,8 +43,6 @@ public class PlayerAvatar {
     protected PlayerAvatar(){}
 
 
-
-
     public Long getAvatarId() {
         return id;
     }

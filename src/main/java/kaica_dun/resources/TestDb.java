@@ -5,10 +5,7 @@ import kaica_dun.dao.DaoFactory;
 import kaica_dun.dao.MonsterDao;
 import kaica_dun.dao.RoomDao;
 
-import kaica_dun.entities.Dungeon;
-import kaica_dun.entities.Monster;
-import kaica_dun.entities.Player;
-import kaica_dun.entities.Room;
+import kaica_dun.entities.*;
 import kaica_dun.util.Util;
 
 import org.apache.logging.log4j.LogManager;
@@ -43,8 +40,11 @@ public class TestDb {
         //log.info("MONSTER_FINDER_TEST:");
         //testDb_MonsterFinder();
 
-        log.info("DUNGEON_TEST:");
-        testDb_Dungeon();
+        //log.info("DUNGEON_TEST:");
+        //testDb_Dungeon();
+
+        log.info("PlayerAvatar and Item test:");
+        testDb_EqItem();
     }
 
 
@@ -135,6 +135,47 @@ public class TestDb {
         log.info(d.getPlayer().getPlayerName());
         Util.sleeper(800);
         session.save(d);
+
+        Util.sleeper(800); // Artificial sleep.
+
+        log.debug("Closing the session.");
+        SessionUtil.closeSession(session);    // close the session
+
+    }
+
+    /**
+     * Testing creation of PlayerAvatarInherited with weapon
+     */
+    public static void testDb_EqItem() {
+        Session session = SessionUtil.getSession();
+        log.debug("Fetched a session.");
+
+
+        //Make Player
+        log.info("making Player...");
+        Util.sleeper(800);
+        Player kai = new Player("kai", "12345");
+        session.save(kai);
+        log.info(kai.getPlayerName() + " " + kai.getPlayerId().toString());
+
+
+        //Make Item (weapon PH, needs more inheritance)
+        Item wep1 = new Item("The Smashanizer","Smashing!", 4, 6);
+        //Make item that is not to be equipped to PlayerAvatar to check optionality of OneToOne
+        Item wep2 = new Item("Rusty Sword", "Nobody wants to equipp a rusty sword...", 0, 1);
+        //Make and item to be equipped immediately through constructor
+        Item wep3 = new Item("Sharp Sword", "Ah, much better!", 3, 5);
+        //Make static PlayerAvatar without weapon Equipped
+        PlayerAvatarInherited pa1 = new PlayerAvatarInherited("Kai", "Run!", "Player Avatar", 90, 90, 1, 2);
+        //Equip weapon to PlayerAvatar
+        pa1.equippWeapon(wep3);
+        //Make static PlayerAvatar with weapon Equipped
+        PlayerAvatarInherited pa2 = new PlayerAvatarInherited("KaiWithWeapon", "Oh, yeah!", "Player Avatar", 90, 90, 1, 2, wep1);
+        //saving the persistent PlayerAvatar
+        session.save(pa1);
+        session.save(pa2);
+
+        //TODO test to unequipp weapon and update database to see if it works as planned
 
         Util.sleeper(800); // Artificial sleep.
 
