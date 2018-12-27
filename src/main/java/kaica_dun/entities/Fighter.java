@@ -147,6 +147,8 @@ public abstract class Fighter implements Describable {
 
     abstract int dealDamage();
 
+    abstract void hit(Fighter opponent);
+
 
     // ********************** Common Methods ********************** //
     @Override

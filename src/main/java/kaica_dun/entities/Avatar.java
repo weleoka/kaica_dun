@@ -76,6 +76,7 @@ public class Avatar extends Fighter {
 
 
     // ********************** Accessor Methods ********************** //
+
     public User getUser() {
         return this.user;
     }
@@ -85,8 +86,8 @@ public class Avatar extends Fighter {
     }
 
 
-
     // ********************** Model Methods ********************** //
+
     //TODO change after Item inheritance is done
     //Equipp a weapon in your EquippedWeapon slot
     public void equippWeapon(Item weapon){
@@ -141,9 +142,13 @@ public class Avatar extends Fighter {
         return damage;
     }
 
-
+    @Override
+    public void hit(Fighter opponent){
+        opponent.takeDamage(this.dealDamage());
+    }
 
     // ********************** Common Methods ********************** //
+
     @Override
     public String toString() {
         // User user, String name, String description, String type, int currHealth, int maxHealth, int damage, int armor, Item equippedWeapon

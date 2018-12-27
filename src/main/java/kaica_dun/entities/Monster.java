@@ -21,6 +21,9 @@ public class Monster extends Fighter implements Describable {
         super(name, description, type, currHealth, maxHealth, damage, armor);
     }
 
+
+    // ********************** Accessor Methods ********************** //
+
     public Room getRoom() {
         return room;
     }
@@ -29,13 +32,16 @@ public class Monster extends Fighter implements Describable {
         this.room = room;
     }
 
-
     @Override
     public String getDescription() {
         if(this.getCurrHealth() <= 0) {
             return super.getDescription() + " It's dead.";
         } else { return super.getDescription(); }
     }
+
+
+    // ********************** Model Methods ********************** //
+
 
     //Current health is set to: current health - (the taken damaged reduced by armor)
     @Override
@@ -45,4 +51,9 @@ public class Monster extends Fighter implements Describable {
 
     @Override
     public int dealDamage() { return getDamage(); }
+
+    @Override
+    public void hit(Fighter opponent){
+        opponent.takeDamage(this.dealDamage());
+    }
 }
