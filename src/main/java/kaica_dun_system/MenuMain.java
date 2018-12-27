@@ -145,6 +145,8 @@ public class MenuMain extends Menu {
 
             if (USERCONTROL.createUser(creds[0], creds[1])) {
                 out.println(UI_strings.createUserSuccess);
+                Util.sleeper(700);
+                this.display(); // display the main menu again, could instead go direct to logged in.
 
             } else {
                 out.println(UI_strings.createUserFail);
@@ -153,11 +155,8 @@ public class MenuMain extends Menu {
         } else {
             out.println(UI_strings.userNameExists);
         }
-
         Util.sleeper(700);
-
-        //createSubscription();
-        //MenuLoggedIn.display();
+        this.display();
     }
 
 

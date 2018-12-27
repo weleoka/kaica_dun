@@ -9,35 +9,54 @@ import javax.persistence.Query;
 import java.util.List;
 
 public class GameControl {
+    // Singleton
     private static GameControl ourInstance = new GameControl();
-
     public static GameControl getInstance() {
         return ourInstance;
     }
-
     private GameControl() {}
 
+    // Fields declared
     private static final Logger log = LogManager.getLogger();
     private Session session = SessionUtil.getSession();
+    private Avatar avatar = null;
 
 
+    /**
+     * Uses native SQL.
+     *
+     * todo: sort out compiler warning about unchecked assignment.
+     * @param user a User instance
+     * @return
+     */
     public List<Avatar> fetchAvatarByUser(User user) {
         log.debug("Searching for all Avatars belonging to {}.", user.getName());
 
         Query query = this.session.createSQLQuery(
-                "SELECT * FROM avatar a WHERE a.userID LIKE :userID")
+                "SELECT * FROM fighter avatar WHERE avatar.userID LIKE :userID")
                 .addEntity(Avatar.class)
                 .setParameter("userID", user.getId());
-        List<Avatar> result = query.getResultList(); // List<User> result = query.getResultList();
+        List<Avatar> avatarList = query.getResultList(); // List<User> result = query.getResultList();
 
-        log.debug(result);
+        log.debug("A List of avatars was fetched: {}", avatarList);
 
-        return result;
+        return avatarList;
     }
 
-    public void createNewAvatar(User user) {
-        Avatar avatar = new Avatar(user, "LoggenInMenuAvatarNoWeapon", "Run!", "User Avatar", 90, 90, 1, 2);
+    /**
+     *
+     * @param arr a String[] with name and description
+     * @param user a User instance
+     * @return boolean if success
+     */
+    public boolean createNewAvatar(String[] arr, User user) {
+        Avatar avatar = new Avatar(arr[0], arr[1], user);
+        this.session.save(avatar);
+        return true;
+    }
 
-        session.save(avatar);
+    public void setAvatar(Avatar avatar) {
+        log.debug("An avatar(id:{}) has been set for username '{}'.", avatar.getId(), avatar.getUser().getName());
+        this.avatar = avatar;
     }
 }

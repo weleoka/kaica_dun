@@ -50,21 +50,30 @@ public class UserControl {
      * @param userName a String of the name too look for
      */
     boolean selectUserByUserName(String userName) {
-        log.debug("Searching for user '%s' by name.", userName);
+        log.debug("Searching for user '{}' by name.", userName);
 
         Query query = this.session.createSQLQuery(
                 "SELECT * FROM user u WHERE u.user_name LIKE :userName")
                 .addEntity(User.class)
                 .setParameter("userName", userName);
-        User result = (User) query.getSingleResult(); // List<User> result = query.getResultList();
 
-        this.selectedUser = result;
+        try {
+            User result = (User) query.getSingleResult(); // List<User> result = query.getResultList();
+            this.selectedUser = result;
+            log.debug("Found a user by the name '{}'.", this.selectedUser.getName());
 
-        // Need to use string formatting for logger.
-        log.debug("Found a user by the name '{}'.", this.selectedUser.getName());
+            return true;
 
-        return true;
+        } catch (NoResultException e) {
+            log.debug("No user by that username exists in database.");
 
+        } catch (NullPointerException e) {
+            log.debug("Problem in User object. Attributes not as expected.");
+
+            throw e;
+        }
+
+        return false;
     }
 
 
@@ -146,7 +155,7 @@ public class UserControl {
      */
     boolean loginSelectedUser() {
         User that = this.session.get(User.class, this.getSelectedUserID());
-        log.debug("Comparing passwords: '{}' VS '{}'", this.selectedUser.getId(), that.getId()); //debug line.
+        log.debug("Comparing passwords: '{}' VS '{}'", this.selectedUser.getPassword(), that.getPassword()); //debug line.
 
         if (this.selectedUser.getId().equals(that.getId())) {
 

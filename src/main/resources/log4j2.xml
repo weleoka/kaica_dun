@@ -16,15 +16,21 @@
         </Appender>
     </Appenders>
     <Loggers>
-        <!-- Modify logging levels of noisy Loggers -->
+        <!-- Modify logging levels of Loggers -->
         <!--<Logger name="com.memorynotfound" level="debug"/>-->
         <!--<Logger name="com.mchange.v2.c3p0" level="warn"/>-->
-        <Logger name="org.hibernate" level="warn"/>-->
         <!--<Logger name="org.jboss.ejb3.timerservice.jboss.JBossTimerServiceFactory" level="ERROR"/>-->
         <!--<Logger name="org.hibernate.ejb.Ejb3Configuration" level="ERROR"/>-->
 
+        <!-- SQL statements and parameters -->
+        <Logger name="org.hibernate" level="info"/>
+        <Logger name="org.hibernate.SQL" level="info"/>
+        <Logger name="org.hibernate.type.descriptor.sql" level="info"/>
+        <Logger name="org.hibernate.stat" level="info"/>
         <Root level="debug">
-            <AppenderRef ref="File" />
+
+            <!-- Which appenders to use -->
+            <!--<AppenderRef ref="File" />-->
             <AppenderRef ref="Console" />
         </Root>
     </Loggers>

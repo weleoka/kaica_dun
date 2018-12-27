@@ -13,6 +13,14 @@ import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 
 
+Caused by: java.sql.SQLException: Cannot add or update a child row: a foreign key constraint fails (`kaica_dun_db`.`#sql-32f_60`, CONSTRAINT `FK3pyjrg640hjd7g6d8r5b8hkfv` FOREIGN KEY (`dungeonID`) REFERENCES `dungeon` (`dungeonID`))
+Query is: alter table room add constraint FK3pyjrg640hjd7g6d8r5b8hkfv foreign key (dungeonID) references dungeon (dungeonID)
+
+
+
+
+
+
 /**
  * Sets up the configuration for hibernate and lets the application
  * get current session objects easily.

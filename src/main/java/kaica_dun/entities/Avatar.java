@@ -12,7 +12,6 @@ import java.util.Random;
  * most fields and methods.
  */
 @Entity
-@Table(name = "avatar")
 @DiscriminatorValue("PA")
 public class Avatar extends Fighter {
 
@@ -21,6 +20,7 @@ public class Avatar extends Fighter {
     private User user;
 
     //TODO Very uncertain about correct cascades here! Think more!
+    //http://docs.jboss.org/hibernate/stable/annotations/reference/en/html_single/#entity-hibspec-cascade
     @OneToOne(mappedBy = "wielder", optional = true, cascade = CascadeType.ALL)
     private Item equippedWeapon;
 
@@ -28,21 +28,54 @@ public class Avatar extends Fighter {
     private Item equippedArmor;
 
     @Transient
-    private Random rand;
+    private Random rand;    // todo: randomness only applies to monster generation?
 
-    public Avatar() {}
+    public Avatar() {
+    }
 
+    // Creating a new Avatar from user input with defaults.
+    public Avatar(String name, String description, User user) {
+        setDefaults();
+        this.name = name;
+        this.description = description;
+        this.type = "User Avatar";
+        this.user = user;
+    }
+
+
+    // Creating a new avatar - depreciated?
     public Avatar(User user, String name, String description, String type, int currHealth, int maxHealth, int damage, int armor) {
         super(name, description, type, currHealth, maxHealth, damage, armor);
         this.user = user;
     }
-
+    // Creating a new avatar - depreciated?
     public Avatar(User user, String name, String description, String type, int currHealth, int maxHealth, int damage, int armor, Item equippedWeapon) {
         super(name, description, type, currHealth, maxHealth, damage, armor);
         this.user = user;
         equippWeapon(equippedWeapon);
     }
 
+
+
+    /**
+     * Set the defaults for the Avatar from standard avatar.
+     *
+     * todo: fetch Avatar defaults from store.
+     */
+    private void setDefaults() {
+        this.name = "No name";
+        this.description = "No description";
+        this.type = "No type";
+        this.currHealth = 90;
+        this.maxHealth = currHealth;
+        this.damage = 1;
+        this.armor = 2;
+    }
+
+
+
+
+    // ********************** Accessor Methods ********************** //
     public User getUser() {
         return this.user;
     }
@@ -51,6 +84,10 @@ public class Avatar extends Fighter {
         this.user = user;
     }
 
+
+
+
+    // ********************** Model Methods ********************** //
     //TODO change after Item inheritance is done
     //Equipp a weapon in your EquippedWeapon slot
     public void equippWeapon(Item weapon){
@@ -106,6 +143,8 @@ public class Avatar extends Fighter {
     }
 
 
+
+    // ********************** Common Methods ********************** //
     @Override
     public String toString() {
         // User user, String name, String description, String type, int currHealth, int maxHealth, int damage, int armor, Item equippedWeapon

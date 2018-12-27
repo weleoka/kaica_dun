@@ -7,10 +7,6 @@ This is a dungeon adventure game for the java VM. It uses Java Persistance API v
 
 ## Joblist & QnA
 todo: What is @ManyToOne(fetch = FetchType.LAZY)?
-todo: Discriminator column and uniqe ID column for Avatar?
-todo: Standardise id fields where `this.id` applies to all Entities and `entityId` is the FK column name if
-    referencing the PK, or simply `entity` if field variable is holding `entity` instance.
-todo: Decide upon Entities holding instances of FK referenced Entities or EntityID's.
 
 
 todo: put a global annotations file package-info.java file in a sensible place (maybe `/src/main/resources`) and make sure that it is read by Hibernate.
@@ -18,11 +14,15 @@ todo: put a global annotations file package-info.java file in a sensible place (
     This file is also the location for the enhanced sequence strategy defenition.
 
 
-Q: How do transactions work in Hibernate. Does a call to Session.save() execute a query directly or will they be batched for execution only after a Transaction.commit() call?
+Q: How do transactions work in Hibernate. Does a call to Session.save() execute a query directly 
+    or will they be batched for execution only after a Transaction.commit() call?
 
 Q: Hiberante requirement of a protected default no-arguments constructor. (Can it be public)?
     // todo: Is for example not Room's constructor supposed to be protected according to Hibernate's standards?
 
+
+Q: Discriminator column and uniqe ID column for Avatar?
+A: For faster queries.
 
 Q: How to reduce log4j2 debug output from specific modules/imports
 A:<Logger name="org.hibernate.orm.connections.pooling" level="info"/> specify the package and change the level. 

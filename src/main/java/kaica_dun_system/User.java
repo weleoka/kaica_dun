@@ -32,8 +32,8 @@ public class User {
     // Default empty constructor
     public User(){}
 
-    public User(String playerName, String password) {
-        this.userName = playerName;
+    public User(String userName, String password) {
+        this.userName = userName;
         this.password = password;
     }
 

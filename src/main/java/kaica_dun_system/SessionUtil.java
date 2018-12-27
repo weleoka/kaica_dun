@@ -35,31 +35,53 @@ public class SessionUtil {
 
     private static final SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
 
-    private static final int MAX_PENDING_SESSIONS = 5;
+    private static final int MAX_PENDING_SESSIONS = 4;
     private static List<Session> availableSessions = new ArrayList<Session>();
 
     private static final Logger log = LogManager.getLogger();
 
     public static synchronized Session getSession(){
         Session session = null;
-        if(availableSessions.isEmpty()){
+        int lastIndex = availableSessions.size() - 1;
+
+        if (availableSessions.isEmpty()) {
+            // This is getting a reference to the calling class and is expensive.
+            // This is for debugging how sessions are called for development only.
+            String className = new Exception().getStackTrace()[1].getClassName();
+            log.debug("Opened new session(id: 0) for class: '{}'.", className);
             session = sessionFactory.openSession();
+
         } else {
-            int lastIndex = availableSessions.size() - 1;
+            log.debug("Re-using old session(id: {}).", lastIndex);
             session = availableSessions.get(lastIndex);
             availableSessions.remove(lastIndex);
         }
-        session.beginTransaction();
-        log.debug("Session created.");
+
+        try {
+            session.beginTransaction();
+            log.debug("Started new transaction.");
+
+        } catch (IllegalStateException e) {
+            log.debug("Transaction already exists in session(id: {}). Trying to get it..", lastIndex);
+            session.getTransaction();
+        }
+
         return session;
     }
 
 
-    public static synchronized void closeSession(Session session){
+    public static synchronized void closeSession(Session session) {
+        String className = new Exception().getStackTrace()[1].getClassName();
+
+
         session.getTransaction().commit();
-        if(availableSessions.size() < MAX_PENDING_SESSIONS){
+
+        if (availableSessions.size() <= MAX_PENDING_SESSIONS) {
+            log.debug("Committed transaction for class '{}'. Not closing session.", className);
             availableSessions.add(session);
-        }else{
+
+        } else {
+            log.debug("Committed transaction for class '{}'. Closing session (availableSessions list is full).", className);
             session.close();
         }
     }

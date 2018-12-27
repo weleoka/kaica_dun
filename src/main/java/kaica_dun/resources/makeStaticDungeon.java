@@ -101,7 +101,6 @@ public final class makeStaticDungeon {
 
     public void updateMonsters(Room r) {
         for (Monster m : r.getMonsters()) {
-            System.out.println();
             log.debug("updateMonsters: '{}' to the room '{}'.", m.getDescription(), r.getRoomIndex());
             m.setRoom(r);
         }

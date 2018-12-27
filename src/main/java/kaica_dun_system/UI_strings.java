@@ -21,6 +21,15 @@ public class UI_strings
     public static String loggedInMenu = menuHeader2 + loggedInMenuAlternatives + makeSelectionPrompt;
 
 
+    // Avatar creation
+    public static String promptAvatarName = "Enter a name for your Avatar: ";
+    public static String promptAvatarDescription = "Enter a description of your Avatar: ";
+    public static String newAvatarCreated = "New avatar has been created!";
+
+    // Avatar selection
+    public static String selectYourAvatarHeader = "\n - - - Avatar List - - -";
+    public static String noAvatarAvailable = "You don't have any Avatars to play as. Create a new one.";
+
 
     // User creation
     public static String createUserHeader = "--> Create new user";
@@ -34,8 +43,6 @@ public class UI_strings
     public static String userNotAuthenticated = "Not logged in.";
     public static String userNameFound = "The user was found in the database.";
     public static String userNameNotFound = "The user was not found in the database.";
-    public static String userIDValid = "Användarens ID är giltigt.";
-    public static String userIDInvalid = "Användarens ID är ogiltigt.";
     public static String userNameToPasswordMismatch = "The username and password combination ar incorrect.";
     public static String successfullLogin = "Log-in successful.";
     public static String unsuccessfullLogin = "Log-in failed. Try again.";

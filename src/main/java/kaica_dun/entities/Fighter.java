@@ -1,7 +1,6 @@
 package kaica_dun.entities;
 
 import kaica_dun.interfaces.Describable;
-import kaica_dun.interfaces.Lootable;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -18,40 +17,43 @@ public abstract class Fighter implements Describable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "fighterID", updatable = false, nullable = false)
-    protected Long fighterId;
+    protected Long id;
 
     @Basic
     @Column(name = "fighter_name")
-    private String name;
+    public String name;
 
     @Basic
     @Column(name = "description")
-    private String description;
+    public String description;
 
     @Basic
     @Column(name = "fighter_type")
-    private String type;
+    public String type;
 
     @Basic
     @Column(name = "curr_health")
-    private int currHealth;
+    public int currHealth;
 
     @Basic
     @Column(name = "max_health")
-    private int maxHealth;
+    public int maxHealth;
 
     @Basic
     @Column(name = "damage")
-    private int damage;
+    public int damage;
 
     @Basic
     @Column(name = "armor")
-    private int armor;
+    public int armor;
 
     public Fighter() {}
 
+
     /**
      * The standard constructor for a fighter, which is the superclass of both Monster and Avatar.
+     *
+     * Possibly depreciated as defaults are set by subclasses on creation, or loaded from persistence.
      *
      * @param name          name of the monster/avatar
      * @param description   description of the monster/avatar
@@ -71,14 +73,15 @@ public abstract class Fighter implements Describable {
         this.armor = armor;
     }
 
+
     // ********************** Accessor Methods ********************** //
 
-    public Long getFighterId() {
-        return fighterId;
+    public Long getId() {
+        return id;
     }
 
-    public void setFighterId(Long fighterId) {
-        this.fighterId = fighterId;
+    public void setId(Long fighterId) {
+        this.id = fighterId;
     }
 
     public String getName() {
@@ -137,20 +140,21 @@ public abstract class Fighter implements Describable {
         this.armor = armor;
     }
 
+
     // ********************** Model Methods ********************** //
 
     abstract void takeDamage(int damage);
 
     abstract int dealDamage();
 
-    // ********************** Common Methods ********************** //
 
+    // ********************** Common Methods ********************** //
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Fighter that = (Fighter) o;
-        return fighterId.equals(that.fighterId) &&
+        return id.equals(that.id) &&
                 Objects.equals(name, that.name) &&
                 Objects.equals(description, that.description) &&
                 Objects.equals(type, that.type) &&
@@ -162,6 +166,8 @@ public abstract class Fighter implements Describable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(fighterId, name, description, type, currHealth, maxHealth, damage, armor);
+        return Objects.hash(id, name, description, type, currHealth, maxHealth, damage, armor);
     }
+
+
 }

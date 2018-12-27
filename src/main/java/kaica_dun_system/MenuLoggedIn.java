@@ -56,14 +56,18 @@ public class MenuLoggedIn extends Menu {
 
 
 
-
-
     /**
      * A creating a new avatar to play as.
+     *
+     * arr[0] Name
+     * arr[1] Description
      */
     private void createAvatar() {
-        this.createAvatarPrompt();
-        GAMECONTROL.createNewAvatar(USERCONTROL.getSelectedUser());
+        String[] arr = this.createAvatarPrompt();
+        if (GAMECONTROL.createNewAvatar(arr, USERCONTROL.getSelectedUser())) {
+            out.println(UI_strings.newAvatarCreated);
+        }
+
         this.display(); // Return to Logged in menu prompt.
     }
 
@@ -71,29 +75,71 @@ public class MenuLoggedIn extends Menu {
      * A selecting an existing Avatar to play as.
      */
     private void selectAvatar() {
-        this.selectAvatarPrompt();
+        Avatar tmpAvatar = selectAvatarPrompt();
 
+        if (tmpAvatar != null) {
+            GAMECONTROL.setAvatar(tmpAvatar);
+        }
     }
-
-
 
 
     // Prompts for user choice
-    private void createAvatarPrompt() {
 
+    /**
+     * User input prompt for creating Avatar.
+     * armor, currHealth, damage, description, maxHealth, name, type, equippedArmor, equippedWeapon, user
+     *
+     * arr[0] name
+     * arr[1] description
+     */
+    private String[] createAvatarPrompt() {
+        userInput.nextLine(); // flush the input buffer
+        out.println(UI_strings.promptAvatarName);
+        String name = userInput.nextLine(); // To accept whitespace.
+        out.println(UI_strings.promptAvatarDescription);
+        String description = userInput.nextLine();
+        String[] tmpArr = {name, description};
+
+        return tmpArr;
     }
+
+
     private Avatar selectAvatarPrompt() {
+        int selection;
+        String selectionOptions = "";
         List<Avatar> avatarList = GAMECONTROL.fetchAvatarByUser(USERCONTROL.getSelectedUser());
 
-        for (int i = 0; i < avatarList.size(); i++) {
-            Avatar tmp_avatar = avatarList.get(i);
-            out.println(tmp_avatar.toString());
+        if (avatarList.size() == 0) {
+            out.println(UI_strings.noAvatarAvailable);
+
+            return null;
         }
 
+        for (int i = 0; i < avatarList.size(); i++) {
+            Avatar tmpAvatar = avatarList.get(i);
+            //out.println(tmpAvatar.toString());
+            selectionOptions += String.format("[%s] - %s", i + 1, tmpAvatar.getName()); // plus 1 for readability
+        }
 
+        inputLoop:
+        while (true) {
+            out.println(UI_strings.selectYourAvatarHeader);
+            out.println(selectionOptions);
+            out.println(UI_strings.makeSelectionPrompt);
 
-        Avatar avatar = avatarList.get(0);
-        return avatar;
+            if (userInput.hasNextInt()) {
+                selection = userInput.nextInt() - 1;    // Minus 1 for correct index.
+
+                if (selection > 0 && selection < avatarList.size()) {
+
+                    return avatarList.get(selection);
+
+                } else {
+                    out.println(UI_strings.menuSelectionFailed);
+                }
+                userInput.reset(); // flush the in buffer
+            }
+        }
     }
 
 
