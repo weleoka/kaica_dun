@@ -23,8 +23,9 @@ import org.hibernate.Session;
  */
 public class TestDb {
 
-    // The application logger is set here.
     private static final Logger log = LogManager.getLogger();
+    private static final SessionUtil SESSIONUTIL = SessionUtil.getInstance();
+    private static Session session = SESSIONUTIL.getSession();
 
 
     /**
@@ -55,7 +56,6 @@ public class TestDb {
      * @return user a User instance
      */
     public static User MakeUserTest(int userSelection) {
-        Session session = SessionUtil.getSession();
 
         log.info("------> Making a new User...");
         Util.sleeper(700);
@@ -74,7 +74,7 @@ public class TestDb {
 
         log.info("User '{}' with password '{}' created.", user.getName(), user.getPassword());
         session.save(user);
-        SessionUtil.closeSession(session);
+
         return user;
     }
 
@@ -83,14 +83,12 @@ public class TestDb {
      * Testing creation of monsters..!
      */
     public static void MonsterCreatorTest() {
-        Session session = SessionUtil.getSession();
         log.info("------> MONSTER_CREATION_TEST:");
 
         // Make 5 monsters - get ready to run!!
         for (int i = 0; i < 4; i++) {
             Monster monster = MonsterFactory.makeMonster();
             session.save(monster);
-            SessionUtil.closeSession(session);
         }
 
         Util.sleeper(1200); // Artificial delay
@@ -101,7 +99,6 @@ public class TestDb {
      *  A test for searching for a monster using the DAO system.
      */
     public static void MonsterFinderTest() {
-        Session session = SessionUtil.getSession();
         log.info("------> MONSTER_FINDER_TEST:");
         Long monsterID = 1L;   // L is marks it as long
 
@@ -137,7 +134,6 @@ public class TestDb {
      * Testing creation of static Dungeon
      */
     public static void DungeonCreatorTest(User newUser) {
-        Session session = SessionUtil.getSession();
         log.info("------> DUNGEON_TEST:");
 
         // Make static dungeon
@@ -154,7 +150,6 @@ public class TestDb {
         session.save(d);
 
         Util.sleeper(800); // Artificial sleep.
-        SessionUtil.closeSession(session);
     }
 
 
@@ -162,7 +157,6 @@ public class TestDb {
      * Testing creation of Avatar with weapon
      */
     public static void AvatarEqItemTest(User newUser) {
-        Session session = SessionUtil.getSession();
         log.info("------> PlayerAvatar and Item test:");
 
         //Make Item (weapon PH, needs more inheritance)
@@ -196,8 +190,6 @@ public class TestDb {
         //TODO test to unequipp weapon and update database to see if it works as planned
 
         Util.sleeper(800); // Artificial sleep.
-
-        SessionUtil.closeSession(session);
     }
 
 

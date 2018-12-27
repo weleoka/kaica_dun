@@ -18,7 +18,8 @@ public class GameControl {
 
     // Fields declared
     private static final Logger log = LogManager.getLogger();
-    private Session session = SessionUtil.getSession();
+    private static final SessionUtil SESSIONUTIL = SessionUtil.getInstance();
+    private Session session = SESSIONUTIL.getSession();
     private Avatar avatar = null;
 
 
@@ -42,6 +43,7 @@ public class GameControl {
 
         return avatarList;
     }
+
 
     /**
      *

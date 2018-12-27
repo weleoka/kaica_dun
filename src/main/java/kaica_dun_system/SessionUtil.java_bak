@@ -9,15 +9,33 @@ import org.hibernate.cfg.Configuration;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Currently uses the default JDBC transaction manager system
+ * default via Hibernate. Recommended is to implement a JTA.
+ *
+ * Notes from Java Persistance with Hibernate 2nd Edition.
+ * JTA provides a nice abstraction of the underlying resource’s transaction system, with
+ * the added bonus of distributed system transactions. Many developers still believe
+ * you can only get JTA with components that run in a Java EE application server. Today,
+ * high-quality standalone JTA providers such as Bitronix (used for the example code of
+ * this book) and Atomikos are available and easy to install in any Java environment.
+ * Think of these solutions as JTA-enabled database connection pools.
+ *
+ * You should use JTA whenever you can and avoid proprietary transaction APIs
+ * such as org.hibernate.Transaction or the very limited javax.persistence
+ * .EntityTransaction. These APIs were created at a time when JTA wasn’t readily
+ * available outside of EJB runtime containers.
+ *
+ * The following class is inspired by material from the repository at:
+ * RESTfulGameServer-Hibernate on GitHub.
+ *
+ * https://stackoverflow.com/questions/14411860/why-use-only-one-sessionfactory-object-per-application
+ *
+ * https://docs.jboss.org/hibernate/stable/orm/userguide/html_single/Hibernate_User_Guide.html
+ *
+ */
 public class SessionUtil {
-    private static SessionUtil ourInstance = new SessionUtil();
-
-    public static SessionUtil getInstance() {
-        return ourInstance;
-    }
-
-    private SessionUtil() {
-    }
 
     private static final SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
 
@@ -26,7 +44,7 @@ public class SessionUtil {
 
     private static final Logger log = LogManager.getLogger();
 
-    public synchronized Session getSession(){
+    public static synchronized Session getSession(){
         Session session = null;
         int lastIndex = availableSessions.size() - 1;
 
@@ -56,7 +74,7 @@ public class SessionUtil {
     }
 
 
-    public synchronized void closeSession(Session session) {
+    public static synchronized void closeSession(Session session) {
         String className = new Exception().getStackTrace()[1].getClassName();
 
 

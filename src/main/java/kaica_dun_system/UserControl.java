@@ -21,18 +21,21 @@ import javax.persistence.*;
  *
  */
 public class UserControl {
-    private User selectedUser;  // user object that is subject to operations.
-    private User authenticatedUser; // holds a reference to the user object if isAuthenticated.
-    private static final Logger log = LogManager.getLogger();
-    private Session session = SessionUtil.getSession();
 
+    // Singleton
     private static UserControl ourInstance = new UserControl();
-
     static UserControl getInstance() {
         return ourInstance;
     }
-
     private UserControl() {}
+
+    // Fields declared
+    private static final Logger log = LogManager.getLogger();
+    private static final SessionUtil SESSIONUTIL = SessionUtil.getInstance();
+    private Session session = SESSIONUTIL.getSession();
+
+    private User selectedUser;  // user object that is subject to operations.
+    private User authenticatedUser; // holds a reference to the user object if isAuthenticated.
 
 
     /**

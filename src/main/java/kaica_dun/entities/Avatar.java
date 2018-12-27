@@ -86,7 +86,6 @@ public class Avatar extends Fighter {
 
 
 
-
     // ********************** Model Methods ********************** //
     //TODO change after Item inheritance is done
     //Equipp a weapon in your EquippedWeapon slot
