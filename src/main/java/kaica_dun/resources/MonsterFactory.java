@@ -19,7 +19,7 @@ class MonsterFactory {
         String description = "It's a filthy " + type;
         String name = type;                                 //TODO change for boss monsters
 
-        return new Monster(armor, maxHealth, currHealth, damage, description, name, type);
+        return new Monster(name, description, type, currHealth, maxHealth, damage, armor);
     }
 }
 

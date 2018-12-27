@@ -168,20 +168,26 @@ public class TestDb {
 
 
         //Make Item (weapon PH, needs more inheritance)
-        Item wep1 = new Item("The Smashanizer","Smashing!", 4, 2);
+        Item wep1 = new Item("The Smashanizer","Smashing!", 4, 2,0);
         //Make item that is not to be equipped to PlayerAvatar to check optionality of OneToOne
-        Item wep2 = new Item("Rusty Sword", "Nobody wants to equipp a rusty sword...", 0, 1);
-        //Make and item to be equipped immediately through constructor
-        Item wep3 = new Item("Sharp Sword", "Ah, much better!", 3, 5);
+        Item wep2 = new Item("Rusty Sword", "Nobody wants to equipp a rusty sword...", 0, 1,0);
+        //Make an item to be equipped immediately through constructor
+        Item wep3 = new Item("Sharp Sword", "Ah, much better!", 3, 5,0);
+        //Make an armor to be equipped to Avatar
+        Item arm1 = new Item("Studded Leather", "A full suit of studded leather armor.", 0, 0, 3);
         //Make static PlayerAvatar without weapon Equipped
-        Avatar pa1 = new Avatar("Kai", "Run!", "User Avatar", 90, 90, 1, 2);
+        Avatar pa1 = new Avatar("KaiEquipsWeapon", "Run!", "User Avatar", 90, 90, 1, 2);
         //Equip weapon to PlayerAvatar
         pa1.equippWeapon(wep3);
         //Make static PlayerAvatar with weapon Equipped
-        Avatar pa2 = new Avatar("KaiWithWeapon", "Oh, yeah!", "User Avatar", 90, 90, 1, 2, wep1);
+        Avatar pa2 = new Avatar("KaiWithWeaponEquipsArmor", "Oh, yeah!", "User Avatar", 90, 90, 1, 2, wep1);
+        pa2.equippArmor(arm1);
         //saving the persistent PlayerAvatar
         session.save(pa1);
         session.save(pa2);
+        pa2.takeDamage(13);     //Should set KaiWithWeaponEquipsArmors currHealth to 80(90 - (13 - 3))
+        session.update(pa2);    //Works!
+
         session.save(wep2);
 
         //TODO test to unequipp weapon and update database to see if it works as planned

@@ -42,6 +42,7 @@ lib/
 .idea/**/vcs.xml
 .idea/**/encodings.xml
 .idea/**/dataSources.xml
+.idea/**/sqldialects.xml
 
 # Generated files
 .idea/**/contentModel.xml

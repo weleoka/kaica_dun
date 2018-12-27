@@ -71,6 +71,8 @@ public abstract class Fighter implements Describable {
         this.armor = armor;
     }
 
+    // ********************** Accessor Methods ********************** //
+
     public Long getFighterId() {
         return fighterId;
     }
@@ -87,7 +89,6 @@ public abstract class Fighter implements Describable {
         this.name = name;
     }
 
-    @Override
     public String getDescription() {
         return description;
     }
@@ -136,9 +137,13 @@ public abstract class Fighter implements Describable {
         this.armor = armor;
     }
 
+    // ********************** Model Methods ********************** //
+
     abstract void takeDamage(int damage);
 
     abstract int dealDamage();
+
+    // ********************** Common Methods ********************** //
 
     @Override
     public boolean equals(Object o) {
