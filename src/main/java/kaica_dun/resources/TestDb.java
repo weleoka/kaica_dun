@@ -49,8 +49,8 @@ public class TestDb {
         log.info("User login test");
         //testDb_UserLogin();
 
-        //log.info("PlayerAvatar and Item test:");
-        //testDb_EqItem();
+        log.info("PlayerAvatar and Item test:");
+        testDb_EqItem();
 
 
     }

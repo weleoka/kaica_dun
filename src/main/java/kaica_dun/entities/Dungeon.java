@@ -15,8 +15,8 @@ public class Dungeon {
     @Column(name = "dungeonID", updatable = false, nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user") //, updatable = false, nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "userID", updatable = false, nullable = false)
     private User user;
 
     @Basic

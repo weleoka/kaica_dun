@@ -17,7 +17,7 @@ import java.util.Random;
 public class Avatar extends Fighter {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userID", updatable = false, nullable = false)
+    @JoinColumn(name = "userID", nullable = true, updatable = false)
     private User user;
 
     //TODO Very uncertain about correct cascades here! Think more!
