@@ -26,7 +26,7 @@ public class App {
 
         //User player = new User();
         //makeStaticDungeon msd = new makeStaticDungeon(player);
-        //Dungeon d = msd.makeDungeon();
+        //Dungeon d = msd.buildDungeon();
 
 
         // Testing scenarios:

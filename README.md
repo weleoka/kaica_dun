@@ -6,9 +6,13 @@ This is a dungeon adventure game for the java VM. It uses Java Persistance API v
 
 
 ## Joblist & QnA
+todo: What is @ManyToOne(fetch = FetchType.LAZY)?
+todo: Discriminator column and uniqe ID column for Avatar?
+todo: Standardise id fields where `this.id` applies to all Entities and `entityId` is the FK column name if
+    referencing the PK, or simply `entity` if field variable is holding `entity` instance.
+todo: Decide upon Entities holding instances of FK referenced Entities or EntityID's.
 
-todo: enhanced sequence strategy (Hibernate) for auto incrementing primary keys to replace IDENTITY strategy.
-    The current strategy is employed for benefits of direct SQL inserts with DBMS. I.e. PK's are AI by the DBMS not the application. 
+
 todo: put a global annotations file package-info.java file in a sensible place (maybe `/src/main/resources`) and make sure that it is read by Hibernate.
     This file will make it possible to have globally accessible special queries etc.
     This file is also the location for the enhanced sequence strategy defenition.
@@ -78,7 +82,7 @@ This is the logical model for the the application object oriented design (not ne
 The primary keys of tables are created by the database server. This means that the annotation `@GeneratedValue(strategy = GenerationType.IDENTITY)` is used. There are significant drawback to this method as it can be substantially slower due to Hibernate not knowing which is the next PK value before the INSERT is made.
 
 #### Entities mappings
-```java
+```xml
 <mapping class="kaica_dun.entities.Avatar"/>
 <mapping class="kaica_dun.entities.Direction"/>
 <mapping class="kaica_dun.entities.Dungeon"/>

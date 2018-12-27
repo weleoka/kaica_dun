@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+    <persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+                                 http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+                 version="2.1">
+    <!-- https://thoughts-on-java.org/jpa-persistence-xml/ -->
+
+    <persistence-unit name="my-persistence-unit" transaction-type="RESOURCE_LOCAL">
+
+        <description>Hibernate Tips</description>
+
+        <class>kaica_dun.entities.Direction</class>
+        <class>kaica_dun.entities.Dungeon</class>
+        <class>kaica_dun.entities.Fighter</class>
+        <class>kaica_dun.entities.Item</class>
+        <class>kaica_dun.entities.ItemConsumable</class>
+        <class>kaica_dun.entities.ItemEquippable</class>
+        <class>kaica_dun.entities.Monster</class>
+        <class>kaica_dun.entities.Room</class>
+
+        <class>kaica_dun_system.User</class>
+
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+
+
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL55Dialect" />
+            <property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" />
+            <property name="javax.persistence.jdbc.url" value="jdbc:mariadb://localhost:3306/kaica_dun_db?useLegacyDatetimeCode=false&amp;serverTimezone=UTC" />
+            <property name="javax.persistence.jdbc.user" value="kaica_dun_db_user" />
+            <property name="javax.persistence.jdbc.password" value="enter112" />
+        </properties>
+
+
+
+
+    </persistence-unit>
+
+</persistence>

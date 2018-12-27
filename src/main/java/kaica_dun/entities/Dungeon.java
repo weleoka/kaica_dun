@@ -16,7 +16,7 @@ public class Dungeon {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "playerID", updatable = false, nullable = false)
+    @JoinColumn(name = "user") //, updatable = false, nullable = false)
     private User user;
 
     @Basic
@@ -52,7 +52,7 @@ public class Dungeon {
     }
 
     public Long getDungeonId() {
-        return id;
+        return this.id;
     }
 
     public void setDungeonId(Long dungeonId) { this.id = dungeonId; }
@@ -71,7 +71,7 @@ public class Dungeon {
     }
 
     public User getUser(){
-        return user;
+        return this.user;
     }
 
     public void setUser(User user) {
@@ -81,7 +81,7 @@ public class Dungeon {
     //TODO: think about if this(m*n-stuff) is needed or how it can be solved cleaner.
 
     protected int getRoomRows() {
-        return roomRows;
+        return this.roomRows;
     }
 
     protected void setRoomRows(int roomRows) {
@@ -89,7 +89,7 @@ public class Dungeon {
     }
 
     protected int getRoomColumns() {
-        return roomColumns;
+        return this.roomColumns;
     }
 
     protected void setRoomColumns(int roomColumns) {

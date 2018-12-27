@@ -41,12 +41,12 @@ public class User {
         return id;
     }
 
-    public void setId(Long userId) {
+    private void setId(Long userId) {
         this.id = userId;
     }
 
     public String getName() {
-        return userName;
+        return this.userName;
     }
 
     public void setName(String userName) {
@@ -55,11 +55,17 @@ public class User {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         User that = (User) o;
-        return id.equals(that.id) &&
-                Objects.equals(userName, that.userName);
+
+        return id.equals(that.id) && Objects.equals(userName, that.userName) && password.equals(that.password);
     }
 
     @Override

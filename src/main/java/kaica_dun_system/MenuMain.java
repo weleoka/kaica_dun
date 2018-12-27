@@ -20,7 +20,7 @@ public class MenuMain extends Menu {
      * todo: test the inputLoop breaking and what happens to following switch cases.
      */
 
-    static void display() {
+    public void display() {
         int selection = 0;
 
         inputLoop:
@@ -35,14 +35,16 @@ public class MenuMain extends Menu {
                     case 1:
                         if (loginUser()) {
                             out.println(UI_strings.successfullLogin);
-                            MenuLoggedIn.display();
+                            MenuLoggedIn menuLoggedIn = new MenuLoggedIn();
+                            menuLoggedIn.display();
                             break inputLoop;
+
                         } else {
                             out.println(UI_strings.unsuccessfullLogin);
                             continue;
                         }
 
-                    case 2:
+                    case 2: // Create a new user.
                         createUser();
                         break inputLoop;
 
@@ -96,31 +98,19 @@ public class MenuMain extends Menu {
      *
      * @return boolean
      */
-    private static boolean loginUser() {
+    private boolean loginUser() {
         String[] creds = credentialsPrompt();
 
-        if (USERCONTROL.selectUserByName(creds[0])) // Find user in the db.
-        {
+        if (USERCONTROL.selectUserByUserName(creds[0])) {
             out.println(UI_strings.userNameFound);
 
-            if (true) // Test validity of supplied ID.
-            {
-                out.println(UI_strings.userIDValid);
 
-                if (USERCONTROL.loginSelectedUser(creds[1])) // Test ID and name pair for match in db.
-                {
+            if (USERCONTROL.loginSelectedUser()) {
 
-                    return true;
-
-                } else {
-                    out.println(UI_strings.userNameToIDMissmatch);
-                    Util.sleeper(700);
-
-                    return false;
-                }
+                return true;
 
             } else {
-                out.println(UI_strings.userIDInvalid);
+                out.println(UI_strings.userNameToPasswordMismatch); // todo: change to userNameToPwdMismatch
                 Util.sleeper(700);
 
                 return false;
@@ -139,41 +129,49 @@ public class MenuMain extends Menu {
 
     // - - - New object creation processes - - -
 
+
     /**
      * Registration process for a new user.
+     *
+     * userArr[0] is the userName
+     * userArr[1] is the password
+     *
      */
-    private static void createUser() {
+    private void createUser() {
         out.println(UI_strings.createUserHeader);
         String[] creds = credentialsPrompt();
 
-        if (true) {
+        if (USERCONTROL.checkNewUserName(creds[0])) {
 
             if (USERCONTROL.createUser(creds[0], creds[1])) {
                 out.println(UI_strings.createUserSuccess);
+
             } else {
                 out.println(UI_strings.createUserFail);
             }
+
         } else {
-            out.println(UI_strings.userIDInvalid);
+            out.println(UI_strings.userNameExists);
         }
+
         Util.sleeper(700);
+
         //createSubscription();
-        MenuLoggedIn.display();
+        //MenuLoggedIn.display();
     }
 
 
     /**
      * List all the users in the database.
      */
-    private static void listUsers() {
-        //USERCONTROL.printUserList();
-        MenuMain.display();
+    private void listUsers() {
+        USERCONTROL.printUserList();
     }
 
     /**
      * End the application.
      */
-    private static void quit() {
+    private void quit() {
         out.println(UI_strings.goodbyeString);
         System.exit(0);
     }

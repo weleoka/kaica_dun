@@ -6,34 +6,50 @@ package kaica_dun_system;
 public class UI_strings
 {
     // Menus and selection
-    public static String menuSelectionFailed = "Ogiltigt alternativ";
-    public static String menuHeader = "\n - - - WakeUP Gym - - -";
-    public static String mainMenuAlternatives = "\n1.Logga in\n2.Registrera användare\n9.Avsluta";
-    public static String loggedInMenuAlternatives = "\n1.Boka plats på aktivitet\n2.Hantera abonnemang och medlemskap\n9.Logga ut";
-    public static String makeSelectionPrompt = "\n\nVar god välj ett alternativ:";
+    public static String makeSelectionPrompt = "\n\nMake a selection:";
+    public static String menuSelectionFailed = "Invalid menu choice.";
+    public static String goodbyeString = "\n\nGood bye!.";
+
+    // Main menu
+    public static String menuHeader = "\n - - - Main Menu - - -";
+    public static String mainMenuAlternatives = "\n1. Log in\n2. Register user\n9. Quit";
     public static String mainMenu = menuHeader + mainMenuAlternatives + makeSelectionPrompt;
-    public static String loggedInMenu = menuHeader + loggedInMenuAlternatives + makeSelectionPrompt;
-    public static String goodbyeString = "\n\nHej då, och tack för besöket.";
+
+    // Logged in menu
+    public static String menuHeader2 = "\n - - - User Logged in Menu - - -";
+    public static String loggedInMenuAlternatives = "\n1. New Game\n2. Create Avatar\n9. Log out";
+    public static String loggedInMenu = menuHeader2 + loggedInMenuAlternatives + makeSelectionPrompt;
+
+
 
     // User creation
-    public static String createUserHeader = "--> Skapa Ny Användare";
-    public static String promptUserName = "Skriv användarnamn:";
-    public static String promptUserID = "Skriv användar id (YYMMDD-XXX):";
-    public static String userNameExists = "Användarnamnet finns redan.";
-    public static String userIDExists = "Användarens ID finns redan.";
-    public static String createUserSuccess = "Användaren skapades.";
-    public static String createUserFail = "Något gick fel. Försök igen.";
+    public static String createUserHeader = "--> Create new user";
+    public static String promptUserName = "Enter a username:";
+    public static String promptUserID = "Enter a password:";
+    public static String userNameExists = "The username exists.";
+    public static String createUserSuccess = "Your user has been created.";
+    public static String createUserFail = "Something went wrong, please try again.";
 
     // User authorisation
-    public static String userNotAuthenticated = "Ej inloggad.";
-    public static String userNameFound = "Användaren hittades i databasen.";
-    public static String userNameNotFound = "Användaren hittades inte i databasen.";
+    public static String userNotAuthenticated = "Not logged in.";
+    public static String userNameFound = "The user was found in the database.";
+    public static String userNameNotFound = "The user was not found in the database.";
     public static String userIDValid = "Användarens ID är giltigt.";
     public static String userIDInvalid = "Användarens ID är ogiltigt.";
-    public static String userNameToIDMissmatch = "Användarens Namn och ID är inte ett giltigt par.";
-    public static String successfullLogin = "Log-in lyckades. Välkommen.";
-    public static String unsuccessfullLogin = "Log-in misslyckades. Försök igen.";
-    public static String logoutSuccessfull = "Ni är nu utloggad.";
+    public static String userNameToPasswordMismatch = "The username and password combination ar incorrect.";
+    public static String successfullLogin = "Log-in successful.";
+    public static String unsuccessfullLogin = "Log-in failed. Try again.";
+    public static String logoutSuccessfull = "You are now logged out.";
+
+
+
+
+
+
+
+
+
+
 
     // Activity booking
     public static String userNotActive = "Ni har inte ett giltigt medlemskap.";

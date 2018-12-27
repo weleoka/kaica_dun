@@ -1,5 +1,7 @@
 package kaica_dun_system;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -36,6 +38,8 @@ public class SessionUtil {
     private static final int MAX_PENDING_SESSIONS = 5;
     private static List<Session> availableSessions = new ArrayList<Session>();
 
+    private static final Logger log = LogManager.getLogger();
+
     public static synchronized Session getSession(){
         Session session = null;
         if(availableSessions.isEmpty()){
@@ -46,6 +50,7 @@ public class SessionUtil {
             availableSessions.remove(lastIndex);
         }
         session.beginTransaction();
+        log.debug("Session created.");
         return session;
     }
 

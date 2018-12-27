@@ -1,18 +1,13 @@
 package kaica_dun_system;
 
-import kaica_dun_system.User;
-import org.hibernate.Criteria;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.CriteriaUpdate;
-import javax.persistence.metamodel.Metamodel;
-import java.util.List;
-import java.util.Map;
+
+
 
 /**
  * Currently handling details of reading and writing USer to a string for
@@ -22,72 +17,56 @@ import java.util.Map;
  * userArr[1] is the userID
  * userArr[2] is the status
  *
- * todo: move the to/from database logic to out into User class.
- * todo: pass the User instance to callers?
+ * todo: hash and salt of passwords.
+ *
  */
 public class UserControl {
-    // Fields declared
     private User selectedUser;  // user object that is subject to operations.
     private User authenticatedUser; // holds a reference to the user object if isAuthenticated.
-    Session session = SessionUtil.getSession();
+    private static final Logger log = LogManager.getLogger();
+    private Session session = SessionUtil.getSession();
 
-    // Singleton
     private static UserControl ourInstance = new UserControl();
 
-    public static UserControl getInstance() {
+    static UserControl getInstance() {
         return ourInstance;
     }
 
-    // Constructor
-    private UserControl() {
-    }
+    private UserControl() {}
 
 
     /**
      * Read from storage and find a user by user name.
-     * <p>
+     *
      * If found then set selectedUser to new instance with attributes set.
+     *
+     * https://stackoverflow.com/questions/25440284/fetch-database-records-using-hibernate-without-using-primary-key
+     *
+     * https://www.tutorialspoint.com/hibernate/hibernate_native_sql.htm
+     *
+     * todo: Native SQL makes hibernate database implementation dependent.
+     * todo: Calls Query#getSingleResult and that does not take into account multiple users with same name.
      *
      * @param userName a String of the name too look for
      */
-    public boolean selectUserByName(String userName) {
+    boolean selectUserByUserName(String userName) {
+        log.debug("Searching for user '%s' by name.", userName);
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("my-persistence-unit");
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin(); //You don’t need to start the transaction after you’ve created your EntityManager. But please be aware, that Hibernate will start and commit a transaction for each database operation if there is no active transaction. In most situations, it’s better to start only one transaction. That reduces the load on the database and assures consistent reads for the duration of your transaction.
+        Query query = this.session.createSQLQuery(
+                "SELECT * FROM user u WHERE u.user_name LIKE :userName")
+                .addEntity(User.class)
+                .setParameter("userName", userName);
+        User result = (User) query.getSingleResult(); // List<User> result = query.getResultList();
 
-        // Create CriteriaBuilder
-        CriteriaBuilder builder = session.getCriteriaBuilder();
+        this.selectedUser = result;
 
-        // Create CriteriaQuery
-        CriteriaQuery<User> criteria = builder.createQuery(User.class);
-
-
-        TypedQuery<User> query = em.createQuery("SELECT c FROM user c WHERE user_name = :p", User.class);
-
-        List<User> results = query.getResultList();
-
-        session.close();
-
-        em.getTransaction().commit();
-        em.close();
-
+        // Need to use string formatting for logger.
+        log.debug("Found a user by the name '{}'.", this.selectedUser.getName());
 
         return true;
 
-      /*  User user = session.get(User.class, userName);
-
-        for (String[] userArr : userList) {
-
-            if (userName.equalsIgnoreCase(userArr[0])) {
-                this.selectedUser = new User(userArr);
-
-                return true;
-            }
-        }
-
-        return false;*/
     }
+
 
     /**
      * Read from storage and find a user by user id.
@@ -96,8 +75,8 @@ public class UserControl {
      *
      * @param userID a String of the users id to look for
      */
-    public boolean selectUserByUserID(String userID) {
-        User user = session.get(User.class, userID);
+    boolean selectUserByUserID(String userID) {
+        User user = this.session.get(User.class, userID);
 
         if (user != null) {
             this.selectedUser = user;
@@ -110,58 +89,11 @@ public class UserControl {
 
 
     /**
-     * Update the user in DB
-     */
-    public void updateUser() {
-/*        boolean userFound = false;
-        this.userDB.readCSVFull();
-        String tmpName = this.selectedUser.getName();
-        List<String[]> userList = this.userDB.readCSVFull();
-
-        for (int i = 0; i < userList.size(); i++)
-        {
-            String[] userArr = userList.get(i);
-
-            if (tmpName.equalsIgnoreCase(userArr[0]))
-            {
-                userArr = this.selectedUser.toArray();
-                userList.set(i, userArr);
-                userFound = true;
-                break;
-            }
-        }
-
-        if (userFound)
-        {
-            System.out.println("DEBUG: User found and updated.");
-        }*/
-    }
-
-    /*    *//**
-     * Print the entire user database to stdout.
-     *//*
-    public void printUserList()
-    {
-        List<String[]> userList = this.userDB.readCSVFull();
-
-        for ( String[] user : userList)
-        {
-
-            for (String item : user)
-            {
-                System.out.println(item);
-            }
-        }
-        System.out.println("==========================");
-    }*/
-
-
-    /**
      * Checks if authenticatedUser is set and returns result
      *
      * @return boolean              true if user is set and thus logged in
      */
-    public boolean isAuthenticatedUser() {
+    boolean isAuthenticatedUser() {
 
         if (this.authenticatedUser == null) {
 
@@ -171,56 +103,120 @@ public class UserControl {
         return true;
     }
 
+
     /**
      * return the ID of the selected user
      *
      * @return userID           true if user is set and thus logged in
      */
-    public Long getSelectedUserID() {
+    Long getSelectedUserID() {
         return this.selectedUser.getId();
+    }
+
+    User getSelectedUser() {
+        return this.selectedUser;
+    }
+
+
+    /**
+     * Check if the username is available
+     */
+    boolean checkNewUserName(String userName) {
+
+        if (selectUserByUserName(userName)) {
+            this.selectedUser = null;
+
+            return false;
+        }
+
+        return true;
     }
 
 
     /**
      * setAuthenticated
-     * <p>
+     *
      * The selectedUser variable should already be set before this method is called.
-     * This method implements a check that the supplied UserID matches the stored selectedUser.id.
+     * This method implements a check that the selectedUser in the UserControl is indeed the same
+     * object as is stored in the database.
+     *
+     * todo: The user has already been fetched from database once, this method fetches it again,
+     *  which is probably excessive.
+     * todo: Refactor: move id, name and password checks into user class.
      */
-    public boolean loginSelectedUser(String userID) {
-        //System.out.printf("'%s' VS '%s'", userID, this.selectedUser.getSelectedUserID()); //debug line.
-        if (userID.equals(this.selectedUser.getId())) {
-            this.authenticatedUser = this.selectedUser;
+    boolean loginSelectedUser() {
+        User that = this.session.get(User.class, this.getSelectedUserID());
+        log.debug("Comparing passwords: '{}' VS '{}'", this.selectedUser.getId(), that.getId()); //debug line.
 
-            return true;
+        if (this.selectedUser.getId().equals(that.getId())) {
+
+            if (this.selectedUser.getName().equals(that.getName())) {
+
+                if (this.selectedUser.getPassword().equals(that.getPassword())) {
+                    this.authenticatedUser = this.selectedUser;
+
+                    return true;
+                }
+            }
         }
 
         return false;
     }
 
+
     /**
      * set authenticatedUser to null.
      */
-    public void logoutSelectedUser() {
+    void logoutSelectedUser() {
         this.authenticatedUser = null;
     }
 
 
     /**
      * Create a new user.
-     * <p>
-     * todo: implement checks to make sure no duplicate users can be created.
      *
-     * @param userName a String of the new user name
-     * @param userID   a string of the new user ID
-     * @return boolean              true if user was created
+     * @param userName          a String of the new user name
+     * @param password          a string of the new user ID
+     * @return boolean          true if user was created
      */
-    public boolean createUser(String userName, String userID) {
-        this.selectedUser = new User(userName, userID);
-
+    boolean createUser(String userName, String password) {
+        this.selectedUser = new User(userName, password);
+        this.session.save(this.selectedUser);
 
         return true;
+    }
 
+
+    /**
+     * Print the entire user database to stdout.
+     *
+     * 1) Databases can return different types for COUNT. Long is usually safest.
+     * 2) Count('userID') does not count NULL in Column, whereas COUNT(*) would do.
+     *
+     * todo: Consider fetching objects directly by their ID instead of in the for loop.
+     *  Possible perhaps by storing valid userIds in a List and iterating over that for retrieving.
+     *  Alternatively select all userNames from User table and just print them.
+     *
+     */
+    void printUserList() {
+
+        Query query = this.session.createSQLQuery("SELECT Count('userID') FROM user");
+        Long userCount = (Long) query.getSingleResult();
+
+        for (int id = 0; id < userCount.intValue(); id++) {
+
+            User currentUser = this.session.get(User.class, id);
+
+            try {
+
+                if (currentUser != null) {
+                    System.out.printf("\n%s - UserName: %s", id, currentUser.getName());
+                }
+
+            } catch (IndexOutOfBoundsException e) {
+               log.warn("Index out of bounds: {}", e);
+            }
+        }
     }
 }
 

@@ -7,6 +7,7 @@ import kaica_dun.dao.MonsterDao;
 import kaica_dun.entities.*;
 import kaica_dun.util.Util;
 
+import kaica_dun_system.MenuMain;
 import kaica_dun_system.SessionUtil;
 import kaica_dun_system.User;
 import org.apache.logging.log4j.LogManager;
@@ -24,6 +25,7 @@ public class TestDb {
 
     // The application logger is set here.
     private static final Logger log = LogManager.getLogger();
+    private static Session session = SessionUtil.getSession();
 
 
 
@@ -44,8 +46,13 @@ public class TestDb {
         log.info("DUNGEON_TEST:");
         testDb_Dungeon();
 
-        log.info("PlayerAvatar and Item test:");
-        testDb_EqItem();
+        log.info("User login test");
+        //testDb_UserLogin();
+
+        //log.info("PlayerAvatar and Item test:");
+        //testDb_EqItem();
+
+
     }
 
 
@@ -111,33 +118,50 @@ public class TestDb {
 
 
 
+    /**
+     * Create a new user.
+     * Can be default user, kai or carl.
+     * @param userSelection
+     * @return
+     */
+    public static User makeUser(int userSelection) {
+        log.info("Making a new User...");
+        Util.sleeper(800);
+        User user = new User("no Name", "no Password");
+
+        switch (userSelection) {
+            case 1:
+                user = new User("carl", "password");
+            case 2:
+                user = new User("kai", "12345");
+        }
+
+        log.info("User '{}' created.", user.getName());
+        session.save(user);
+        return user;
+    }
+
+
 
     /**
      * Testing creation of static Dungeon
      */
     public static void testDb_Dungeon() {
-        Session session = SessionUtil.getSession();
+
         log.debug("Fetched a session.");
 
-
-        //Make User
-        log.info("making User...");
-        Util.sleeper(800);
-        User carl = new User("carl", "password");
-        session.save(carl);
-        log.info(carl.getName() + " " + carl.getName().toString());
-
+        User newUser = makeUser(1);
 
         // Make static dungeon
         log.info("making Dungeon...");
         Util.sleeper(800);
-        makeStaticDungeon msd = new makeStaticDungeon(carl);
-        log.info("playername of makeStaticDungeon");
-        log.info(msd.getUser().getName());
+        makeStaticDungeon msd = new makeStaticDungeon(newUser);
+        log.info("User who made makeStaticDungeon: '{}'", msd.getUser().getName());
         Util.sleeper(800);
-        Dungeon d = msd.makeDungeon();
-        log.info("playername of the User that owns Dungeon: ");
-        log.info(d.getUser().getName());
+
+        Dungeon d = msd.buildDungeon();
+        log.info("User that owns Dungeon: {}", d.getUser().getName() );
+
         Util.sleeper(800);
         session.save(d);
 
@@ -145,10 +169,7 @@ public class TestDb {
 
         log.debug("Closing the session.");
         SessionUtil.closeSession(session);    // close the session
-
     }
-
-
 
 
     /**
@@ -158,14 +179,7 @@ public class TestDb {
         Session session = SessionUtil.getSession();
         log.debug("Fetched a session.");
 
-
-        //Make Avatar
-        log.info("Making a new User...");
-        Util.sleeper(800);
-        User kai = new User("kai", "12345");
-        session.save(kai);
-        log.info(kai.getName() + " " + kai.getId().toString());
-
+        User newUser = makeUser(1);
 
         //Make Item (weapon PH, needs more inheritance)
         Item wep1 = new Item("The Smashanizer","Smashing!", 4, 2,0);
@@ -175,13 +189,18 @@ public class TestDb {
         Item wep3 = new Item("Sharp Sword", "Ah, much better!", 3, 5,0);
         //Make an armor to be equipped to Avatar
         Item arm1 = new Item("Studded Leather", "A full suit of studded leather armor.", 0, 0, 3);
+
+
         //Make static PlayerAvatar without weapon Equipped
-        Avatar pa1 = new Avatar("KaiEquipsWeapon", "Run!", "User Avatar", 90, 90, 1, 2);
+        Avatar pa1 = new Avatar(newUser, "KaiEquipsWeapon", "Run!", "User Avatar", 90, 90, 1, 2);
         //Equip weapon to PlayerAvatar
         pa1.equippWeapon(wep3);
+
         //Make static PlayerAvatar with weapon Equipped
-        Avatar pa2 = new Avatar("KaiWithWeaponEquipsArmor", "Oh, yeah!", "User Avatar", 90, 90, 1, 2, wep1);
+        Avatar pa2 = new Avatar(newUser, "KaiWithWeaponEquipsArmor", "Oh, yeah!", "User Avatar", 90, 90, 1, 2, wep1);
         pa2.equippArmor(arm1);
+
+
         //saving the persistent PlayerAvatar
         session.save(pa1);
         session.save(pa2);
@@ -196,7 +215,16 @@ public class TestDb {
 
         log.debug("Closing the session.");
         SessionUtil.closeSession(session);    // close the session
+    }
 
+
+
+    /**
+     * Testing user functionality
+     */
+    public static void testDb_UserLogin() {
+        MenuMain mainMenu = new MenuMain();
+        mainMenu.display();
     }
 }
 
@@ -256,6 +284,11 @@ public class TestDb {
 
         em.persist(item);
         Long ITEM_ID = item.getId();
+
+### session.persist(my_object) Vs. session.save(my_object)
+persist() is well defined. It makes a transient instance persistent. However, it doesn't guarantee that the identifier value will be assigned to the persistent instance immediately, the assignment might happen at flush time. The spec doesn't say that, which is the problem I have with persist().
+persist() also guarantees that it will not execute an INSERT statement if it is called outside of transaction boundaries. This is useful in long-running conversations with an extended Session/persistence context. A method like persist() is required.
+save() does not guarantee the same, it returns an identifier, and if an INSERT has to be executed to get the identifier (e.g. "identity" generator, not "sequence"), this INSERT happens immediately, no matter if you are inside or outside of a transaction. This is not good in a long-running conversation with an extended Session/persistence context.
 
 
 ### Detecting entity state using the identifier

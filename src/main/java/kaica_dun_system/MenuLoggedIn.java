@@ -1,13 +1,14 @@
 package kaica_dun_system;
 
+import kaica_dun.entities.Avatar;
 import kaica_dun.util.Util;
 
+import java.util.List;
+
 import static java.lang.System.out;
-import static kaica_dun_system.UI_strings.mainMenu;
+
 
 public class MenuLoggedIn extends Menu {
-
-
 
     /**
      * Menu displayed to a user when it is authenticated.
@@ -17,12 +18,12 @@ public class MenuLoggedIn extends Menu {
      * (2. Change Subscription)
      * 9. Return to Main Menu
      */
-    static void display() {
+    void display() {
         int selection;
 
         if (!USERCONTROL.isAuthenticatedUser()) {
             out.println(UI_strings.userNotAuthenticated);
-            MenuMain.display();
+            returnToMainMenu();
         }
 
         inputLoop:
@@ -34,34 +35,87 @@ public class MenuLoggedIn extends Menu {
 
                 switch (selection) {
 
-                    case 1:
-
+                    case 1: // Start a new Dungeon game
+                        selectAvatar();
                         continue;
 
-                    case 2:
-
+                    case 2: // Create new Avatar
+                        createAvatar();
                         continue;
 
                     case 9:
-                        logoutUser();
+                        this.logoutUser();
                         break inputLoop;
                 }
             } else {
-                System.out.println(UI_strings.menuSelectionFailed);
+                out.println(UI_strings.menuSelectionFailed);
             }
             userInput.reset(); // flush the in buffer
         }
     }
 
 
+
+
+
+    /**
+     * A creating a new avatar to play as.
+     */
+    private void createAvatar() {
+        this.createAvatarPrompt();
+        GAMECONTROL.createNewAvatar(USERCONTROL.getSelectedUser());
+        this.display(); // Return to Logged in menu prompt.
+    }
+
+    /**
+     * A selecting an existing Avatar to play as.
+     */
+    private void selectAvatar() {
+        this.selectAvatarPrompt();
+
+    }
+
+
+
+
+    // Prompts for user choice
+    private void createAvatarPrompt() {
+
+    }
+    private Avatar selectAvatarPrompt() {
+        List<Avatar> avatarList = GAMECONTROL.fetchAvatarByUser(USERCONTROL.getSelectedUser());
+
+        for (int i = 0; i < avatarList.size(); i++) {
+            Avatar tmp_avatar = avatarList.get(i);
+            out.println(tmp_avatar.toString());
+        }
+
+
+
+        Avatar avatar = avatarList.get(0);
+        return avatar;
+    }
+
+
+
+
+
+    /**
+     * Return to Main Menu.
+     */
+    private void returnToMainMenu() {
+        MenuMain menuMain = new MenuMain();
+        menuMain.display();
+    }
+
+
     /**
      * Steps for logging user out.
      */
-    private static void logoutUser() {
+    private void logoutUser() {
         USERCONTROL.logoutSelectedUser();
         out.println(UI_strings.logoutSuccessfull);
         Util.sleeper(700);
-        MenuMain.display();
+        returnToMainMenu();
     }
-
 }

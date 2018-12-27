@@ -2,6 +2,8 @@ package kaica_dun.resources;
 
 import kaica_dun.entities.*;
 import kaica_dun_system.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -15,6 +17,8 @@ public final class makeStaticDungeon {
     private int roomRows = 5;
     private int roomColumns = 5;
 
+    private static final Logger log = LogManager.getLogger();
+
     /**
      * Create a new dungeon with static structure for testing, belonging to a user, that we can then save to the db.
      *
@@ -24,7 +28,7 @@ public final class makeStaticDungeon {
         this.user = user;
     }
 
-    public Dungeon makeDungeon() {
+    public Dungeon buildDungeon() {
         List<Room> rooms = new ArrayList<Room>();
         //loop for room-list creation, initialised to null.
         for (int i = 0; i < (roomRows * roomColumns); i++) {
@@ -71,7 +75,9 @@ public final class makeStaticDungeon {
         rooms.add(9, r9);
 
         //User user, int roomRows, int roomColumns, List<Room> rooms
-        Dungeon dungeon = new Dungeon(user, roomRows, roomColumns, rooms);
+        log.debug("Starting/building dungeon instance...");
+        Dungeon dungeon = new Dungeon(this.getUser(), roomRows, roomColumns, rooms);
+
         //Referential integrity, make sure the rooms point at the dungeon
         for (Room r : dungeon.getRooms()) {
             if (r != null) {
@@ -95,7 +101,8 @@ public final class makeStaticDungeon {
 
     public void updateMonsters(Room r) {
         for (Monster m : r.getMonsters()) {
-            System.out.println(m.getDescription());
+            System.out.println();
+            log.debug("updateMonsters: '{}' to the room '{}'.", m.getDescription(), r.getRoomIndex());
             m.setRoom(r);
         }
     }

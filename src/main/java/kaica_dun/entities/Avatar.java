@@ -1,5 +1,8 @@
 package kaica_dun.entities;
 
+import kaica_dun.dao.AvatarHibernateDao;
+import kaica_dun_system.User;
+
 import javax.persistence.*;
 import java.util.Objects;
 import java.util.Random;
@@ -9,9 +12,13 @@ import java.util.Random;
  * most fields and methods.
  */
 @Entity
+@Table(name = "avatar")
 @DiscriminatorValue("PA")
 public class Avatar extends Fighter {
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userID", updatable = false, nullable = false)
+    private User user;
 
     //TODO Very uncertain about correct cascades here! Think more!
     @OneToOne(mappedBy = "wielder", optional = true, cascade = CascadeType.ALL)
@@ -23,16 +30,25 @@ public class Avatar extends Fighter {
     @Transient
     private Random rand;
 
-    // Default empty constructor
-    public Avatar(){}
+    public Avatar() {}
 
-    public Avatar(String name, String description, String type, int currHealth, int maxHealth, int damage, int armor) {
+    public Avatar(User user, String name, String description, String type, int currHealth, int maxHealth, int damage, int armor) {
         super(name, description, type, currHealth, maxHealth, damage, armor);
+        this.user = user;
     }
 
-    public Avatar(String name, String description, String type, int currHealth, int maxHealth, int damage, int armor, Item equippedWeapon) {
+    public Avatar(User user, String name, String description, String type, int currHealth, int maxHealth, int damage, int armor, Item equippedWeapon) {
         super(name, description, type, currHealth, maxHealth, damage, armor);
+        this.user = user;
         equippWeapon(equippedWeapon);
+    }
+
+    public User getUser() {
+        return this.user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     //TODO change after Item inheritance is done
@@ -89,6 +105,23 @@ public class Avatar extends Fighter {
         return damage;
     }
 
+
+    @Override
+    public String toString() {
+        // User user, String name, String description, String type, int currHealth, int maxHealth, int damage, int armor, Item equippedWeapon
+        String string = String.format(
+                "\nAvatar:" +
+                        "\nUser: %s" +
+                        "\nAvatar name: %s" +
+                        "\ndescription: %s" +
+                        "\nHealth %s" +
+                        "\nMax Health: %s" +
+                        "\nDamage: %s" +
+                        "\nArmor: %s",
+                user.getName(), this.getName(), this.getDescription(), this.getType(), this.getCurrHealth(), this.getMaxHealth(), this.getDamage(), this.getArmor());
+
+        return string;
+    }
 
 
 
