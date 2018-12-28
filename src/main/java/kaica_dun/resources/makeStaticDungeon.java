@@ -48,29 +48,29 @@ public final class makeStaticDungeon {
 
         // int roomIndex, Direction incomingDoor, List<Direction> exits, List<Monster> monsters
         // rooms named after their index in the 5x5 matrix.
-        Room r0 = new Room(0, Direction.U, tmpS, randomMonsterList());
+        Room r0 = new Room(0, Direction.U, tmpS, MonsterFactory.makeEasyGreenskinGroup());
         updateMonsters(r0);
         rooms.add(0, r0);
-        Room r5 = new Room(5, Direction.N, tmpE, randomMonsterList());
+        Room r5 = new Room(5, Direction.N, tmpE, MonsterFactory.makeEasyGreenskinGroup());
         updateMonsters(r5);
         rooms.add(5, r5);
         System.out.println(r5.getMonsters().get(0).getRoom().getRoomId());
-        Room r6 = new Room(6, Direction.W, tmpE, randomMonsterList());
+        Room r6 = new Room(6, Direction.W, tmpE, MonsterFactory.makeEasyGreenskinGroup());
         updateMonsters(r6);
         rooms.add(6, r6);
-        Room r7 = new Room(7, Direction.W, tmpS, randomMonsterList());
+        Room r7 = new Room(7, Direction.W, tmpS, MonsterFactory.makeEasyGreenskinGroup());
         updateMonsters(r7);
         rooms.add(7, r7);
-        Room r12 = new Room(12, Direction.N, tmpE, randomMonsterList());
+        Room r12 = new Room(12, Direction.N, tmpE, MonsterFactory.makeEasyGreenskinGroup());
         updateMonsters(r12);
         rooms.add(12, r12);
-        Room r13 = new Room(13, Direction.W, tmpW, randomMonsterList());
+        Room r13 = new Room(13, Direction.W, tmpW, MonsterFactory.makeEasyGreenskinGroup());
         updateMonsters(r13);
         rooms.add(13, r13);
-        Room r14 = new Room(14, Direction.W, tmpN, randomMonsterList());
+        Room r14 = new Room(14, Direction.W, tmpN, MonsterFactory.makeEasyGreenskinGroup());
         updateMonsters(r14);
         rooms.add(14, r14);
-        Room r9 = new Room(9, Direction.S, tmpU, randomMonsterList());
+        Room r9 = new Room(9, Direction.S, tmpU, makeSmug());
         updateMonsters(r9);
         rooms.add(9, r9);
 
@@ -89,17 +89,24 @@ public final class makeStaticDungeon {
 
     public User getUser() { return this.user; }
 
-    public List<Monster> randomMonsterList() {
+    private List<Monster> randomMonsterList() {
         List<Monster> randomMonsters = new LinkedList<Monster>();
 
         for (int i = 0; i <= rand.nextInt(4); i++) {
-            randomMonsters.add(mf.makeMonster());
+            randomMonsters.add(mf.makeOrc());
         }
         //TODO ADD ROOM TO MONSTER INSTANCES!
         return randomMonsters;
     }
 
-    public void updateMonsters(Room r) {
+    private List<Monster> makeSmug() {
+        List<Monster> smug = new LinkedList<Monster>();
+        smug.add(MonsterFactory.makeDragonBoss());
+        return smug;
+    }
+
+
+    private void updateMonsters(Room r) {
         for (Monster m : r.getMonsters()) {
             log.debug("updateMonsters: '{}' to the room '{}'.", m.getDescription(), r.getRoomIndex());
             m.setRoom(r);
