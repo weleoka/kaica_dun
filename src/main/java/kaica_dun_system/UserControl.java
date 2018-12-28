@@ -1,12 +1,13 @@
 package kaica_dun_system;
 
+import kaica_dun.dao.DaoFactory;
+import kaica_dun.dao.UserDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import org.hibernate.Session;
 
 import javax.persistence.*;
-
 
 
 /**
@@ -24,9 +25,9 @@ public class UserControl {
 
     // Singleton
     private static UserControl ourInstance = new UserControl();
-    static UserControl getInstance() {
+    public static UserControl getInstance() {
         return ourInstance;
-    }
+    } // Change to package private after testing.
     private UserControl() {}
 
     // Fields declared
@@ -34,17 +35,75 @@ public class UserControl {
     private static final SessionUtil SESSIONUTIL = SessionUtil.getInstance();
     private Session session = null;
 
+    // DAO
+    private DaoFactory daoFactory = DaoFactory.instance(DaoFactory.HIBERNATE);
+
+    // User management
     private User selectedUser;  // user object that is subject to operations.
     private User authenticatedUser; // holds a reference to the user object if isAuthenticated.
 
 
     /**
-     * Read from storage and find a user by user name.
+     * Create a new user.
      *
-     * If found then set selectedUser to new instance with attributes set.
+     * @param user a User instance
+     * @return boolean          true if user was created
+     */
+    public Long create(User user) { // Change to package private after testing.
+        log.debug("Creating user '{}' by name.", user.getName());
+
+        try {
+            UserDao udao = daoFactory.getUserDao();
+            Long userId = udao.create(user);
+
+            if (userId != null) {
+                log.debug("Created new user with ID: '{}'.", user.getId());
+                this.selectedUser = user;
+
+                return userId;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e);
+        }
+        log.debug("Could not create new user.");
+
+        return null;
+    }
+
+    /**
+     * Read single from storage and find a user by user id.
+     * If found in DB then set selectedUser to relevant instance.
+     *
+     * @param userId a Long of the users id to look for
+     */
+    public User findById(Long userId) { // Change to package private after testing.
+        log.debug("Searching for user '{}' by ID.", userId);
+        User user = new User();
+
+        try {
+            UserDao udao = daoFactory.getUserDao();
+            user = udao.findById(userId,true);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e);
+        }
+
+        if (user.getId() != null) {
+            log.debug("Found user with ID: '{}'", user.getId());
+            this.selectedUser = user;
+        }
+        log.debug("Found no user with ID: '{}'", user.getId());
+
+        return user;
+    }
+
+    /**
+     * Read single from storage and find a user by user name.
      *
      * https://stackoverflow.com/questions/25440284/fetch-database-records-using-hibernate-without-using-primary-key
-     *
      * https://www.tutorialspoint.com/hibernate/hibernate_native_sql.htm
      *
      * todo: Native SQL makes hibernate database implementation dependent.
@@ -52,55 +111,49 @@ public class UserControl {
      *
      * @param userName a String of the name too look for
      */
-    boolean selectUserByUserName(String userName) {
+    public User findByName(String userName) { // Change to package private after testing.
         log.debug("Searching for user '{}' by name.", userName);
-
-        session = SESSIONUTIL.getSession();;
-        Query query = this.session.createSQLQuery(
-                "SELECT * FROM user u WHERE u.user_name LIKE :userName")
-                .addEntity(User.class)
-                .setParameter("userName", userName);
+        User user = new User();
 
         try {
-            User result = (User) query.getSingleResult(); // List<User> result = query.getResultList();
-            session.getTransaction().commit();
-            this.selectedUser = result;
-            log.debug("Found a user by the name '{}'.", this.selectedUser.getName());
+            UserDao udao = daoFactory.getUserDao();
+            user = udao.findByName(userName);
 
-            return true;
-
-        } catch (NoResultException e) {
-            log.debug("No user by that username exists in database.");
-
-        } catch (NullPointerException e) {
-            log.debug("Problem in User object. Attributes not as expected.");
-
-            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e);
         }
 
-        return false;
+        if (user.getId() != null) {
+            log.debug("Found user with name: '{}'", user.getName());
+            this.selectedUser = user;
+        }
+        log.debug("Found no user with name: '{}'", user.getName());
+
+        return user;
     }
 
+    // Make the query for finding by ID in UserHibernateDao. Test finding by ID from TestDb.
+    // Make sure that we are happy that Entities can't extend CRUD DaoInterface
+
+
+
+
+    // ********************** Checking Methods ********************** //
 
     /**
-     * Read from storage and find a user by user id.
-     * <p>
-     * If found in DB then set selectedUser to relevant instance.
-     *
-     * @param userID a String of the users id to look for
+     * Check if the username is available
      */
-    boolean selectUserByUserID(String userID) {
-        User user = this.session.get(User.class, userID);
+    boolean checkNewUserName(String userName) {
 
-        if (user != null) {
-            this.selectedUser = user;
+        if (findByName(userName) != null) {
+            this.selectedUser = null;
 
-            return true;
+            return false;
         }
 
-        return false;
+        return true;
     }
-
 
     /**
      * Checks if authenticatedUser is set and returns result
@@ -117,7 +170,6 @@ public class UserControl {
         return true;
     }
 
-
     /**
      * return the ID of the selected user
      *
@@ -132,19 +184,6 @@ public class UserControl {
     }
 
 
-    /**
-     * Check if the username is available
-     */
-    boolean checkNewUserName(String userName) {
-
-        if (selectUserByUserName(userName)) {
-            this.selectedUser = null;
-
-            return false;
-        }
-
-        return true;
-    }
 
 
     /**
@@ -189,22 +228,7 @@ public class UserControl {
     }
 
 
-    /**
-     * Create a new user.
-     *
-     * @param userName          a String of the new user name
-     * @param password          a string of the new user ID
-     * @return boolean          true if user was created
-     */
-    boolean createUser(String userName, String password) {
-        this.selectedUser = new User(userName, password);
 
-        session = SESSIONUTIL.getSession();
-        this.session.save(this.selectedUser);
-        session.getTransaction().commit();
-
-        return true;
-    }
 
 
     /**

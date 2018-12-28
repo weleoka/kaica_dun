@@ -1,5 +1,6 @@
 package kaica_dun_system;
 
+import kaica_dun.dao.UserDao;
 import kaica_dun.entities.Dungeon;
 
 import javax.persistence.*;
@@ -9,6 +10,13 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "user")
+
+/*
+Example of using JPQL named query
+JPA also provides a way for building static queries, as named queries, using the @NamedQuery and @NamedQueries annotations.
+It is considered to be a good practice in JPA to prefer named queries over dynamic queries when possible.
+*/
+//@NamedQuery(name="User.findByName", query="SELECT u FROM User u WHERE u.userName = :name")
 public class User {
 
     // Field variable declarations and Hibernate annotation scheme
@@ -92,4 +100,8 @@ public class User {
         this.getDungeons().add(dungeon);
         dungeon.setUser(this);
     }
+
+
+
+
 }

@@ -101,7 +101,7 @@ public class MenuMain extends Menu {
     private boolean loginUser() {
         String[] creds = credentialsPrompt();
 
-        if (USERCONTROL.selectUserByUserName(creds[0])) {
+        if (USERCONTROL.findByName(creds[0]).getId() != null) {
             out.println(UI_strings.userNameFound);
 
 
@@ -140,10 +140,11 @@ public class MenuMain extends Menu {
     private void createUser() {
         out.println(UI_strings.createUserHeader);
         String[] creds = credentialsPrompt();
+        User user = new User(creds[0], creds[1]);
 
         if (USERCONTROL.checkNewUserName(creds[0])) {
 
-            if (USERCONTROL.createUser(creds[0], creds[1])) {
+            if (USERCONTROL.create(user) != null) {
                 out.println(UI_strings.createUserSuccess);
                 Util.sleeper(700);
                 this.display(); // display the main menu again, could instead go direct to logged in.

@@ -4,12 +4,14 @@ package kaica_dun.resources;
 import kaica_dun.dao.DaoFactory;
 import kaica_dun.dao.MonsterDao;
 
+import kaica_dun.dao.UserDao;
 import kaica_dun.entities.*;
 import kaica_dun.util.Util;
 
 import kaica_dun_system.MenuMain;
 import kaica_dun_system.SessionUtil;
 import kaica_dun_system.User;
+import kaica_dun_system.UserControl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
@@ -27,6 +29,9 @@ public class TestDb {
     private static final SessionUtil SESSIONUTIL = SessionUtil.getInstance();
     private static Session session = null;
 
+    private DaoFactory daoFactory = DaoFactory.instance(DaoFactory.HIBERNATE);
+
+
 
     /**
      * This class is static and can be called directly.
@@ -35,17 +40,16 @@ public class TestDb {
      */
     public static void main(String[] args) {
 
-        User newUser = MakeUserTest(2);
-
-
+        Long newUserId = createUserTest(2);
+        User userById = findUserByIdTest(newUserId);
+        User userByName = findUserByNameTest("kai");
+        UserLoginTest();
 
         //MonsterCreatorTest();
 
         //MonsterFinderTest();
 
         //DungeonCreatorTest(newUser);
-
-        UserLoginTest();
 
         //AvatarEqItemTest(newUser);
     }
@@ -54,33 +58,50 @@ public class TestDb {
     /**
      * Create a new user.
      * Can be default user, kai or carl.
+     * Always returns a user object but could be not saved.
      * @param userSelection int defining which defaults to make user from
      * @return user a User instance
      */
-    public static User MakeUserTest(int userSelection) {
-        session = SESSIONUTIL.getSession();
-
+    public static Long createUserTest (int userSelection) {
         log.info("------> Making a new User...");
-        Util.sleeper(700);
-        User user = null;
+        UserControl USERCONTROL = UserControl.getInstance();
+        User user = new User();
 
         switch (userSelection) {
+
             case 1:
                 user = new User("carl", "pass");
+
             case 2:
                 user = new User("kai", "123");
         }
 
-        if (user == null) {
+        if (user.getId() == null) {
             user = new User("noname", "nopass");
         }
+        Long newUserId = USERCONTROL.create(user);
 
-        log.info("User '{}' with password '{}' created.", user.getName(), user.getPassword());
-        session.save(user);
-        session.getTransaction().commit();
+        if (newUserId != null) {
+            log.info("User '{}' with password '{}' created.", user.getName(), user.getPassword());
+        }
 
-        return user;
+        return newUserId;
     }
+
+    public static User findUserByIdTest(Long userId) {
+        log.info("------> Finding user by id...");
+        UserControl USERCONTROL = UserControl.getInstance();
+
+        return USERCONTROL.findById(0L);
+    }
+
+    public static User findUserByNameTest(String userName) {
+        log.info("------> Finding user by name...");
+        UserControl USERCONTROL = UserControl.getInstance();
+
+        return USERCONTROL.findByName(userName);
+    }
+
 
 
     /**

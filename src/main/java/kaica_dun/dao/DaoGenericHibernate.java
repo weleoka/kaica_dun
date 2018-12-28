@@ -30,7 +30,7 @@ public abstract class DaoGenericHibernate<T, ID extends Serializable> implements
                 .getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
-    @SuppressWarnings("unchecked")
+    //@SuppressWarnings("unchecked")
     public void setSession(Session s) {
         this.session = s;
     }
@@ -86,7 +86,7 @@ public abstract class DaoGenericHibernate<T, ID extends Serializable> implements
         criteria.select(contactRoot);
 
         //Use criteria to query with session to fetch all contacts
-          List<T> tmpList = session.createQuery(criteria).getResultList();
+        List<T> tmpList = session.createQuery(criteria).getResultList();
 
         //Close session
         session.close();
@@ -101,9 +101,6 @@ public abstract class DaoGenericHibernate<T, ID extends Serializable> implements
 
 
         return tmpList;
-
-
-
     }
 
     @SuppressWarnings("unchecked")
@@ -123,6 +120,7 @@ public abstract class DaoGenericHibernate<T, ID extends Serializable> implements
     public void clear() {
         getSession().clear();
     }
+
 
     /**
      * Use this inside subclasses as a convenience method.

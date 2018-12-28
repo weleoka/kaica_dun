@@ -32,7 +32,7 @@ public abstract class DaoFactory {
 
     //public abstract ItemDao getItemDao();
 
-    //public abstract RoomDao getRoomDao();
+    public abstract UserDao getUserDao();
 
     //public abstract RoomDao getRoomDao();
 }

@@ -30,4 +30,9 @@ public class DaoFactoryHibernate extends DaoFactory {
     public MonsterDao getMonsterDao() {
         return null;
     }
+
+    @Override
+    public UserDao getUserDao() {
+        return null;
+    }
 }
