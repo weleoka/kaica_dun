@@ -25,7 +25,7 @@ public class TestDb {
 
     private static final Logger log = LogManager.getLogger();
     private static final SessionUtil SESSIONUTIL = SessionUtil.getInstance();
-    private static Session session = SESSIONUTIL.getSession();
+    private static Session session = null;
 
 
     /**
@@ -36,6 +36,8 @@ public class TestDb {
     public static void main(String[] args) {
 
         User newUser = MakeUserTest(2);
+
+
 
         //MonsterCreatorTest();
 
@@ -56,6 +58,7 @@ public class TestDb {
      * @return user a User instance
      */
     public static User MakeUserTest(int userSelection) {
+        session = SESSIONUTIL.getSession();
 
         log.info("------> Making a new User...");
         Util.sleeper(700);
@@ -74,6 +77,7 @@ public class TestDb {
 
         log.info("User '{}' with password '{}' created.", user.getName(), user.getPassword());
         session.save(user);
+        session.getTransaction().commit();
 
         return user;
     }
@@ -83,13 +87,15 @@ public class TestDb {
      * Testing creation of monsters..!
      */
     public static void MonsterCreatorTest() {
+        session = SESSIONUTIL.getSession();
         log.info("------> MONSTER_CREATION_TEST:");
 
         // Make 5 monsters - get ready to run!!
         for (int i = 0; i < 4; i++) {
-            Monster monster = MonsterFactory.makeMonster();
+            Monster monster = MonsterFactory.makeOrc();
             session.save(monster);
         }
+        session.getTransaction().commit();
 
         Util.sleeper(1200); // Artificial delay
     }
@@ -104,6 +110,7 @@ public class TestDb {
 
         /// Searching with only Hibernate
         log.debug("Using Hibernate no DAO to search for an entity by ID: " + monsterID);
+        session = SESSIONUTIL.getSession();
         Monster monster = session.get(Monster.class, monsterID);
 
         if (monster != null) { // Have to test if this works, am I forgetting something.
@@ -135,6 +142,7 @@ public class TestDb {
      */
     public static void DungeonCreatorTest(User newUser) {
         log.info("------> DUNGEON_TEST:");
+        session = SESSIONUTIL.getSession();
 
         // Make static dungeon
         log.info("making Dungeon...");
@@ -148,6 +156,7 @@ public class TestDb {
 
         Util.sleeper(800);
         session.save(d);
+        session.getTransaction().commit();
 
         Util.sleeper(800); // Artificial sleep.
     }
@@ -180,6 +189,7 @@ public class TestDb {
 
 
         //saving the persistent PlayerAvatar
+        session = SESSIONUTIL.getSession();
         session.save(pa1);
         session.save(pa2);
         pa2.takeDamage(13);     //Should set KaiWithWeaponEquipsArmors currHealth to 80(90 - (13 - 3))
@@ -187,8 +197,9 @@ public class TestDb {
 
         session.save(wep2);
 
-        //TODO test to unequipp weapon and update database to see if it works as planned
 
+        //TODO test to unequipp weapon and update database to see if it works as planned
+        session.getTransaction().commit();
         Util.sleeper(800); // Artificial sleep.
     }
 

@@ -6,9 +6,9 @@ import kaica_dun_system.User;
 import java.util.List;
 
 
-public class PlayerHibernateDao
+public class UserHibernateDao
         extends DaoGenericHibernate<User, Long>
-        implements  PlayerDao {
+        implements UserDao {
 
 
     @Override

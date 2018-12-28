@@ -3,7 +3,7 @@ package kaica_dun.dao;
 import kaica_dun.entities.Item;
 import kaica_dun.entities.Avatar;
 
-public interface PlayerAvatarDao extends DaoGenericInterface<Avatar, Long> {
+public interface AvatarDao extends DaoGenericInterface<Avatar, Long> {
 
     /**
      *

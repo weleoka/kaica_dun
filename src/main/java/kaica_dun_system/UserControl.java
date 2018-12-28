@@ -32,7 +32,7 @@ public class UserControl {
     // Fields declared
     private static final Logger log = LogManager.getLogger();
     private static final SessionUtil SESSIONUTIL = SessionUtil.getInstance();
-    private Session session = SESSIONUTIL.getSession();
+    private Session session = null;
 
     private User selectedUser;  // user object that is subject to operations.
     private User authenticatedUser; // holds a reference to the user object if isAuthenticated.
@@ -55,6 +55,7 @@ public class UserControl {
     boolean selectUserByUserName(String userName) {
         log.debug("Searching for user '{}' by name.", userName);
 
+        session = SESSIONUTIL.getSession();;
         Query query = this.session.createSQLQuery(
                 "SELECT * FROM user u WHERE u.user_name LIKE :userName")
                 .addEntity(User.class)
@@ -62,6 +63,7 @@ public class UserControl {
 
         try {
             User result = (User) query.getSingleResult(); // List<User> result = query.getResultList();
+            session.getTransaction().commit();
             this.selectedUser = result;
             log.debug("Found a user by the name '{}'.", this.selectedUser.getName());
 
@@ -157,7 +159,10 @@ public class UserControl {
      * todo: Refactor: move id, name and password checks into user class.
      */
     boolean loginSelectedUser() {
+        session = SESSIONUTIL.getSession();
         User that = this.session.get(User.class, this.getSelectedUserID());
+        session.getTransaction().commit();
+
         log.debug("Comparing passwords: '{}' VS '{}'", this.selectedUser.getPassword(), that.getPassword()); //debug line.
 
         if (this.selectedUser.getId().equals(that.getId())) {
@@ -193,7 +198,10 @@ public class UserControl {
      */
     boolean createUser(String userName, String password) {
         this.selectedUser = new User(userName, password);
+
+        session = SESSIONUTIL.getSession();
         this.session.save(this.selectedUser);
+        session.getTransaction().commit();
 
         return true;
     }

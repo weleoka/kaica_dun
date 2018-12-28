@@ -6,9 +6,9 @@ import kaica_dun.entities.ItemEquippable;
 import java.util.List;
 
 
-public class EquippableItemHibernateDao
+public class ItemEquippableHibernateDao
         extends DaoGenericHibernate<ItemEquippable, Long>
-        implements  EquippableItemDao {
+        implements ItemEquippableDao {
 
 
     @Override

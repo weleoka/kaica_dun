@@ -17,7 +17,7 @@ public class DaoFactoryHibernate extends DaoFactory {
 
     // You could override this if you don't want HibernateUtil for lookup
     protected Session getCurrentSession() {
-        return SessionUtil.getSession();
+        return SessionUtil.getInstance().getSession();
     }
 
 

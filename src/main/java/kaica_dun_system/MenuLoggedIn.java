@@ -10,6 +10,8 @@ import static java.lang.System.out;
 
 public class MenuLoggedIn extends Menu {
 
+    MenuLoggedIn() {}
+
     /**
      * Menu displayed to a user when it is authenticated.
      * <p>

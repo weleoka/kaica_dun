@@ -6,9 +6,9 @@ import kaica_dun.entities.ItemConsumable;
 import java.util.List;
 
 
-public class ConsumableItemHibernateDao
+public class ItemConsumableHibernateDao
         extends DaoGenericHibernate<ItemConsumable, Long>
-        implements  ConsumableItemDao {
+        implements ItemConsumableDao {
 
 
     @Override

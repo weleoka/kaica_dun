@@ -19,9 +19,7 @@ public class GameControl {
     // Fields declared
     private static final Logger log = LogManager.getLogger();
     private static final SessionUtil SESSIONUTIL = SessionUtil.getInstance();
-    private Session session = SESSIONUTIL.getSession();
     private Avatar avatar = null;
-
 
     /**
      * Uses native SQL.
@@ -33,11 +31,13 @@ public class GameControl {
     public List<Avatar> fetchAvatarByUser(User user) {
         log.debug("Searching for all Avatars belonging to {}.", user.getName());
 
-        Query query = this.session.createSQLQuery(
+        Session session = SESSIONUTIL.getSession();
+        Query query = session.createSQLQuery(
                 "SELECT * FROM fighter avatar WHERE avatar.userID LIKE :userID")
                 .addEntity(Avatar.class)
                 .setParameter("userID", user.getId());
         List<Avatar> avatarList = query.getResultList(); // List<User> result = query.getResultList();
+        session.getTransaction().commit();
 
         log.debug("A List of avatars was fetched: {}", avatarList);
 
@@ -53,7 +53,9 @@ public class GameControl {
      */
     public boolean createNewAvatar(String[] arr, User user) {
         Avatar avatar = new Avatar(arr[0], arr[1], user);
-        this.session.save(avatar);
+        Session session = SESSIONUTIL.getSession();
+        session.save(avatar);
+        session.getTransaction().commit();
         return true;
     }
 

@@ -6,6 +6,7 @@ import static java.lang.System.out;
 
 public class MenuMain extends Menu {
 
+    public MenuMain () {}
     /**
      * Menu default to all players.
      * <p>
@@ -19,7 +20,6 @@ public class MenuMain extends Menu {
      * <p>
      * todo: test the inputLoop breaking and what happens to following switch cases.
      */
-
     public void display() {
         int selection = 0;
 

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class AvatarHibernateDao
         extends DaoGenericHibernate<Avatar, Long>
-        implements  PlayerAvatarDao {
+        implements AvatarDao {
 
 
     @Override
