@@ -51,7 +51,7 @@ public abstract class DaoGenericHibernate<T, ID extends Serializable> implements
      * returning null if item is not found
      *
      * @param id
-     * @param lock          currently disabled as Hibernate will handles this very well.
+     * @param lock          currently disabled as Hibernate handles this very well.
      * @return
      */
     @SuppressWarnings("unchecked")

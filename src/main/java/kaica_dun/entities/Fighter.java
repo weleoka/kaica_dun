@@ -9,7 +9,7 @@ import java.util.Objects;
  * Working on abstract superclass stuff for PlayerAvatar and Monster to implement combat logic.
  */
 @Entity
-@Table(name = "fighter")
+@Table(name = "Fighter")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "fighter_discriminator")
 public abstract class Fighter implements Describable {

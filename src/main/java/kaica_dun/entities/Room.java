@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.*;
 
 @Entity
-@Table(name = "room")
+@Table(name = "Room")
 public class Room {
 
     // Field variable declarations and Hibernate annotation scheme
@@ -27,9 +27,9 @@ public class Room {
 
     @ElementCollection(targetClass = Direction.class)
     @CollectionTable(
-            name = "room_direction",
+            name = "Room_direction",
             joinColumns = @JoinColumn(name = "roomID"))
-    @Column(name = "directionID")
+    @Column(name = "room_directionID")
     private List<Direction> exits;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)    //TODO CascadeType.ALL is possibly bad, check later.

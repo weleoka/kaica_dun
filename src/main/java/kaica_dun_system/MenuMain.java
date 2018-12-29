@@ -2,6 +2,8 @@ package kaica_dun_system;
 
 import kaica_dun.util.Util;
 
+import java.util.List;
+
 import static java.lang.System.out;
 
 public class MenuMain extends Menu {
@@ -165,7 +167,7 @@ public class MenuMain extends Menu {
      * List all the users in the database.
      */
     private void listUsers() {
-        USERCONTROL.printUserList();
+        //List<User> USERCONTROL.findAll();
     }
 
     /**

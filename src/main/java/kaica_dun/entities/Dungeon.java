@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.*;
 
 @Entity
-@Table(name = "dungeon")
+@Table(name = "Dungeon")
 public class Dungeon {
 
     // Field variable declarations and Hibernate annotation scheme

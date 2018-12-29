@@ -16,6 +16,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 
+import java.util.List;
+
 
 /**
  * A class used for testing development issues.
@@ -41,8 +43,12 @@ public class TestDb {
     public static void main(String[] args) {
 
         Long newUserId = createUserTest(2);
+        //printUserListTest();
         User userById = findUserByIdTest(newUserId);
         User userByName = findUserByNameTest("kai");
+
+        System.exit(0);  // Quit the application.
+
         UserLoginTest();
 
         //MonsterCreatorTest();
@@ -63,22 +69,26 @@ public class TestDb {
      * @return user a User instance
      */
     public static Long createUserTest (int userSelection) {
-        log.info("------> Making a new User...");
+        log.info("------> Persisting new User test...");
         UserControl USERCONTROL = UserControl.getInstance();
-        User user = new User();
+        User user;
 
         switch (userSelection) {
 
             case 1:
                 user = new User("carl", "pass");
+                break;
 
             case 2:
+                log.debug("ADSFASDFSAF");
                 user = new User("kai", "123");
+                break;
+
+            default:
+                user = new User("noname", "nopass");
+                break;
         }
 
-        if (user.getId() == null) {
-            user = new User("noname", "nopass");
-        }
         Long newUserId = USERCONTROL.create(user);
 
         if (newUserId != null) {
@@ -89,10 +99,27 @@ public class TestDb {
     }
 
     public static User findUserByIdTest(Long userId) {
-        log.info("------> Finding user by id...");
+        log.info("------> Finding user by id test...");
         UserControl USERCONTROL = UserControl.getInstance();
 
-        return USERCONTROL.findById(0L);
+        return USERCONTROL.findById(1L);
+    }
+
+    public static void printUserListTest() {
+        log.info("------> Output user list test...");
+        UserControl USERCONTROL = UserControl.getInstance();
+        List<User> userList = USERCONTROL.findAll();
+
+        for (int id = 0; id < userList.size(); id++) {
+
+            try {
+                User currentUser = userList.get(id);
+                System.out.printf("\n%s - UserName: %s", id, currentUser.getName());
+
+            } catch (IndexOutOfBoundsException e) {
+                log.warn("Index out of bounds: {}", e);
+            }
+        }
     }
 
     public static User findUserByNameTest(String userName) {

@@ -23,16 +23,16 @@ public class DaoFactoryHibernate extends DaoFactory {
 
     @Override
     public RoomDao getRoomDao() {
-        return null;
+        return (RoomDao)instantiateDAO(RoomHibernateDao.class);
     }
 
     @Override
     public MonsterDao getMonsterDao() {
-        return null;
+        return (MonsterDao)instantiateDAO(MonsterHibernateDao.class);
     }
 
     @Override
     public UserDao getUserDao() {
-        return null;
+        return (UserDao)instantiateDAO(UserHibernateDao.class);
     }
 }

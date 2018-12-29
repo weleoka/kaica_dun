@@ -8,6 +8,8 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 
 import javax.persistence.*;
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**
@@ -50,7 +52,7 @@ public class UserControl {
      * @return boolean          true if user was created
      */
     public Long create(User user) { // Change to package private after testing.
-        log.debug("Creating user '{}' by name.", user.getName());
+        log.debug("Creating user '{}'.", user.getName());
 
         try {
             UserDao udao = daoFactory.getUserDao();
@@ -79,12 +81,12 @@ public class UserControl {
      * @param userId a Long of the users id to look for
      */
     public User findById(Long userId) { // Change to package private after testing.
-        log.debug("Searching for user '{}' by ID.", userId);
+        log.debug("Searching for user with ID: {}.", userId);
         User user = new User();
 
         try {
             UserDao udao = daoFactory.getUserDao();
-            user = udao.findById(userId,true);
+            user = udao.read(userId);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,11 +96,14 @@ public class UserControl {
         if (user.getId() != null) {
             log.debug("Found user with ID: '{}'", user.getId());
             this.selectedUser = user;
+
+        } else {
+            log.debug("Found no user with ID: '{}'", user.getId());
         }
-        log.debug("Found no user with ID: '{}'", user.getId());
 
         return user;
     }
+
 
     /**
      * Read single from storage and find a user by user name.
@@ -242,25 +247,19 @@ public class UserControl {
      *  Alternatively select all userNames from User table and just print them.
      *
      */
-    void printUserList() {
+    public List<User> findAll() {
+        log.debug("Fetch all user objects");
 
-        Query query = this.session.createSQLQuery("SELECT Count('userID') FROM user");
-        Long userCount = (Long) query.getSingleResult();
+        try {
+            UserDao udao = daoFactory.getUserDao();
+            return udao.findAll();
 
-        for (int id = 0; id < userCount.intValue(); id++) {
-
-            User currentUser = this.session.get(User.class, id);
-
-            try {
-
-                if (currentUser != null) {
-                    System.out.printf("\n%s - UserName: %s", id, currentUser.getName());
-                }
-
-            } catch (IndexOutOfBoundsException e) {
-               log.warn("Index out of bounds: {}", e);
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e);
         }
+
+        return null;
     }
 }
 

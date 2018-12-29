@@ -4,13 +4,13 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "consumableitem")
+@Table(name = "Item_consumable")
 public class ItemConsumable {
 
     // Field variable declarations and Hibernate annotation scheme
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "consumableItemID", updatable = false, nullable = false)
+    @Column(name = "item_consumableID", updatable = false, nullable = false)
     private Long id;
 
     @Basic

@@ -14,6 +14,7 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Root;
 
 
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -24,13 +25,38 @@ public class UserHibernateDao extends DaoGenericHibernate<User, Long> implements
 
     @Override
     public Long create(User newInstance) {
-        return null;
+        log.debug("Creating a new user in db.");
+
+        Session session = getSession();
+        Long result = -1L;
+
+        try {
+            Serializable ser = session.save(newInstance);
+
+            if (ser != null) {
+                result = (Long) ser;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        session.getTransaction().commit();
+
+        return result;
+
+        // long lastId = session.createSQLQuery("SELECT LAST_INSERT_ID()").uniqueResult().longValue();
+
     }
 
     @Override
     public User read(Long aLong) {
-        return null;
+        Session session = getSession();
+        User user = session.get(User.class, aLong);
+        session.getTransaction().commit();
+
+        return user;
     }
+
 
     @Override
     public void update(User transientObject) {
@@ -72,7 +98,6 @@ public class UserHibernateDao extends DaoGenericHibernate<User, Long> implements
      * @return a User instance
      */
     public User findByName(String name){
-
         Session session = getSession();
 
         // Method using JPA criteria API.
@@ -88,15 +113,16 @@ public class UserHibernateDao extends DaoGenericHibernate<User, Long> implements
 
         return results.get(0);
 
-        // Using named query JPQL
+
+        // Method using JPQL named query.
+        // See annotation above class declaration.
         //TypedQuery<User> query = em.createNamedQuery("Country.findAll", User.class);
         //List<User> results = query.getResultList();
         // Another form of createNamedQuery receives a query name and returns a Query instance:
         //Query query = em.createNamedQuery("SELECT c FROM Country c");
         //List results = query.getResultList();
 
-        // Method using JPQL
-        // Se declaration at top of class.
+
 
     }
 

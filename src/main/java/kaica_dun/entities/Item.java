@@ -10,7 +10,7 @@ import java.util.Objects;
  * TODO move stuff out to ItemEquippable->Weapon/Armor and ItemConsumable
  */
 @Entity
-@Table(name = "item")
+@Table(name = "Item")
 public class Item {
 
     // Field variable declarations and Hibernate annotation scheme
@@ -20,7 +20,7 @@ public class Item {
     private Long id;
 
     @Basic
-    @Column(name = "itemName")
+    @Column(name = "item_name")
     private String itemName;
 
     @Basic
