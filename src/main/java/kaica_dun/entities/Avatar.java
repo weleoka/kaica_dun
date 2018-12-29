@@ -1,10 +1,8 @@
 package kaica_dun.entities;
 
-import kaica_dun.dao.AvatarHibernateDao;
 import kaica_dun_system.User;
 
 import javax.persistence.*;
-import java.util.Objects;
 import java.util.Random;
 
 /**

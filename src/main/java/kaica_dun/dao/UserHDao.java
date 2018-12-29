@@ -6,20 +6,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 
-import javax.persistence.NamedQuery;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.ParameterExpression;
-import javax.persistence.criteria.Root;
+import javax.persistence.*;
 
 
 import java.io.Serializable;
 import java.util.List;
 
 
-@NamedQuery(name="User.findByName", query="SELECT u FROM User u WHERE u.userName = :name")
-public class UserHibernateDao extends DaoGenericHibernate<User, Long> implements UserDao {
+//@NamedQuery(name="User.findByName", query="SELECT u FROM User u WHERE u.userName = :name")
+public class UserHDao extends AbstractHDao<User, Long> implements UserDaoInterface {
 
     private static final Logger log = LogManager.getLogger();
 
@@ -66,7 +61,6 @@ public class UserHibernateDao extends DaoGenericHibernate<User, Long> implements
     public void delete(User persistentObject) {
     }
 
-
     /**
      * Read from storage and find a user by user name.
      *
@@ -100,28 +94,41 @@ public class UserHibernateDao extends DaoGenericHibernate<User, Long> implements
     public User findByName(String name){
         Session session = getSession();
 
-        // Method using JPA criteria API.
+
+        /* // Method using JPA criteria API.
         CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<User> query = builder.createQuery(User.class);
         Root<User> from_class = query.from(User.class);
         ParameterExpression<String> param = builder.parameter(String.class);
-        query.select(from_class).where(builder.equal(from_class.get("user_name"), param));
+        query.select(from_class).where(builder.equal(from_class.get("userName"), param));
 
         TypedQuery<User> query_used = session.createQuery(query);
         query_used.setParameter(param, name);
         List<User> results = query_used.getResultList();
+        */
+
+
+        // Hibernate namedQuery and annotations
+        @SuppressWarnings("unchecked")
+        TypedQuery<User> query = session.getNamedQuery("User.findByName");
+        List<User> results = query.setParameter("name", name).getResultList();
+        // Create query in code.
+        //TypedQuery<User> que = session.createNamedQuery("User.findByName", User.class);
+
+
+        /* // Method using JPQL named query and EntityManager
+        // Named query is at annotation on class
+        EntityManager em = EntityManagerFactory.createEntityManager();
+        TypedQuery<User> query = em.createNamedQuery("User.findByName", User.class);
+        List<User> results = query.getResultList();
+
+        // Another form of createNamedQuery receives a query name and returns a Query instance:
+        Query query = em.createNamedQuery("SELECT c FROM Country c");
+        List results = query.getResultList();
+        */
+        session.getTransaction().commit();
 
         return results.get(0);
-
-
-        // Method using JPQL named query.
-        // See annotation above class declaration.
-        //TypedQuery<User> query = em.createNamedQuery("Country.findAll", User.class);
-        //List<User> results = query.getResultList();
-        // Another form of createNamedQuery receives a query name and returns a Query instance:
-        //Query query = em.createNamedQuery("SELECT c FROM Country c");
-        //List results = query.getResultList();
-
 
 
     }

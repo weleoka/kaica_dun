@@ -1,6 +1,8 @@
 package kaica_dun.dao;
 
-public abstract class DaoFactory {
+import java.io.Serializable;
+
+public abstract class DaoFactory<T, ID extends Serializable> {
 
 
     /**
@@ -10,7 +12,7 @@ public abstract class DaoFactory {
      * propagation (CurrentSessionContext), thread-bound or transaction-bound,
      * and transaction scoped.
      */
-    public static final Class HIBERNATE = DaoFactoryHibernate.class;
+    public static final Class HIBERNATE = DaoFactoryH.class;
 
 
     /**
@@ -26,13 +28,13 @@ public abstract class DaoFactory {
     }
 
     // Add your DAO interfaces here
-    public abstract RoomDao getRoomDao();
+    //public abstract RoomDao getRoomDao();
 
-    public abstract MonsterDao getMonsterDao();
+    //public abstract MonsterDao getMonsterDao();
 
     //public abstract ItemDao getItemDao();
 
-    public abstract UserDao getUserDao();
+    public abstract UserDaoInterface getUserDao();
 
-    //public abstract RoomDao getADao();
+    public abstract MainHDao getMainHDao();
 }

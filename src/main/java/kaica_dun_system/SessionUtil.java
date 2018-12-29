@@ -46,6 +46,7 @@ public class SessionUtil {
             sess = sessionFactory.getCurrentSession();
 
         } catch (org.hibernate.HibernateException he) {
+            log.warn("No current session Opening a new one");
             sess = sessionFactory.openSession();
         }
 

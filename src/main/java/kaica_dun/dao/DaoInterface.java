@@ -29,7 +29,7 @@ import java.io.Serializable;
  */
 
 
-public interface DaoGenericInterface<T, ID extends Serializable> {
+public interface DaoInterface<T, ID extends Serializable> {
 
     /** Persist the newInstance object into database */
     ID create(T newInstance);

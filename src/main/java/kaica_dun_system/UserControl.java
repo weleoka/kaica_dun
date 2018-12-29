@@ -1,14 +1,12 @@
 package kaica_dun_system;
 
 import kaica_dun.dao.DaoFactory;
-import kaica_dun.dao.UserDao;
+import kaica_dun.dao.UserDaoInterface;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import org.hibernate.Session;
 
-import javax.persistence.*;
-import java.util.LinkedList;
 import java.util.List;
 
 
@@ -55,7 +53,7 @@ public class UserControl {
         log.debug("Creating user '{}'.", user.getName());
 
         try {
-            UserDao udao = daoFactory.getUserDao();
+            UserDaoInterface udao = daoFactory.getUserDao();
             Long userId = udao.create(user);
 
             if (userId != null) {
@@ -85,7 +83,7 @@ public class UserControl {
         User user = new User();
 
         try {
-            UserDao udao = daoFactory.getUserDao();
+            UserDaoInterface udao = daoFactory.getUserDao();
             user = udao.read(userId);
 
         } catch (Exception e) {
@@ -121,7 +119,7 @@ public class UserControl {
         User user = new User();
 
         try {
-            UserDao udao = daoFactory.getUserDao();
+            UserDaoInterface udao = daoFactory.getUserDao();
             user = udao.findByName(userName);
 
         } catch (Exception e) {
@@ -132,15 +130,40 @@ public class UserControl {
         if (user.getId() != null) {
             log.debug("Found user with name: '{}'", user.getName());
             this.selectedUser = user;
+
+        } else {
+            log.debug("Found no user with name: '{}'", user.getName());
         }
-        log.debug("Found no user with name: '{}'", user.getName());
 
         return user;
     }
 
-    // Make the query for finding by ID in UserHibernateDao. Test finding by ID from TestDb.
-    // Make sure that we are happy that Entities can't extend CRUD DaoInterface
 
+    /**
+     * Print the entire user database to stdout.
+     *
+     * 1) Databases can return different types for COUNT. Long is usually safest.
+     * 2) Count('userID') does not count NULL in Column, whereas COUNT(*) would do.
+     *
+     * todo: Consider fetching objects directly by their ID instead of in the for loop.
+     *  Possible perhaps by storing valid userIds in a List and iterating over that for retrieving.
+     *  Alternatively select all userNames from User table and just print them.
+     *
+     */
+    public List<User> findAll() {
+        log.debug("Fetch all user objects");
+
+        try {
+            UserDaoInterface udao = daoFactory.getUserDao();
+            return udao.findAll();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e);
+        }
+
+        return null;
+    }
 
 
 
@@ -236,30 +259,6 @@ public class UserControl {
 
 
 
-    /**
-     * Print the entire user database to stdout.
-     *
-     * 1) Databases can return different types for COUNT. Long is usually safest.
-     * 2) Count('userID') does not count NULL in Column, whereas COUNT(*) would do.
-     *
-     * todo: Consider fetching objects directly by their ID instead of in the for loop.
-     *  Possible perhaps by storing valid userIds in a List and iterating over that for retrieving.
-     *  Alternatively select all userNames from User table and just print them.
-     *
-     */
-    public List<User> findAll() {
-        log.debug("Fetch all user objects");
 
-        try {
-            UserDao udao = daoFactory.getUserDao();
-            return udao.findAll();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error(e);
-        }
-
-        return null;
-    }
 }
 

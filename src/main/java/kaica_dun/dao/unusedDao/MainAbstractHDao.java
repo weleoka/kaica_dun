@@ -1,12 +1,16 @@
 package kaica_dun.dao;
 
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Root;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
@@ -20,12 +24,14 @@ import java.util.List;
  *
  * A DAO should not control transactions or the Session scope.
  */
-public abstract class DaoGenericHibernate<T, ID extends Serializable> implements DaoGenericInterface<T, ID> {
+
+public abstract class MainAbstractHDao<T, ID extends Serializable>  implements DaoInterface<T, ID> {
 
     private Class<T> persistentClass;
     private Session session;
 
-    public DaoGenericHibernate() {
+    @SuppressWarnings("unchecked")
+    public MainAbstractHDao() {
         this.persistentClass = (Class<T>) ((ParameterizedType) getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[0];
     }
@@ -66,10 +72,41 @@ public abstract class DaoGenericHibernate<T, ID extends Serializable> implements
         return entity;
     }
 
+    /**
+     *
+     * @return
+     * @deprecated
+     */
     @SuppressWarnings("unchecked")
-    public List<T> findAll() {
+    public List<T> findAllOld() {
         return findByCriteria();
     }
+
+    /**
+     * This is the new version of finding all as the old hibernate
+     * session.createCriteria is depreciated.
+     *
+     * Not sure if it can be made to look a little nicer perhaps.
+     *
+     * @author Kai Weeks
+     */
+    public List<T> findAll() {
+        Session session = getSession();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<T> query = builder.createQuery(getPersistentClass());
+        Root<T> from_class = query.from(getPersistentClass());
+        ParameterExpression<String> param = builder.parameter(String.class);
+
+        query.select(from_class);
+
+        TypedQuery<T> query_used = session.createQuery(query);
+        //session.flush();
+        List<T> results = query_used.getResultList();
+        session.getTransaction().commit();
+
+        return results;
+    }
+
 
     @SuppressWarnings("unchecked")
     public List<T> findByExample(T exampleInstance, String[] excludeProperty) {
@@ -124,6 +161,7 @@ public abstract class DaoGenericHibernate<T, ID extends Serializable> implements
 
     /**
      * Use this inside subclasses as a convenience method.
+     * @deprecated
      */
     @SuppressWarnings("unchecked")
     protected List<T> findByCriteria(Criterion... criterion) {
@@ -133,5 +171,6 @@ public abstract class DaoGenericHibernate<T, ID extends Serializable> implements
         }
         return crit.list();
     }
+
 
 }

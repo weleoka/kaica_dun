@@ -9,6 +9,13 @@
 # 4) the recommended gitignore from github java type.
 
 # 5) The whole .idea/ folder because its always changing.
+.idea
+
+# 6) *kaiwork* Files that are for reference and copy paste.
+*.kaiWork*
+
+# 7) log file folder
+log/
 
 # Contains database acces details
 hibernate.cfg.xml

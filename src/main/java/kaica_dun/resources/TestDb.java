@@ -2,9 +2,8 @@ package kaica_dun.resources;
 
 
 import kaica_dun.dao.DaoFactory;
-import kaica_dun.dao.MonsterDao;
+import kaica_dun.dao.MainHDao;
 
-import kaica_dun.dao.UserDao;
 import kaica_dun.entities.*;
 import kaica_dun.util.Util;
 
@@ -16,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -31,9 +31,8 @@ public class TestDb {
     private static final SessionUtil SESSIONUTIL = SessionUtil.getInstance();
     private static Session session = null;
 
-    private DaoFactory daoFactory = DaoFactory.instance(DaoFactory.HIBERNATE);
-
-
+    private static DaoFactory daoFactory = DaoFactory.instance(DaoFactory.HIBERNATE);
+    //static MainHDao mdao = daoFactory.getMainHDao();
 
     /**
      * This class is static and can be called directly.
@@ -43,21 +42,20 @@ public class TestDb {
     public static void main(String[] args) {
 
         Long newUserId = createUserTest(2);
-        //printUserListTest();
+        printUserListTest();
         User userById = findUserByIdTest(newUserId);
         User userByName = findUserByNameTest("kai");
+        //UserLoginTest();
 
-        System.exit(0);  // Quit the application.
+        MonsterCreatorTest();
+        //MonsterCreatorTest2();
 
-        UserLoginTest();
-
-        //MonsterCreatorTest();
-
-        //MonsterFinderTest();
+        MonsterFinderTest();
 
         //DungeonCreatorTest(newUser);
 
         //AvatarEqItemTest(newUser);
+        System.exit(0);  // Quit the application.
     }
 
 
@@ -69,7 +67,7 @@ public class TestDb {
      * @return user a User instance
      */
     public static Long createUserTest (int userSelection) {
-        log.info("------> Persisting new User test...");
+        log.info("\n------> Persisting new User test...");
         UserControl USERCONTROL = UserControl.getInstance();
         User user;
 
@@ -99,31 +97,32 @@ public class TestDb {
     }
 
     public static User findUserByIdTest(Long userId) {
-        log.info("------> Finding user by id test...");
+        log.info("\n------> Finding user by id test...");
         UserControl USERCONTROL = UserControl.getInstance();
 
         return USERCONTROL.findById(1L);
     }
 
     public static void printUserListTest() {
-        log.info("------> Output user list test...");
+        log.info("\n------> Output user list test...");
         UserControl USERCONTROL = UserControl.getInstance();
         List<User> userList = USERCONTROL.findAll();
-
+        System.out.println("- - userlist - -");
         for (int id = 0; id < userList.size(); id++) {
 
             try {
                 User currentUser = userList.get(id);
-                System.out.printf("\n%s - UserName: %s", id, currentUser.getName());
+                System.out.printf("%s - UserName: %s\n", id, currentUser.getName());
 
             } catch (IndexOutOfBoundsException e) {
                 log.warn("Index out of bounds: {}", e);
             }
         }
+        System.out.println();
     }
 
     public static User findUserByNameTest(String userName) {
-        log.info("------> Finding user by name...");
+        log.info("\n------> Finding user by name...");
         UserControl USERCONTROL = UserControl.getInstance();
 
         return USERCONTROL.findByName(userName);
@@ -134,9 +133,34 @@ public class TestDb {
     /**
      * Testing creation of monsters..!
      */
+    @SuppressWarnings("unchecked")
     public static void MonsterCreatorTest() {
+        log.info("\n------> MONSTER_CREATION_TEST:");
+        MainHDao mdao = daoFactory.getMainHDao();
+        try {
+
+            for (int i = 0; i < 4; i++) {
+                Monster monster = MonsterFactory.makeOrc();
+                mdao.create(monster);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e);
+        }
+        mdao.clear();
+    }
+
+
+    /**
+     * Testing creation of monsters..2!
+     */
+    @SuppressWarnings("unchecked")
+    public static void MonsterCreatorTest2() {
+        log.info("\n------> MONSTER_CREATION_TEST:");
+
         session = SESSIONUTIL.getSession();
-        log.info("------> MONSTER_CREATION_TEST:");
+        log.info("\n------> MONSTER_CREATION_TEST:");
 
         // Make 5 monsters - get ready to run!!
         for (int i = 0; i < 4; i++) {
@@ -153,31 +177,27 @@ public class TestDb {
      *  A test for searching for a monster using the DAO system.
      */
     public static void MonsterFinderTest() {
-        log.info("------> MONSTER_FINDER_TEST:");
+        log.info("\n------> MONSTER_FINDER_TEST:");
         Long monsterID = 1L;   // L is marks it as long
 
         /// Searching with only Hibernate
-        log.debug("Using Hibernate no DAO to search for an entity by ID: " + monsterID);
+/*        log.debug("Using Hibernate no DAO to search for an entity by ID: " + monsterID);
         session = SESSIONUTIL.getSession();
         Monster monster = session.get(Monster.class, monsterID);
 
         if (monster != null) { // Have to test if this works, am I forgetting something.
             log.debug("Monster found: " + monster.toString());
-        }
+        }*/
 
 
         /// Searching with the DAO processes
         log.debug("Using DAO to search for an monster by ID: " + monsterID);
-        log.debug("Starting up a DAO Factory for Hibernate infrastructure.");
-        DaoFactory daoFactory = DaoFactory.instance(DaoFactory.HIBERNATE); // Hibernate Dao.
-
-        log.debug("Getting a specific DAO (MonsterDao) from Hibernate DAO Factory.");
-        MonsterDao monsterDao = daoFactory.getMonsterDao();
-
-        log.debug("Searching for monsterID through DAO: " + monsterID);
+        MainHDao mdao = daoFactory.getMainHDao();
+        Session session = mdao.getSession();
+        session.getTransaction().commit();
         try {
-            Monster monsterFoundByDao = monsterDao.findById(monsterID, true);
-            log.debug("Found a Room by ID: " + monsterFoundByDao.toString());
+            Monster monsterFoundByDao = (Monster) mdao.findById(monsterID, false);
+            log.debug("Found a monster by ID: " + monsterFoundByDao.toString());
 
         } catch (NullPointerException e) {
             log.debug("No monster found with that ID: " + e);
@@ -189,7 +209,7 @@ public class TestDb {
      * Testing creation of static Dungeon
      */
     public static void DungeonCreatorTest(User newUser) {
-        log.info("------> DUNGEON_TEST:");
+        log.info("\n------> DUNGEON_TEST:");
         session = SESSIONUTIL.getSession();
 
         // Make static dungeon
@@ -214,7 +234,7 @@ public class TestDb {
      * Testing creation of Avatar with weapon
      */
     public static void AvatarEqItemTest(User newUser) {
-        log.info("------> PlayerAvatar and Item test:");
+        log.info("\n------> PlayerAvatar and Item test:");
 
         //Make Item (weapon PH, needs more inheritance)
         Item wep1 = new Item("The Smashanizer","Smashing!", 4, 2,0);
@@ -256,7 +276,7 @@ public class TestDb {
      * Testing user functionality
      */
     public static void UserLoginTest() {
-        log.info("------> User login test");
+        log.info("\n------> User login test");
         MenuMain mainMenu = new MenuMain();
         mainMenu.display();
     }

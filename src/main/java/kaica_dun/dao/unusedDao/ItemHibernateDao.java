@@ -1,6 +1,7 @@
-package kaica_dun.dao;
+package kaica_dun.dao.unusedDao;
 
 
+import kaica_dun.dao.DaoGenericHibernate;
 import kaica_dun.entities.Item;
 
 import java.util.List;
