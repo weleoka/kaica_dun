@@ -37,7 +37,7 @@ public class Dungeon {
 
 
     /**
-     * Constructor to recreate dungeon state from database.
+     * Full Constructor.
      *
      * @param user        the user who owns the dungeon
      * @param roomRows      number of rows in the dungeon matrix
@@ -70,6 +70,8 @@ public class Dungeon {
         rooms.add(room);
     }
 
+    // ********************** Accessor Methods ********************** //
+
     public User getUser(){
         return this.user;
     }
@@ -95,6 +97,9 @@ public class Dungeon {
     protected void setRoomColumns(int roomColumns) {
         this.roomColumns = roomColumns;
     }
+
+
+    // ********************** Common Methods ********************** //
 
     @Override
     public boolean equals(Object o) {

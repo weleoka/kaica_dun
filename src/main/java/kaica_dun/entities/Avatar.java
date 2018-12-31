@@ -17,16 +17,20 @@ public class Avatar extends Fighter {
     @JoinColumn(name = "userID", nullable = true, updatable = false)
     private User user;
 
-    //TODO Very uncertain about correct cascades here! Think more!
+    //Seems correct to cascade almost everything here, so ALL is a good PH-strategy. TODO remove some of the cascades.
     //http://docs.jboss.org/hibernate/stable/annotations/reference/en/html_single/#entity-hibspec-cascade
     @OneToOne(mappedBy = "wielder", optional = true, cascade = CascadeType.ALL)
-    private Item equippedWeapon;
+    private Weapon equippedWeapon;
 
     @OneToOne(mappedBy = "wearer", optional = true, cascade = CascadeType.ALL)
-    private Item equippedArmor;
+    private Armor equippedArmor;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Inventory inventory = new Inventory();
 
     @Transient
-    private Random rand;    // todo: randomness only applies to monster generation?
+    private Random rand;
 
     public Avatar() {
     }
@@ -37,7 +41,7 @@ public class Avatar extends Fighter {
         this.name = name;
         this.description = description;
         this.type = "User Avatar";
-        this.user = user;
+        this.user = user;               //For use in the dealDamage-method.
     }
 
 
@@ -46,11 +50,29 @@ public class Avatar extends Fighter {
         super(name, description, type, currHealth, maxHealth, damage, armor);
         this.user = user;
     }
-    // Creating a new avatar - depreciated?
-    public Avatar(User user, String name, String description, String type, int currHealth, int maxHealth, int damage, int armor, Item equippedWeapon) {
+
+    /**
+     * Full constructor.
+     *
+     * @param user
+     * @param name
+     * @param description
+     * @param type
+     * @param currHealth
+     * @param maxHealth
+     * @param damage
+     * @param armor
+     * @param equippedWeapon
+     * @param equippedArmor
+     * @param inventory
+     */
+    public Avatar(User user, String name, String description, String type, int currHealth, int maxHealth, int damage,
+                  int armor, Weapon equippedWeapon, Armor equippedArmor, Inventory inventory) {
         super(name, description, type, currHealth, maxHealth, damage, armor);
         this.user = user;
         equippWeapon(equippedWeapon);
+        equippArmor(equippedArmor);
+        this.inventory = inventory;
     }
 
 
@@ -88,7 +110,7 @@ public class Avatar extends Fighter {
 
     //TODO change after Item inheritance is done
     //Equipp a weapon in your EquippedWeapon slot
-    public void equippWeapon(Item weapon){
+    public void equippWeapon(Weapon weapon){
         this.equippedWeapon = weapon;
         equippedWeapon.setWielder(this);
     }
@@ -102,7 +124,7 @@ public class Avatar extends Fighter {
 
     //TODO change after Item inheritance is done
     //Equipp a weapon in your EquippedWeapon slot
-    public void equippArmor(Item armor){
+    public void equippArmor(Armor armor){
         this.equippedArmor = armor;
         equippedArmor.setWearer(this);
     }
@@ -115,9 +137,9 @@ public class Avatar extends Fighter {
     }
 
     //TODO replace once item inheritance is up and running!
-    public Item getEquippedArmor() { return equippedArmor; }
+    public Armor getEquippedArmor() { return equippedArmor; }
 
-    public void setEquippedArmor(Item equippedArmor) { this.equippedArmor = equippedArmor; }
+    public void setEquippedArmor(Armor equippedArmor) { this.equippedArmor = equippedArmor; }
 
     @Override
     public void takeDamage(int damage) {

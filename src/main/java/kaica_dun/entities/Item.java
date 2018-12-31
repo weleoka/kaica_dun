@@ -1,5 +1,7 @@
 package kaica_dun.entities;
 
+import kaica_dun.interfaces.Describable;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -11,7 +13,9 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "Item")
-public class Item {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "item_discriminator")
+public class Item implements Describable {
 
     // Field variable declarations and Hibernate annotation scheme
     @Id
@@ -27,6 +31,11 @@ public class Item {
     @Column(name = "description")
     private String description;
 
+    //points to the inventory of an avatar if the item is located there
+    @ManyToOne
+    @JoinColumn(name = "fighterID", nullable = true, updatable = true)
+    private Inventory inventory;
+
     //TODO move out to Weapon once Item inheritance is up and running!
     @Basic
     @Column(name = "low_damage")
@@ -37,29 +46,23 @@ public class Item {
     @Column(name = "damage_range")
     private int damageRange;
 
-    //TODO move out to Armor once Item inheritance is up and running!
-    @Basic
-    @Column(name = "armor_value")
-    private int armorValue;
-
     @OneToOne(optional = true)
     @JoinColumn(name = "wielderID")
     private Avatar wielder;
 
-    @OneToOne(optional = true)
-    @JoinColumn(name = "wearerID")
-    private Avatar wearer;
 
     // Default empty constructor
     public Item(){}
 
-    public Item(String itemName, String description, int lowDamage, int damageRange, int armorValue) {
+    public Item(String itemName, String description, int lowDamage, int damageRange) {
         this.itemName = itemName;
         this.description = description;
         this.lowDamage = lowDamage;
         this.damageRange = damageRange;
-        this.armorValue = armorValue;
     }
+
+
+    // ********************** Accessor Methods ********************** //
 
     public Long getItemId() {
         return id;
@@ -83,30 +86,12 @@ public class Item {
 
     public void setDescription(String description) { this.description = description; }
 
-    public int getLowDamage() { return lowDamage; }
+    public Inventory getInventory() { return this.inventory; }
 
-    public void setLowDamage(int lowDamage) { this.lowDamage = lowDamage; }
+    public void setInventory(Inventory inventory) { this.inventory = inventory; }
 
-    public int getDamageRange() { return damageRange; }
 
-    public void setDamageRange(int damageRange) { this.damageRange = damageRange; }
-
-    public int getArmorValue() { return armorValue; }
-
-    public void setArmorValue(int armorValue) { this.armorValue = armorValue; }
-
-    public Avatar getWielder() {
-        return this.wielder;
-    }
-
-    public void setWielder(Avatar wielder) {
-        this.wielder = wielder;
-    }
-
-    public Avatar getWearer() { return this.wearer; }
-
-    public void setWearer(Avatar wearer) { this.wearer = wearer; }
-
+    // ********************** Common Methods ********************** //
 
     @Override
     public boolean equals(Object o) {
@@ -118,13 +103,12 @@ public class Item {
                 Objects.equals(description, that.description) &&
                 lowDamage == that.lowDamage &&
                 damageRange == that.damageRange &&
-                Objects.equals(wielder, that.wielder) &&
-                Objects.equals(wearer, that.wearer);
+                Objects.equals(wielder, that.wielder);
 
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, itemName, description, lowDamage, damageRange, wielder, wearer);
+        return Objects.hash(id, itemName, description, lowDamage, damageRange, wielder);
     }
 }
