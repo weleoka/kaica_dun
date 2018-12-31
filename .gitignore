@@ -11,14 +11,15 @@
 # 5) The whole .idea/ folder because its always changing.
 .idea
 
-# 6) *kaiwork* Files that are for reference and copy paste.
+# 6) *kaiwork* Files and folders that are for reference and copy paste.
 *.kaiWork*
+kaiWork/
 
 # 7) log file folder
 log/
 
-# Contains database acces details
-hibernate.cfg.xml
+# Contains database access details. no longer as moved to application.properties.
+#hibernate.cfg.xml
 
 #1 Ignore Gradle project-specific cache directory and Gradle build output directory
 .gradle

@@ -4,62 +4,33 @@ package kaica_dun.dao;
 import kaica_dun_system.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Session;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
-
-
-import java.io.Serializable;
 import java.util.List;
 
-
+// If you annotate your DAO with @MappedSuperclass then you can put your NamedQueries in the DAO.
+// Don't forget to add the package of the DAO or the DAO-class itself to the list of annotated packages/classes.
 //@NamedQuery(name="User.findByName", query="SELECT u FROM User u WHERE u.userName = :name")
-public class UserHDao extends AbstractHDao<User, Long> implements UserDaoInterface {
+//@MappedSuperclass
+//@Component
+@Repository ("UserDao")
+public class UserDao extends AbstMainDao<User, Long > implements UserDaoInterface {
 
     private static final Logger log = LogManager.getLogger();
 
-    @Override
-    public Long create(User newInstance) {
-        log.debug("Creating a new user in db.");
+    @Autowired
+    //@PersistenceContext
+    protected EntityManager entityManager;
 
-        Session session = getSession();
-        Long result = -1L;
+    //@Transactional
+    //@Query("SELECT user FROM User user WHERE user.username=(:username)")
+    //public User findByUsername(@Param("username") String userName);
 
-        try {
-            Serializable ser = session.save(newInstance);
-
-            if (ser != null) {
-                result = (Long) ser;
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        session.getTransaction().commit();
-
-        return result;
-
-        // long lastId = session.createSQLQuery("SELECT LAST_INSERT_ID()").uniqueResult().longValue();
-
-    }
-
-    @Override
-    public User read(Long aLong) {
-        Session session = getSession();
-        User user = session.get(User.class, aLong);
-        session.getTransaction().commit();
-
-        return user;
-    }
-
-
-    @Override
-    public void update(User transientObject) {
-    }
-
-    @Override
-    public void delete(User persistentObject) {
-    }
+    // @Autowired - dont need it here?
+    UserDao() {}
 
     /**
      * Read from storage and find a user by user name.
@@ -91,8 +62,22 @@ public class UserHDao extends AbstractHDao<User, Long> implements UserDaoInterfa
      * @param name a String to query with
      * @return a User instance
      */
+    @Override
     public User findByName(String name){
-        Session session = getSession();
+        EntityManager em = getEntityManager();
+        // Method using JPQL named query and EntityManager
+        //Named query is at annotation on class
+
+        TypedQuery<User> query = em.createNamedQuery("User.findByName", User.class);
+        query.setParameter("name", name);
+        List<User> result = query.getResultList();
+
+        if (result.size() == 1) {
+            return result.get(0);
+        } else {
+            log.warn("More than one user with the same name.");
+            throw new RuntimeException("More than one user with the same name.");
+        }
 
 
         /* // Method using JPA criteria API.
@@ -109,38 +94,18 @@ public class UserHDao extends AbstractHDao<User, Long> implements UserDaoInterfa
 
 
         // Hibernate namedQuery and annotations
-        @SuppressWarnings("unchecked")
-        TypedQuery<User> query = session.getNamedQuery("User.findByName");
-        List<User> results = query.setParameter("name", name).getResultList();
+
+        //TypedQuery<User> query = getEntityManager().getNamedQuery("User.findByName");
+        //User result = query.setParameter("name", name).getSingleResult();
         // Create query in code.
         //TypedQuery<User> que = session.createNamedQuery("User.findByName", User.class);
 
 
-        /* // Method using JPQL named query and EntityManager
-        // Named query is at annotation on class
-        EntityManager em = EntityManagerFactory.createEntityManager();
-        TypedQuery<User> query = em.createNamedQuery("User.findByName", User.class);
-        List<User> results = query.getResultList();
 
         // Another form of createNamedQuery receives a query name and returns a Query instance:
-        Query query = em.createNamedQuery("SELECT c FROM Country c");
-        List results = query.getResultList();
-        */
-        session.getTransaction().commit();
-
-        return results.get(0);
-
-
+        //Query query = em.createNamedQuery("SELECT c FROM Country c");
+        //List results = query.getResultList();
+        //session.getTransaction().commit();
     }
 
-
-    // Removed as it is existing in in userDao
-    //public User findById(Long aLong) {
-      //  return null;
-    //}
-
-    @Override
-    public List<User> findByExample(User exampleInstance) {
-        return null;
-    }
 }

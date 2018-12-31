@@ -1,11 +1,14 @@
 package kaica_dun_system;
 
+
 import kaica_dun.dao.DaoFactory;
-import kaica_dun.dao.UserDaoInterface;
+import kaica_dun.dao.UserDao;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,46 +24,57 @@ import java.util.List;
  * todo: hash and salt of passwords.
  *
  */
-public class UserControl {
-
-    // Singleton
-    private static UserControl ourInstance = new UserControl();
-    public static UserControl getInstance() {
-        return ourInstance;
-    } // Change to package private after testing.
-    private UserControl() {}
+@Service
+public class UserServiceImpl implements UserService {
 
     // Fields declared
     private static final Logger log = LogManager.getLogger();
-    private static final SessionUtil SESSIONUTIL = SessionUtil.getInstance();
-    private Session session = null;
 
-    // DAO
-    private DaoFactory daoFactory = DaoFactory.instance(DaoFactory.HIBERNATE);
+    @Autowired
+    private UserDao userDao;
+
+    @Autowired
+    private UserRepository userRepository;
 
     // User management
     private User selectedUser;  // user object that is subject to operations.
     private User authenticatedUser; // holds a reference to the user object if isAuthenticated.
 
+    /* // Removedconstructor injection in favour of property injection.
+    @Autowired
+    public UserServiceImpl() { }
 
+    // Removed constructor so now
+       this.userDao = new DaoFactory().getUserDao();
+    }
+
+    @Autowired
+    public UserServiceImpl(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
+*/
+
+
+    // ********************** Persistence Methods ********************** //
     /**
      * Create a new user.
      *
      * @param user a User instance
      * @return boolean          true if user was created
      */
-    public Long create(User user) { // Change to package private after testing.
+    @Transactional
+    public Long createUser(User user) { // Change to package private after testing.
         log.debug("Creating user '{}'.", user.getName());
 
         try {
-            UserDaoInterface udao = daoFactory.getUserDao();
-            Long userId = udao.create(user);
+            User nUser = userDao.create(user);
 
-            if (userId != null) {
+            if (nUser.getId() != null) {
                 log.debug("Created new user with ID: '{}'.", user.getId());
                 this.selectedUser = user;
 
-                return userId;
+                return nUser.getId();
             }
 
         } catch (Exception e) {
@@ -78,13 +92,13 @@ public class UserControl {
      *
      * @param userId a Long of the users id to look for
      */
+    @Transactional(readOnly = true)
     public User findById(Long userId) { // Change to package private after testing.
         log.debug("Searching for user with ID: {}.", userId);
         User user = new User();
 
         try {
-            UserDaoInterface udao = daoFactory.getUserDao();
-            user = udao.read(userId);
+            userDao.read(userId);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -114,13 +128,14 @@ public class UserControl {
      *
      * @param userName a String of the name too look for
      */
+    @Transactional(readOnly = false)
     public User findByName(String userName) { // Change to package private after testing.
         log.debug("Searching for user '{}' by name.", userName);
         User user = new User();
 
         try {
-            UserDaoInterface udao = daoFactory.getUserDao();
-            user = udao.findByName(userName);
+
+            userDao.findByName(userName);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -150,12 +165,13 @@ public class UserControl {
      *  Alternatively select all userNames from User table and just print them.
      *
      */
+    @Transactional(readOnly = false)
     public List<User> findAll() {
         log.debug("Fetch all user objects");
 
         try {
-            UserDaoInterface udao = daoFactory.getUserDao();
-            return udao.findAll();
+
+            return this.userDao.findAll();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -172,7 +188,7 @@ public class UserControl {
     /**
      * Check if the username is available
      */
-    boolean checkNewUserName(String userName) {
+    public boolean checkNewUserName(String userName) {
 
         if (findByName(userName) != null) {
             this.selectedUser = null;
@@ -188,7 +204,7 @@ public class UserControl {
      *
      * @return boolean              true if user is set and thus logged in
      */
-    boolean isAuthenticatedUser() {
+    public boolean isAuthenticatedUser() {
 
         if (this.authenticatedUser == null) {
 
@@ -203,11 +219,11 @@ public class UserControl {
      *
      * @return userID           true if user is set and thus logged in
      */
-    Long getSelectedUserID() {
+    public Long getSelectedUserID() {
         return this.selectedUser.getId();
     }
 
-    User getSelectedUser() {
+    public User getSelectedUser() {
         return this.selectedUser;
     }
 
@@ -218,17 +234,16 @@ public class UserControl {
      * setAuthenticated
      *
      * The selectedUser variable should already be set before this method is called.
-     * This method implements a check that the selectedUser in the UserControl is indeed the same
+     * This method implements a check that the selectedUser in the UserServiceImpl is indeed the same
      * object as is stored in the database.
      *
      * todo: The user has already been fetched from database once, this method fetches it again,
      *  which is probably excessive.
      * todo: Refactor: move id, name and password checks into user class.
      */
-    boolean loginSelectedUser() {
-        session = SESSIONUTIL.getSession();
-        User that = this.session.get(User.class, this.getSelectedUserID());
-        session.getTransaction().commit();
+    public boolean loginSelectedUser() {
+
+        User that = userDao.read(this.getSelectedUserID());
 
         log.debug("Comparing passwords: '{}' VS '{}'", this.selectedUser.getPassword(), that.getPassword()); //debug line.
 
@@ -247,11 +262,10 @@ public class UserControl {
         return false;
     }
 
-
     /**
      * set authenticatedUser to null.
      */
-    void logoutSelectedUser() {
+    public void logoutSelectedUser() {
         this.authenticatedUser = null;
     }
 

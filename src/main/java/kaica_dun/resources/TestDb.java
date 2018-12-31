@@ -1,21 +1,19 @@
 package kaica_dun.resources;
 
-
 import kaica_dun.dao.DaoFactory;
-import kaica_dun.dao.MainHDao;
+import kaica_dun.dao.MainDao;
 
+import kaica_dun.dao.UserDao;
 import kaica_dun.entities.*;
 import kaica_dun.util.Util;
 
-import kaica_dun_system.MenuMain;
-import kaica_dun_system.SessionUtil;
-import kaica_dun_system.User;
-import kaica_dun_system.UserControl;
+import kaica_dun_system.*;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Session;
 
-import java.io.Serializable;
+import org.springframework.stereotype.Component;
+
 import java.util.List;
 
 
@@ -25,21 +23,21 @@ import java.util.List;
  * Primarily concerning persistence issues but can be used for logical
  * operation tests too.
  */
+@Component
 public class TestDb {
 
     private static final Logger log = LogManager.getLogger();
-    private static final SessionUtil SESSIONUTIL = SessionUtil.getInstance();
-    private static Session session = null;
 
-    private static DaoFactory daoFactory = DaoFactory.instance(DaoFactory.HIBERNATE);
     //static MainHDao mdao = daoFactory.getMainHDao();
 
     /**
-     * This class is static and can be called directly.
+     * This method is static and can be called directly.
      *
      * @param args              an array of strings of arguments
      */
     public static void main(String[] args) {
+
+        UserServiceImpl usi = new UserServiceImpl();
 
         Long newUserId = createUserTest(2);
         printUserListTest();
@@ -68,7 +66,7 @@ public class TestDb {
      */
     public static Long createUserTest (int userSelection) {
         log.info("\n------> Persisting new User test...");
-        UserControl USERCONTROL = UserControl.getInstance();
+        UserServiceImpl us = new UserServiceImpl();
         User user;
 
         switch (userSelection) {
@@ -78,7 +76,6 @@ public class TestDb {
                 break;
 
             case 2:
-                log.debug("ADSFASDFSAF");
                 user = new User("kai", "123");
                 break;
 
@@ -87,7 +84,7 @@ public class TestDb {
                 break;
         }
 
-        Long newUserId = USERCONTROL.create(user);
+        Long newUserId = us.createUser(user);
 
         if (newUserId != null) {
             log.info("User '{}' with password '{}' created.", user.getName(), user.getPassword());
@@ -98,15 +95,15 @@ public class TestDb {
 
     public static User findUserByIdTest(Long userId) {
         log.info("\n------> Finding user by id test...");
-        UserControl USERCONTROL = UserControl.getInstance();
+        UserServiceImpl us = new UserServiceImpl();
 
-        return USERCONTROL.findById(1L);
+        return us.findById(1L);
     }
 
     public static void printUserListTest() {
         log.info("\n------> Output user list test...");
-        UserControl USERCONTROL = UserControl.getInstance();
-        List<User> userList = USERCONTROL.findAll();
+        UserServiceImpl us = new UserServiceImpl();
+        List<User> userList = us.findAll();
         System.out.println("- - userlist - -");
         for (int id = 0; id < userList.size(); id++) {
 
@@ -123,9 +120,9 @@ public class TestDb {
 
     public static User findUserByNameTest(String userName) {
         log.info("\n------> Finding user by name...");
-        UserControl USERCONTROL = UserControl.getInstance();
+        UserServiceImpl us = new UserServiceImpl();
 
-        return USERCONTROL.findByName(userName);
+        return us.findByName(userName);
     }
 
 
@@ -136,7 +133,8 @@ public class TestDb {
     @SuppressWarnings("unchecked")
     public static void MonsterCreatorTest() {
         log.info("\n------> MONSTER_CREATION_TEST:");
-        MainHDao mdao = daoFactory.getMainHDao();
+        MainDao mdao = new MainDao(Monster.class);
+
         try {
 
             for (int i = 0; i < 4; i++) {
@@ -148,7 +146,6 @@ public class TestDb {
             e.printStackTrace();
             log.error(e);
         }
-        mdao.clear();
     }
 
 
@@ -159,15 +156,13 @@ public class TestDb {
     public static void MonsterCreatorTest2() {
         log.info("\n------> MONSTER_CREATION_TEST:");
 
-        session = SESSIONUTIL.getSession();
-        log.info("\n------> MONSTER_CREATION_TEST:");
+        MainDao mdao = new MainDao(Monster.class);
 
         // Make 5 monsters - get ready to run!!
         for (int i = 0; i < 4; i++) {
             Monster monster = MonsterFactory.makeOrc();
-            session.save(monster);
+            mdao.create(monster);
         }
-        session.getTransaction().commit();
 
         Util.sleeper(1200); // Artificial delay
     }
@@ -192,11 +187,10 @@ public class TestDb {
 
         /// Searching with the DAO processes
         log.debug("Using DAO to search for an monster by ID: " + monsterID);
-        MainHDao mdao = daoFactory.getMainHDao();
-        Session session = mdao.getSession();
-        session.getTransaction().commit();
+        MainDao mdao = new MainDao(Monster.class);
+
         try {
-            Monster monsterFoundByDao = (Monster) mdao.findById(monsterID, false);
+            Monster monsterFoundByDao = (Monster) mdao.read(monsterID);
             log.debug("Found a monster by ID: " + monsterFoundByDao.toString());
 
         } catch (NullPointerException e) {
@@ -210,7 +204,7 @@ public class TestDb {
      */
     public static void DungeonCreatorTest(User newUser) {
         log.info("\n------> DUNGEON_TEST:");
-        session = SESSIONUTIL.getSession();
+        MainDao mdao = new MainDao(Dungeon.class);
 
         // Make static dungeon
         log.info("making Dungeon...");
@@ -223,8 +217,7 @@ public class TestDb {
         log.info("User that owns Dungeon: {}", d.getUser().getName() );
 
         Util.sleeper(800);
-        session.save(d);
-        session.getTransaction().commit();
+        mdao.create(d);
 
         Util.sleeper(800); // Artificial sleep.
     }
@@ -257,17 +250,16 @@ public class TestDb {
 
 
         //saving the persistent PlayerAvatar
-        session = SESSIONUTIL.getSession();
-        session.save(pa1);
-        session.save(pa2);
+        MainDao mdao = new MainDao(Avatar.class);
+        mdao.create(pa1);
+        mdao.create(pa2);
         pa2.takeDamage(13);     //Should set KaiWithWeaponEquipsArmors currHealth to 80(90 - (13 - 3))
-        session.update(pa2);    //Works!
+        mdao.update(pa2);    //Works!
 
-        session.save(wep2);
+        mdao.create(wep2);
 
 
         //TODO test to unequipp weapon and update database to see if it works as planned
-        session.getTransaction().commit();
         Util.sleeper(800); // Artificial sleep.
     }
 
@@ -281,99 +273,3 @@ public class TestDb {
         mainMenu.display();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /* - - - Example 1 - Usage of session and sessionFactory
-
-    public void testBasicUsage() {
-        // create a couple of events...
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.save( new Event( "Our very first event!", new Date() ) );
-        session.save( new Event( "A follow up event", new Date() ) );
-        session.getTransaction().commit();
-        session.close();
-
-        // now lets pull events from the database and list them
-        session = sessionFactory.openSession();
-        session.beginTransaction();
-        List result = session.createQuery( "from Event" ).list();
-        for ( Event event : (List<Event>) result ) {
-            System.out.println( "Event (" + event.getDate() + ") : " + event.getTitle() );
-        }
-        session.getTransaction().commit();
-        session.close();
-    }
-
-
-
-        // - - - Example 2 - Usage of JPA EntityManager
-        EntityManager em = null;
-
-        // TM is a class bundled with the example code of Hibernate 5 book.
-        UserTransaction tx = TM.getUserTransaction();
-
-        try {
-            tx.begin();
-            em = JPA.createEntityManager();
-
-
-            tx.commit();
-
-        } catch (Exception ex) {
-
-            // Transaction rollback, exception handling
-            // ...
-
-        } finally {
-
-            if (em != null && em.isOpen())
-                em.close(); // You create it, you close it!
-
-        }
-
-
-        // - - - Example 3 - Seting an item to persist
-        Item item = new Item();
-        item.setName("Some Item");
-
-        em.persist(item);
-        Long ITEM_ID = item.getId();
-
-### session.persist(my_object) Vs. session.save(my_object)
-persist() is well defined. It makes a transient instance persistent. However, it doesn't guarantee that the identifier value will be assigned to the persistent instance immediately, the assignment might happen at flush time. The spec doesn't say that, which is the problem I have with persist().
-persist() also guarantees that it will not execute an INSERT statement if it is called outside of transaction boundaries. This is useful in long-running conversations with an extended Session/persistence context. A method like persist() is required.
-save() does not guarantee the same, it returns an identifier, and if an INSERT has to be executed to get the identifier (e.g. "identity" generator, not "sequence"), this INSERT happens immediately, no matter if you are inside or outside of a transaction. This is not good in a long-running conversation with an extended Session/persistence context.
-
-
-### Detecting entity state using the identifier
-Sometimes you need to know whether an entity instance is transient, persistent, or
-detached. An entity instance is in persistent state if EntityManager#contains(e)
-returns true. It’s in transient state if PersistenceUnitUtil#getIdentifier(e)
-returns null. It’s in detached state if it’s not persistent, and Persistence-
-UnitUtil#getIdentifier(e) returns the value of the entity’s identifier property.
-You can get to the PersistenceUnitUtil from the EntityManagerFactory.
-
-There are two issues to look out for. First, be aware that the identifier value may not
-be assigned and available until the persistence context is flushed. Second, Hibernate
-(unlike some other JPA providers) never returns null from Persistence-
-UnitUtil#getIdentifier() if your identifier property is a primitive (a long and not
-a Long).
-
-
-
-    */

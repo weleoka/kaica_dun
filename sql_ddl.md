@@ -6,8 +6,6 @@ GRANT ALL ON kaica_dun_db.* TO 'kaica_dun_db_user'@'localhost';
 
 ALTER USER 'kaica_dun_db_user'@'localhost' IDENTIFIED BY 'enter112';
 
-
-
 CREATE TABLE `employee` (                                
 `id` int(11) NOT NULL AUTO_INCREMENT,                  
 `emp_name` varchar(100) DEFAULT NULL,                  

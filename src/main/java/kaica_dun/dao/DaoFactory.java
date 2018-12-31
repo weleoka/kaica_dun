@@ -1,40 +1,38 @@
 package kaica_dun.dao;
 
+import org.hibernate.Session;
+
 import java.io.Serializable;
 
-public abstract class DaoFactory<T, ID extends Serializable> {
+public class DaoFactory<T, ID extends Serializable> {
 
-
-    /**
-     * Creates a standalone DAOFactory that returns un-managed DAO
-     * beans for use in any environment Hibernate has been configured
-     * for. Uses SessionUtil/SessionFactory and Hibernate context
-     * propagation (CurrentSessionContext), thread-bound or transaction-bound,
-     * and transaction scoped.
-     */
-    public static final Class HIBERNATE = DaoFactoryH.class;
-
-
-    /**
-     * Factory method for instantiation of concrete factories.
-     * This is using reflection to create classes dynamically at runtime.
-     */
-    public static DaoFactory instance(Class factory) {
+    @SuppressWarnings("unchecked")
+    private MainDao instantiateMainDao(Class daoClass) {
         try {
-            return (DaoFactory)factory.getConstructor().newInstance();
+            return (MainDao) daoClass.getDeclaredConstructor().newInstance();
         } catch (Exception ex) {
-            throw new RuntimeException("Couldn't create DAOFactory: " + factory);
+            throw new RuntimeException("Can not instantiate the main DAO: " + daoClass, ex);
         }
     }
 
-    // Add your DAO interfaces here
-    //public abstract RoomDao getRoomDao();
+    private UserDao instantiateUserDao() {
+        try {
+            return new UserDao(); //(UserDao) daoClass.getDeclaredConstructor().newInstance();
+        } catch (Exception ex) {
+            throw new RuntimeException("Can not instantiate UserDAO.");
+        }
+    }
 
-    //public abstract MonsterDao getMonsterDao();
+    public MainDao getMainDao(Class<T> entityClass) {
+        return (MainDao) instantiateMainDao(entityClass);
+    }
 
-    //public abstract ItemDao getItemDao();
+    public UserDao getUserDao() {
+        return instantiateUserDao();
+    }
 
-    public abstract UserDaoInterface getUserDao();
-
-    public abstract MainHDao getMainHDao();
+    // You could override this if you don't want HibernateUtil for lookup
+/*    protected Session getCurrentSession() {
+        return null; //SessionUtil.getInstance().getSession();
+    }*/
 }

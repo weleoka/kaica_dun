@@ -8,6 +8,8 @@ import static java.lang.System.out;
 
 public class MenuMain extends Menu {
 
+
+
     public MenuMain () {}
     /**
      * Menu default to all players.
@@ -146,7 +148,7 @@ public class MenuMain extends Menu {
 
         if (USERCONTROL.checkNewUserName(creds[0])) {
 
-            if (USERCONTROL.create(user) != null) {
+            if (USERCONTROL.createUser(user) != null) {
                 out.println(UI_strings.createUserSuccess);
                 Util.sleeper(700);
                 this.display(); // display the main menu again, could instead go direct to logged in.

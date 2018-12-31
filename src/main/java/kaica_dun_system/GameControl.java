@@ -1,13 +1,16 @@
 package kaica_dun_system;
 
+import kaica_dun.dao.DaoFactory;
+import kaica_dun.dao.MainDao;
 import kaica_dun.entities.Avatar;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Session;
 
-import javax.persistence.Query;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 
+@Service
 public class GameControl {
     // Singleton
     private static GameControl ourInstance = new GameControl();
@@ -18,8 +21,8 @@ public class GameControl {
 
     // Fields declared
     private static final Logger log = LogManager.getLogger();
-    private static final SessionUtil SESSIONUTIL = SessionUtil.getInstance();
     private Avatar avatar = null;
+
 
     /**
      * Uses native SQL.
@@ -31,17 +34,18 @@ public class GameControl {
     public List<Avatar> fetchAvatarByUser(User user) {
         log.debug("Searching for all Avatars belonging to {}.", user.getName());
 
-        Session session = SESSIONUTIL.getSession();
-        Query query = session.createSQLQuery(
+        MainDao avatarDao = new DaoFactory().getMainDao(Avatar.class);
+
+ /*       Query query = session.createSQLQuery(
                 "SELECT * FROM fighter avatar WHERE avatar.userID LIKE :userID")
                 .addEntity(Avatar.class)
                 .setParameter("userID", user.getId());
         List<Avatar> avatarList = query.getResultList(); // List<User> result = query.getResultList();
         session.getTransaction().commit();
+*/
+        //log.debug("A List of avatars was fetched: {}", avatarList);
 
-        log.debug("A List of avatars was fetched: {}", avatarList);
-
-        return avatarList;
+        return null;//avatarList;
     }
 
 
@@ -53,9 +57,8 @@ public class GameControl {
      */
     public boolean createNewAvatar(String[] arr, User user) {
         Avatar avatar = new Avatar(arr[0], arr[1], user);
-        Session session = SESSIONUTIL.getSession();
-        session.save(avatar);
-        session.getTransaction().commit();
+        MainDao dao = new DaoFactory().getMainDao(Avatar.class);
+        dao.create(avatar);
         return true;
     }
 
