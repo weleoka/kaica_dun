@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
@@ -21,8 +22,8 @@ public class UserDao extends AbstMainDao<User, Long > implements UserDaoInterfac
 
     private static final Logger log = LogManager.getLogger();
 
-    @Autowired
-    //@PersistenceContext
+    //@Autowired
+    @PersistenceContext
     protected EntityManager entityManager;
 
     //@Transactional

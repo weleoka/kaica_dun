@@ -1,5 +1,11 @@
 package kaica_dun_system;
 
+/*
+Example of using JPQL named query
+JPA also provides a way for building static queries, as named queries, using the @NamedQuery and @NamedQueries annotations.
+It is considered to be a good practice in JPA to prefer named queries over dynamic queries when possible.
+*/
+
 import kaica_dun.entities.Dungeon;
 
 import javax.persistence.*;
@@ -9,12 +15,6 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "User")
-
-/*
-Example of using JPQL named query
-JPA also provides a way for building static queries, as named queries, using the @NamedQuery and @NamedQueries annotations.
-It is considered to be a good practice in JPA to prefer named queries over dynamic queries when possible.
-*/
 @NamedQuery(name="User.findByName", query="SELECT u FROM User u WHERE u.userName = :name")
 public class User {
 
@@ -32,8 +32,8 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Dungeon> dungeons = new LinkedList<Dungeon>();
+    @OneToMany(mappedBy = "User", cascade = CascadeType.ALL)
+    private List<Dungeon> dungeon = new LinkedList<Dungeon>();
 
 
     // Default empty constructor
@@ -88,15 +88,15 @@ public class User {
         this.password = password;
     }
 
-    public List<Dungeon> getDungeons() {
-        return this.dungeons;
+    public List<Dungeon> getDungeon() {
+        return this.dungeon;
     }
 
     public void addDungeon(Dungeon dungeon) {
         if (dungeon == null) {
             throw new IllegalArgumentException("Can't add a null Dungeon.");
         }
-        this.getDungeons().add(dungeon);
+        this.getDungeon().add(dungeon);
         dungeon.setUser(this);
     }
 

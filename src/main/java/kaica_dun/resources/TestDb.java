@@ -228,8 +228,8 @@ public class TestDb {
      */
     public static void AvatarEqItemTest(User newUser) {
         log.info("\n------> PlayerAvatar and Item test:");
-
-        //Make Item (weapon PH, needs more inheritance)
+        log.info("\nTest disabled.");
+ /*       //Make Item (weapon PH, needs more inheritance)
         Item wep1 = new Item("The Smashanizer","Smashing!", 4, 2,0);
         //Make item that is not to be equipped to PlayerAvatar to check optionality of OneToOne
         Item wep2 = new Item("Rusty Sword", "Nobody wants to equipp a rusty sword...", 0, 1,0);
@@ -260,7 +260,7 @@ public class TestDb {
 
 
         //TODO test to unequipp weapon and update database to see if it works as planned
-        Util.sleeper(800); // Artificial sleep.
+        Util.sleeper(800); // Artificial sleep.*/
     }
 
 

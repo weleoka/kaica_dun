@@ -23,10 +23,19 @@
         <!--<Logger name="org.hibernate.ejb.Ejb3Configuration" level="ERROR"/>-->
 
         <!-- SQL statements and parameters -->
-        <Logger name="org.hibernate" level="info"/>
+        <Logger name="org.hibernate" level="warn"/>
         <Logger name="org.hibernate.SQL" level="info"/>
         <Logger name="org.hibernate.type.descriptor.sql" level="info"/>
         <Logger name="org.hibernate.stat" level="info"/>
+
+
+        <Logger name="org.springframework.boot" level="warn"/>
+        <Logger name="org.springframework.core" level="warn"/>
+        <Logger name="org.springframework.jdbc" level="warn"/>
+        <Logger name="org.springframework.beans" level="warn"/>
+
+
+
         <Root level="debug">
 
             <!-- Which appenders to use -->

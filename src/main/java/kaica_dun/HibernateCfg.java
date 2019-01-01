@@ -1,4 +1,4 @@
-package kaica_dun_system;
+package kaica_dun;
 
 
 import org.hibernate.SessionFactory;
@@ -40,7 +40,7 @@ public class HibernateCfg {
     public LocalSessionFactoryBean getSessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(getDataSource());
-        sessionFactory.setPackagesToScan(new String[] { "kaica_dun.main" });
+        sessionFactory.setPackagesToScan(new String[] {"kaica_dun.main", "kaica_dun_system"});
         sessionFactory.setHibernateProperties(getHibernateProperties());
         return sessionFactory;
     }

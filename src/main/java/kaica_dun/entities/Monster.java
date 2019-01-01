@@ -1,10 +1,8 @@
 package kaica_dun.entities;
 
 import kaica_dun.interfaces.Describable;
-import kaica_dun.interfaces.Lootable;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @DiscriminatorValue("MO")

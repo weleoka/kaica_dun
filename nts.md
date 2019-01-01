@@ -63,7 +63,7 @@
 
 // @Resource
 
-
+// @EntityScan
 
 ## Next to know about Spring
 - Why Autowire to the interface rather than an implementing class? How does Spring know the context?
