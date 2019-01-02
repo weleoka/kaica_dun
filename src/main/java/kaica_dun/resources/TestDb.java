@@ -1,9 +1,12 @@
 package kaica_dun.resources;
 
-import kaica_dun_system.User;
-import kaica_dun_system.UserServiceImpl;
+import kaica_dun.dao.UserInterface;
+
+import kaica_dun_system.*;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,17 +25,20 @@ public class TestDb {
     private static final Logger log = LogManager.getLogger();
 
     @Autowired
-    private UserServiceImpl service;
+    private UserInterface mdao;
 
     /**
      * This method is static and can be called directly.
      *
      */
     public void main() {
-        Long newUserId = createUserTest(2);
+
+        UserServiceImpl usi = new UserServiceImpl();
+
+        //Long newUserId = createUserTest(2);
         printUserListTest();
-        User userById = findUserByIdTest(newUserId);
-        User userByName = findUserByNameTest("kai");
+        User userById = findUserByIdTest((long) 1);
+        //User userByName = findUserByNameTest("kai");
         //UserLoginTest();
 
         //MonsterCreatorTest();
@@ -54,8 +60,9 @@ public class TestDb {
      * @param userSelection int defining which defaults to make user from
      * @return user a User instance
      */
-    public Long createUserTest (int userSelection) {
-        log.info("\n\n------> Persisting new User test...");
+    public static Long createUserTest (int userSelection) {
+        log.info("\n------> Persisting new User test...");
+        UserServiceImpl us = new UserServiceImpl();
         User user;
 
         switch (userSelection) {
@@ -73,7 +80,7 @@ public class TestDb {
                 break;
         }
 
-        Long newUserId = this.service.createUser(user);
+        Long newUserId = us.createUser(user);
 
         if (newUserId != null) {
             log.info("User '{}' with password '{}' created.", user.getName(), user.getPassword());
@@ -82,22 +89,23 @@ public class TestDb {
         return newUserId;
     }
 
-    public User findUserByIdTest(Long userId) {
-        log.info("\n\n------> Finding user by id test...");
+    public static User findUserByIdTest(Long userId) {
+        log.info("\n------> Finding user by id test...");
+        UserServiceImpl us = new UserServiceImpl();
 
-        return this.service.findById(1L);
+        return us.findById(1L);
     }
 
-    public void printUserListTest() {
-        log.info("\n\n------> Output user list test...");
-
-        List<User> userList = this.service.findAll();
+    public static void printUserListTest() {
+        log.info("\n------> Output user list test...");
+        UserServiceImpl us = new UserServiceImpl();
+        List<User> userList = us.findAll();
         System.out.println("- - userlist - -");
         for (int id = 0; id < userList.size(); id++) {
 
             try {
                 User currentUser = userList.get(id);
-                System.out.printf("%s - UserName: %s\n", id + 1, currentUser.getName());
+                System.out.printf("%s - UserName: %s\n", id, currentUser.getName());
 
             } catch (IndexOutOfBoundsException e) {
                 log.warn("Index out of bounds: {}", e);
@@ -106,10 +114,11 @@ public class TestDb {
         System.out.println();
     }
 
-    public User findUserByNameTest(String userName) {
-        log.info("\n\n------> Finding user by name...");
-        User user = this.service.findByName(userName);
-        return user;
+    public static User findUserByNameTest(String userName) {
+        log.info("\n------> Finding user by name...");
+        UserServiceImpl us = new UserServiceImpl();
+
+        return us.findByName(userName);
     }
 
 /*

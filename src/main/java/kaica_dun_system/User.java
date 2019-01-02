@@ -115,6 +115,12 @@ public class User {
     // ********************** Common Methods ********************** //
 
     @Override
+    public String toString() {
+        return "User: " + userName + "\n" + "Id: " + id;
+
+    }
+
+    @Override
     public boolean equals(Object o) {
 
         if (this == o) {

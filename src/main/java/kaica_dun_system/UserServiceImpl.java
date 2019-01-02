@@ -33,12 +33,32 @@ public class UserServiceImpl implements UserService {
     private static final Logger log = LogManager.getLogger();
 
     @Autowired
-    private UserInterface userInterface;
+    private UserInterface daoInterface;
+
+//    @Autowired
+//    private UserInterface mDao;
+
+    //@Autowired
+    //private UserRepository userRepository;
 
     // User management
     private User selectedUser;  // user object that is subject to operations.
     private User authenticatedUser; // holds a reference to the user object if isAuthenticated.
 
+    /* // Removedconstructor injection in favour of property injection.
+    @Autowired
+    public UserServiceImpl() { }
+
+    // Removed constructor so now
+       this.userDao = new DaoFactory().getUserDao();
+    }
+
+    @Autowired
+    public UserServiceImpl(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
+*/
 
 
     // ********************** Persistence Methods ********************** //
@@ -51,9 +71,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public Long createUser(User user) { // Change to package private after testing.
         log.debug("Creating user '{}'.", user.getName());
+        log.debug("user ID '{}'.", user.getId() + "");
 
         try {
-            User nUser = (User) userInterface.save(user);
+            User nUser = (User) daoInterface.save(user);
 
             if (nUser.getId() != null) {
                 log.debug("Created new user with ID: '{}'.", user.getId());
@@ -83,7 +104,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
 
         try {
-            Optional<User> dbUser = userInterface.findById(userId);
+            Optional<User> dbUser = daoInterface.findById(userId);
             if (dbUser.isPresent()) {
                 user = dbUser.get();
             }
@@ -122,7 +143,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
 
         try {
-            user = userInterface.findByName(userName);
+            //user = daoInterface.findByName(userName);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -158,7 +179,7 @@ public class UserServiceImpl implements UserService {
 
         try {
 
-            return (List) userInterface.findAll();
+            return daoInterface.findAll();
 
         } catch (Exception e) {
             e.printStackTrace();
