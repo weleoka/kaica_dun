@@ -17,8 +17,9 @@ public class Avatar extends Fighter {
     @JoinColumn(name = "userID", nullable = true, updatable = false)
     private User user;
 
-    @OneToOne(mappedBy = "currAvatar")
-    private User currUser;
+
+//    @OneToOne(mappedBy = "currAvatar")
+//    private User currUser;
 
     //Unidirectional, the Dungeon doesn't "know" there's an avatar in it. TODO think! TEST!
     @OneToOne
@@ -145,9 +146,9 @@ public class Avatar extends Fighter {
 
     public Inventory getInventory() { return inventory; }
 
-    public User getCurrUser() { return currUser; }
+//    public User getCurrUser() { return currUser; }
 
-    public void setCurrUser(User currUser) { this.currUser = currUser; }
+ //   public void setCurrUser(User currUser) { this.currUser = currUser; }
 
     public Dungeon getCurrDungeon() { return currDungeon; }
 

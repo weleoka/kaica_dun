@@ -9,7 +9,7 @@ import kaica_dun_system.User;
 public class movementUtil {
 
     private movementUtil() {}
-
+/*
     public static void moveCurrAvatar(User user, Direction direction) {
         Avatar avatar = user.getCurrAvatar();
         Dungeon dungeon = user.getCurrDungeon();
@@ -53,4 +53,5 @@ public class movementUtil {
                 break;
         }
     }
+    */
 }
