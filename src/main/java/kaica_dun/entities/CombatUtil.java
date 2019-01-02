@@ -37,7 +37,7 @@ public class CombatUtil {
 
             for (Monster m : monsters) {
                 if (m.getCurrHealth() <= 0) {
-                    //TODO Implement orphan removal on Room.monsters to autodelete dead monsters from the db?
+                    //TODO Check if orphan removal on Room.monsters works as it should
                     monsters.remove(m);
                 }
             }
