@@ -52,7 +52,7 @@ public class Avatar extends Fighter {
     }
 
     /**
-     * Full constructor.
+     * Full constructor. Needs a Weapon and Armor.
      *
      * @param user
      * @param name
@@ -75,6 +75,25 @@ public class Avatar extends Fighter {
         this.inventory = inventory;
     }
 
+    /**
+     * Barebones constructor. Creates an avatar without a weapon or an armor.
+     *
+     * @param user
+     * @param name
+     * @param description
+     * @param type
+     * @param currHealth
+     * @param maxHealth
+     * @param damage
+     * @param armor
+     * @param inventory
+     */
+    public Avatar(User user, String name, String description, String type, int currHealth, int maxHealth, int damage,
+                  int armor, Inventory inventory) {
+        super(name, description, type, currHealth, maxHealth, damage, armor);
+        this.user = user;
+        this.inventory = inventory;
+    }
 
 
     /**
@@ -105,41 +124,52 @@ public class Avatar extends Fighter {
         this.user = user;
     }
 
+    public Armor getEquippedArmor() { return equippedArmor; }
+
+    public void setEquippedArmor(Armor equippedArmor) { this.equippedArmor = equippedArmor; }
+
+    public Weapon getEquippedWeapon() { return equippedWeapon; }
+
+    public void setEquippedWeapon(Weapon equippedWeapon) { this.equippedWeapon = equippedWeapon; }
+
+    public Inventory getInventory() { return inventory; }
+
+
 
     // ********************** Model Methods ********************** //
 
-    //TODO change after Item inheritance is done
     //Equipp a weapon in your EquippedWeapon slot
     public void equippWeapon(Weapon weapon){
         this.equippedWeapon = weapon;
         equippedWeapon.setWielder(this);
+        //Remove the weapon from Avatar.inventory if it's in the inventory
+        if (this.getInventory().getItems().contains(weapon)) {
+            this.getInventory().getItems().remove(weapon);
+        }
     }
 
-    //TODO change after Item inheritance is done
     //Unequipp your currently equipped weapon. Set references to null on both entities.
     public void unEquippWeapon(){
         equippedWeapon.setWielder(null);
         this.equippedWeapon = null;
     }
 
-    //TODO change after Item inheritance is done
     //Equipp a weapon in your EquippedWeapon slot
     public void equippArmor(Armor armor){
         this.equippedArmor = armor;
         equippedArmor.setWearer(this);
+        //Remove the armor from Avatar.inventory if it's in the inventory
+        if (this.getInventory().getItems().contains(armor)) {
+            this.getInventory().getItems().remove(armor);
+        }
     }
 
-    //TODO change after Item inheritance is done
     //Unequipp your currently equipped weapon. Set references to null on both entities.
     public void unEquippArmor(){
         equippedArmor.setWearer(null);
         this.equippedArmor = null;
     }
 
-    //TODO replace once item inheritance is up and running!
-    public Armor getEquippedArmor() { return equippedArmor; }
-
-    public void setEquippedArmor(Armor equippedArmor) { this.equippedArmor = equippedArmor; }
 
     @Override
     public void takeDamage(int damage) {
