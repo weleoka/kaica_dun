@@ -12,10 +12,12 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 
 import javax.sql.DataSource;
+import java.net.URISyntaxException;
 import java.util.Properties;
 
 @Configuration
@@ -64,6 +66,16 @@ public class HibernateCfg {
         txManager.setSessionFactory(sessionFactory);
         return txManager;
     }
+/*
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory() throws URISyntaxException {
+        LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
+        entityManagerFactoryBean.setDataSource(getDataSource());
+        entityManagerFactoryBean.setPackagesToScan(new String[] {"kaica_dun", "kaica_dun_system"});
+        //additional config of factory
+
+        return entityManagerFactoryBean;
+    }*/
 
 }
 

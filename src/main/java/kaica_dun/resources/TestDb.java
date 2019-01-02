@@ -1,9 +1,6 @@
 package kaica_dun.resources;
 
-import kaica_dun.dao.DaoFactory;
-import kaica_dun.dao.MainDao;
-
-import kaica_dun.dao.UserDao;
+import kaica_dun.dao.DaoInterface;
 import kaica_dun.entities.*;
 import kaica_dun.util.Util;
 
@@ -12,13 +9,15 @@ import kaica_dun_system.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.swing.text.html.parser.Entity;
+
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -32,14 +31,15 @@ public class TestDb {
 
     private static final Logger log = LogManager.getLogger();
 
-    //static MainHDao mdao = daoFactory.getMainHDao();
+    @Autowired
+    private DaoInterface mdao;
 
     /**
      * This method is static and can be called directly.
      *
      * @param args              an array of strings of arguments
      */
-    public static void main(String[] args) {
+    public void main() {
 
         //UserServiceImpl usi = new UserServiceImpl();
 
@@ -143,15 +143,15 @@ public class TestDb {
      * Testing creation of monsters..!
      */
     @SuppressWarnings("unchecked")
-    public static void MonsterCreatorTest() {
+    public  void MonsterCreatorTest() {
         log.info("\n------> MONSTER_CREATION_TEST:");
-        MainDao mdao = new MainDao(Monster.class);
+
 
         try {
 
             for (int i = 0; i < 4; i++) {
                 Monster monster = MonsterFactory.makeOrc();
-                mdao.create(monster);
+                mdao.save(monster);
             }
 
         } catch (Exception e) {
@@ -165,15 +165,14 @@ public class TestDb {
      * Testing creation of monsters..2!
      */
     @SuppressWarnings("unchecked")
-    public static void MonsterCreatorTest2() {
+    public void MonsterCreatorTest2() {
         log.info("\n------> MONSTER_CREATION_TEST:");
 
-        MainDao mdao = new MainDao(Monster.class);
 
         // Make 5 monsters - get ready to run!!
         for (int i = 0; i < 4; i++) {
             Monster monster = MonsterFactory.makeOrc();
-            mdao.create(monster);
+            mdao.save(monster);
         }
 
         Util.sleeper(1200); // Artificial delay
@@ -183,7 +182,7 @@ public class TestDb {
     /**
      *  A test for searching for a monster using the DAO system.
      */
-    public static void MonsterFinderTest() {
+    public void MonsterFinderTest() {
         log.info("\n------> MONSTER_FINDER_TEST:");
         Long monsterID = 1L;   // L is marks it as long
 
@@ -199,11 +198,15 @@ public class TestDb {
 
         /// Searching with the DAO processes
         log.debug("Using DAO to search for an monster by ID: " + monsterID);
-        MainDao mdao = new MainDao(Monster.class);
+        Monster monster = null;
 
         try {
-            Monster monsterFoundByDao = (Monster) mdao.read(monsterID);
-            log.debug("Found a monster by ID: " + monsterFoundByDao.toString());
+            Optional<Monster> dbMonster = mdao.findById(monsterID);
+
+            if (dbMonster.isPresent()) {
+                monster = dbMonster.get();
+            }
+            log.debug("Found a monster by ID: " + monster.toString());
 
         } catch (NullPointerException e) {
             log.debug("No monster found with that ID: " + e);
@@ -214,9 +217,9 @@ public class TestDb {
     /**
      * Testing creation of static Dungeon
      */
-    public static void DungeonCreatorTest(User newUser) {
+    public void DungeonCreatorTest(User newUser) {
         log.info("\n------> DUNGEON_TEST:");
-        MainDao mdao = new MainDao(Dungeon.class);
+        //MainDao mdao = new MainDao(Dungeon.class);
 
         // Make static dungeon
         log.info("making Dungeon...");
@@ -229,7 +232,7 @@ public class TestDb {
         log.info("User that owns Dungeon: {}", d.getUser().getName() );
 
         Util.sleeper(800);
-        mdao.create(d);
+        mdao.save(d);
 
         Util.sleeper(800); // Artificial sleep.
     }

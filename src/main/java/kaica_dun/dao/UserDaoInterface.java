@@ -1,15 +1,12 @@
 package kaica_dun.dao;
 
 import kaica_dun_system.User;
+import org.springframework.stereotype.Repository;
 
-
-public interface UserDaoInterface extends DaoInterface<User, Long> {
+public interface UserDaoInterface {//extends DaoInterface<User, Long> {
 
     //T findByName(NAME name);
 
-    /**
-     * @Depreciated testing use of the new method findByUsername
-     */
     User findByName(String name);
 
     //User findByUsername(String name);

@@ -1,11 +1,13 @@
 package kaica_dun_system;
 
-import kaica_dun.dao.DaoFactory;
-import kaica_dun.dao.MainDao;
+
+import kaica_dun.dao.DaoInterface;
+
 import kaica_dun.entities.Avatar;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +25,8 @@ public class GameControl {
     private static final Logger log = LogManager.getLogger();
     private Avatar avatar = null;
 
+    @Autowired
+    private DaoInterface mdao;
 
     /**
      * Uses native SQL.
@@ -34,7 +38,7 @@ public class GameControl {
     public List<Avatar> fetchAvatarByUser(User user) {
         log.debug("Searching for all Avatars belonging to {}.", user.getName());
 
-        MainDao avatarDao = new DaoFactory().getMainDao(Avatar.class);
+        //MainDao avatarDao = new DaoFactory().getMainDao(Avatar.class);
 
  /*       Query query = session.createSQLQuery(
                 "SELECT * FROM fighter avatar WHERE avatar.userID LIKE :userID")
@@ -57,8 +61,9 @@ public class GameControl {
      */
     public boolean createNewAvatar(String[] arr, User user) {
         Avatar avatar = new Avatar(arr[0], arr[1], user);
-        MainDao dao = new DaoFactory().getMainDao(Avatar.class);
-        dao.create(avatar);
+        //MainDao dao = new DaoFactory().getMainDao(Avatar.class);
+
+        mdao.save(avatar);
         return true;
     }
 

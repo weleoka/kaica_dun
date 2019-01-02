@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@DiscriminatorValue("ARM")
+@DiscriminatorValue("WEP")
 public class Weapon extends Item {
 
     //TODO move out to Weapon once Item inheritance is up and running!

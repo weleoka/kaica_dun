@@ -1,17 +1,17 @@
 package kaica_dun_system;
 
-
-import kaica_dun.dao.DaoFactory;
+import kaica_dun.dao.DaoInterface;
 import kaica_dun.dao.UserDao;
-
+import kaica_dun.dao.UserDaoInterface;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -32,10 +32,13 @@ public class UserServiceImpl implements UserService {
     private static final Logger log = LogManager.getLogger();
 
     @Autowired
-    private UserDao userDao;
+    private UserDaoInterface userDao;
 
     @Autowired
-    private UserRepository userRepository;
+    private DaoInterface mDao;
+
+    //@Autowired
+    //private UserRepository userRepository;
 
     // User management
     private User selectedUser;  // user object that is subject to operations.
@@ -69,7 +72,7 @@ public class UserServiceImpl implements UserService {
         log.debug("Creating user '{}'.", user.getName());
 
         try {
-            User nUser = userDao.create(user);
+            User nUser = (User) mDao.save(user);
 
             if (nUser.getId() != null) {
                 log.debug("Created new user with ID: '{}'.", user.getId());
@@ -99,7 +102,10 @@ public class UserServiceImpl implements UserService {
         User user = new User();
 
         try {
-            userDao.read(userId);
+            Optional<User> dbUser = mDao.findById(userId);
+            if (dbUser.isPresent()) {
+                user = dbUser.get();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -135,8 +141,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
 
         try {
-
-            userDao.findByName(userName);
+            user = userDao.findByName(userName);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -172,7 +177,7 @@ public class UserServiceImpl implements UserService {
 
         try {
 
-            return this.userDao.findAll();
+            return (List) mDao.findAll();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -244,7 +249,9 @@ public class UserServiceImpl implements UserService {
      */
     public boolean loginSelectedUser() {
 
-        User that = userDao.read(this.getSelectedUserID());
+        //User that = userDao.findById(userId);
+        Long userId = this.getSelectedUserID();
+        User that = findById(userId);
 
         log.debug("Comparing passwords: '{}' VS '{}'", this.selectedUser.getPassword(), that.getPassword()); //debug line.
 
