@@ -20,6 +20,7 @@ https://o7planning.org/en/10201/java-hibernate-tutorial-for-beginners -->
         <mapping class="kaica_dun.entities.Fighter"/>
         <mapping class="kaica_dun.entities.Item"/>
         <mapping class="kaica_dun.entities.ItemConsumable"/>
+        <!-- <mapping class="kaica_dun.entities.ItemEquippable"/> --> <!-- removed -->
         <mapping class="kaica_dun.entities.Monster"/>
         <mapping class="kaica_dun.entities.Room"/>
 

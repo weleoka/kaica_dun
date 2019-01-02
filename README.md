@@ -8,17 +8,20 @@ This is a dungeon adventure game for the java VM. It uses Java Persistance API v
 ## Joblist & QnA
 todo: What is @ManyToOne(fetch = FetchType.LAZY)?
 
-
 todo: put a global annotations file package-info.java file in a sensible place (maybe `/src/main/resources`) and make sure that it is read by Hibernate.
     This file will make it possible to have globally accessible special queries etc.
     This file is also the location for the enhanced sequence strategy defenition.
 
+
+Q: Could it not be better to have table names in Plural and the entities/classes in singular. A matter of taste.
 
 Q: How do transactions work in Hibernate. Does a call to Session.save() execute a query directly 
     or will they be batched for execution only after a Transaction.commit() call?
 
 Q: Hiberante requirement of a protected default no-arguments constructor. (Can it be public)?
     // todo: Is for example not Room's constructor supposed to be protected according to Hibernate's standards?
+A: Code in general that creates objects via reflection use Class<T>.newInstance() to create a new 
+    instance of your classes. This method requires a public no-arg constructor to be able to instantiate the object.
 
 
 Q: Discriminator column and uniqe ID column for Avatar?

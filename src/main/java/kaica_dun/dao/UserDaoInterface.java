@@ -1,11 +1,7 @@
 package kaica_dun.dao;
 
 import kaica_dun_system.User;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 
 public interface UserDaoInterface extends DaoInterface<User, Long> {
 

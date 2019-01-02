@@ -40,7 +40,7 @@ public class HibernateCfg {
     public LocalSessionFactoryBean getSessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(getDataSource());
-        sessionFactory.setPackagesToScan(new String[] {"kaica_dun.main", "kaica_dun_system"});
+        sessionFactory.setPackagesToScan(new String[] {"kaica_dun", "kaica_dun_system"});//, "kaica_dun.dao"});
         sessionFactory.setHibernateProperties(getHibernateProperties());
         return sessionFactory;
     }

@@ -17,7 +17,7 @@ import java.util.List;
 //@NamedQuery(name="User.findByName", query="SELECT u FROM User u WHERE u.userName = :name")
 //@MappedSuperclass
 //@Component
-@Repository ("UserDao")
+@Repository("UserDao")
 public class UserDao extends AbstMainDao<User, Long > implements UserDaoInterface {
 
     private static final Logger log = LogManager.getLogger();

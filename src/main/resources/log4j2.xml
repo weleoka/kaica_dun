@@ -33,6 +33,7 @@
         <Logger name="org.springframework.core" level="warn"/>
         <Logger name="org.springframework.jdbc" level="warn"/>
         <Logger name="org.springframework.beans" level="warn"/>
+        <Logger name="org.springframework.beans.factory" level="debug"/>
 
 
 

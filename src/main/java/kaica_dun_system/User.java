@@ -32,12 +32,12 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(mappedBy = "User", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
     private List<Dungeon> dungeon = new LinkedList<Dungeon>();
 
 
     // Default empty constructor
-    public User(){}
+    public User() {}
 
     public User(String userName, String password) {
         this.userName = userName;

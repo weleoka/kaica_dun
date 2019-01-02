@@ -15,7 +15,7 @@ import java.util.List;
  * @see Avatar
  */
 @Entity
-@Table(name = "inventory")
+@Table(name = "Inventory")
 public class Inventory {
 
     @Id
@@ -31,7 +31,7 @@ public class Inventory {
     @Column(name= "max_size")
     private int maxSize;
 
-    @OneToMany(mappedBy = "avatar_inventory", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL) // Kai: Changed from "avatar_inventory"
     private List<Item> items;
 
     public Inventory() {}
