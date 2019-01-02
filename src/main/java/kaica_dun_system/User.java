@@ -40,7 +40,7 @@ public class User {
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private Dungeon currDungeon;
 
-    @OneToOne(optional = true, cascade = CascadeType.ALL)  //TODO cascades?
+    @OneToOne(mappedBy ="id", optional = true, cascade = CascadeType.ALL)  //TODO cascades?
     private Avatar currAvatar;
 
     // Default empty constructor
