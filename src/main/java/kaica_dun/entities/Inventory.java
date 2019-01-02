@@ -70,7 +70,7 @@ public class Inventory {
         //Remove the bidirectional pointers between the item and any Armor/Weapon and the Avatar.
         if (item.getClass() == Weapon.class) {
             if (((Weapon)item).getWielder() == null){
-                ((Weapon) item).getWielder().unEquippWeapon();
+                ((Weapon)item).getWielder().unEquippWeapon();
             }
         } else if (item.getClass() == Armor.class) {
             ((Armor)item).getWearer().unEquippArmor();
