@@ -1,5 +1,9 @@
 package kaica_dun;
 
+import kaica_dun.config.DataSourceCfg;
+import kaica_dun.config.EntityManagerFactoriesCfg;
+import kaica_dun.config.HibernateCfg;
+import kaica_dun.config.TransactionManagersCfg;
 import kaica_dun.resources.TestDb;
 
 import kaica_dun_system.User;
@@ -23,14 +27,14 @@ import static java.lang.System.out;
 //@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class,HibernateJpaAutoConfiguration.class})
 @ComponentScan({"kaica_dun_system", "kaica_dun"})
 //@EntityScan({"kaica_dun.entities", "kaica_dun_system"})
-@Import(HibernateCfg.class)
+//@Import({HibernateCfg.class})//, DataSourceCfg.class, EntityManagerFactoriesCfg.class, TransactionManagersCfg.class})
 public class App implements CommandLineRunner {
     // This logger has a name so that it can retrieved for use from anywhere in the application.
     private static final Logger log = LogManager.getLogger("MAIN");
     //private static final Logger logger = LogManager.getLogger(App.class);
 
-    @Autowired
-    private HibernateCfg hibernateCfg;
+    //@Autowired
+    //private HibernateCfg hibernateCfg;
 
     @Autowired
     private UserServiceImpl service;

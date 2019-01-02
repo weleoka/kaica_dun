@@ -1,8 +1,6 @@
 package kaica_dun_system;
 
 
-import kaica_dun.dao.DaoInterface;
-
 import kaica_dun.entities.Avatar;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,8 +23,6 @@ public class GameControl {
     private static final Logger log = LogManager.getLogger();
     private Avatar avatar = null;
 
-    @Autowired
-    private DaoInterface mdao;
 
     /**
      * Uses native SQL.
@@ -63,7 +59,7 @@ public class GameControl {
         Avatar avatar = new Avatar(arr[0], arr[1], user);
         //MainDao dao = new DaoFactory().getMainDao(Avatar.class);
 
-        mdao.save(avatar);
+        //dao.save(avatar);
         return true;
     }
 

@@ -1,13 +1,13 @@
 package kaica_dun_system;
 
-import kaica_dun.dao.DaoInterface;
-import kaica_dun.dao.UserDao;
-import kaica_dun.dao.UserDaoInterface;
+
+import kaica_dun.dao.UserInterface;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -26,16 +26,17 @@ import java.util.Optional;
  *
  */
 @Service
+@EnableTransactionManagement
 public class UserServiceImpl implements UserService {
 
     // Fields declared
     private static final Logger log = LogManager.getLogger();
 
     @Autowired
-    private UserDaoInterface userDao;
+    private UserInterface daoInterface;
 
-    @Autowired
-    private DaoInterface mDao;
+//    @Autowired
+//    private UserInterface mDao;
 
     //@Autowired
     //private UserRepository userRepository;
@@ -72,7 +73,7 @@ public class UserServiceImpl implements UserService {
         log.debug("Creating user '{}'.", user.getName());
 
         try {
-            User nUser = (User) mDao.save(user);
+            User nUser = (User) daoInterface.save(user);
 
             if (nUser.getId() != null) {
                 log.debug("Created new user with ID: '{}'.", user.getId());
@@ -102,7 +103,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
 
         try {
-            Optional<User> dbUser = mDao.findById(userId);
+            Optional<User> dbUser = daoInterface.findById(userId);
             if (dbUser.isPresent()) {
                 user = dbUser.get();
             }
@@ -141,7 +142,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
 
         try {
-            user = userDao.findByName(userName);
+            //user = daoInterface.findByName(userName);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -177,7 +178,7 @@ public class UserServiceImpl implements UserService {
 
         try {
 
-            return (List) mDao.findAll();
+            return (List) daoInterface.findAll();
 
         } catch (Exception e) {
             e.printStackTrace();

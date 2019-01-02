@@ -1,4 +1,4 @@
-package kaica_dun;
+package kaica_dun.config;
 
 
 import org.hibernate.SessionFactory;
@@ -9,43 +9,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-
-import javax.sql.DataSource;
-import java.net.URISyntaxException;
 import java.util.Properties;
 
 @Configuration
-@EnableTransactionManagement
 @PropertySource(value = { "classpath:application.properties" })
 public class HibernateCfg {
 
     @Autowired
     private Environment env;
-
-    @Bean
-    public DataSource getDataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(env.getRequiredProperty("datasource.driver"));
-        dataSource.setUrl(env.getRequiredProperty("datasource.url"));
-        dataSource.setUsername(env.getRequiredProperty("datasource.username"));
-        dataSource.setPassword(env.getRequiredProperty("datasource.password"));
-        return dataSource;
-    }
-
-    @Bean // Set up a shared Hibernate SessionFactory in a Spring application context.
-    public LocalSessionFactoryBean getSessionFactory() {
-        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-        sessionFactory.setDataSource(getDataSource());
-        sessionFactory.setPackagesToScan(new String[] {"kaica_dun", "kaica_dun_system"});//, "kaica_dun.dao"});
-        sessionFactory.setHibernateProperties(getHibernateProperties());
-        return sessionFactory;
-    }
 
     private Properties getHibernateProperties() {
         Properties properties = new Properties();
@@ -57,6 +28,16 @@ public class HibernateCfg {
         return properties;
     }
 
+/*
+    @Bean // Set up a shared Hibernate SessionFactory in a Spring application context.
+    public LocalSessionFactoryBean getSessionFactory() {
+        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+        sessionFactory.setDataSource(getDataSource());
+        sessionFactory.setPackagesToScan(new String[] {"kaica_dun", "kaica_dun_system"});//, "kaica_dun.dao"});
+        sessionFactory.setHibernateProperties(getHibernateProperties());
+        return sessionFactory;
+    }
+
     @Bean
     public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
         // Binds a Hibernate Session from the specified factory to the thread, potentially allowing for one
@@ -65,7 +46,18 @@ public class HibernateCfg {
         HibernateTransactionManager txManager = new HibernateTransactionManager();
         txManager.setSessionFactory(sessionFactory);
         return txManager;
-    }
+    }*/
+
+
+
+/*    @Bean(name = "entityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean emf() {
+        LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
+        emf.setDataSource(getDataSource());
+        emf.setPackagesToScan(new String[] {"your.package"});
+        emf.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+        return emf;
+    }*/
 /*
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() throws URISyntaxException {

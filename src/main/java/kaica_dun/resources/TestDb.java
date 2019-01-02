@@ -1,8 +1,6 @@
 package kaica_dun.resources;
 
-import kaica_dun.dao.DaoInterface;
-import kaica_dun.entities.*;
-import kaica_dun.util.Util;
+import kaica_dun.dao.UserInterface;
 
 import kaica_dun_system.*;
 
@@ -12,12 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
 import java.util.List;
-import java.util.Optional;
 
 
 /**
@@ -32,12 +25,11 @@ public class TestDb {
     private static final Logger log = LogManager.getLogger();
 
     @Autowired
-    private DaoInterface mdao;
+    private UserInterface mdao;
 
     /**
      * This method is static and can be called directly.
      *
-     * @param args              an array of strings of arguments
      */
     public void main() {
 
@@ -54,7 +46,7 @@ public class TestDb {
 
         //MonsterFinderTest();
 
-        DungeonCreatorTest(userById);
+        //DungeonCreatorTest(userById);
 
         //AvatarEqItemTest(newUser);
         System.exit(0);  // Quit the application.
@@ -129,11 +121,11 @@ public class TestDb {
         return us.findByName(userName);
     }
 
+/*
 
-
-    /**
+    *//**
      * Testing creation of monsters..!
-     */
+     *//*
     @SuppressWarnings("unchecked")
     public  void MonsterCreatorTest() {
         log.info("\n------> MONSTER_CREATION_TEST:");
@@ -153,9 +145,9 @@ public class TestDb {
     }
 
 
-    /**
+    *//**
      * Testing creation of monsters..2!
-     */
+     *//*
     @SuppressWarnings("unchecked")
     public void MonsterCreatorTest2() {
         log.info("\n------> MONSTER_CREATION_TEST:");
@@ -171,21 +163,21 @@ public class TestDb {
     }
 
 
-    /**
+    *//**
      *  A test for searching for a monster using the DAO system.
-     */
+     *//*
     public void MonsterFinderTest() {
         log.info("\n------> MONSTER_FINDER_TEST:");
         Long monsterID = 1L;   // L is marks it as long
 
         /// Searching with only Hibernate
-/*        log.debug("Using Hibernate no DAO to search for an entity by ID: " + monsterID);
+*//*        log.debug("Using Hibernate no DAO to search for an entity by ID: " + monsterID);
         session = SESSIONUTIL.getSession();
         Monster monster = session.get(Monster.class, monsterID);
 
         if (monster != null) { // Have to test if this works, am I forgetting something.
             log.debug("Monster found: " + monster.toString());
-        }*/
+        }*//*
 
 
         /// Searching with the DAO processes
@@ -206,9 +198,9 @@ public class TestDb {
     }
 
 
-    /**
+    *//**
      * Testing creation of static Dungeon
-     */
+     *//*
     public void DungeonCreatorTest(User newUser) {
         log.info("\n------> DUNGEON_TEST:");
         //MainDao mdao = new MainDao(Dungeon.class);
@@ -230,13 +222,13 @@ public class TestDb {
     }
 
 
-    /**
+    *//**
      * Testing creation of Avatar with weapon
-     */
+     *//*
     public static void AvatarEqItemTest(User newUser) {
         log.info("\n------> PlayerAvatar and Item test:");
         log.info("\nTest disabled.");
- /*       //Make Item (weapon PH, needs more inheritance)
+ *//*       //Make Item (weapon PH, needs more inheritance)
         Item wep1 = new Item("The Smashanizer","Smashing!", 4, 2,0);
         //Make item that is not to be equipped to PlayerAvatar to check optionality of OneToOne
         Item wep2 = new Item("Rusty Sword", "Nobody wants to equipp a rusty sword...", 0, 1,0);
@@ -267,16 +259,16 @@ public class TestDb {
 
 
         //TODO test to unequipp weapon and update database to see if it works as planned
-        Util.sleeper(800); // Artificial sleep.*/
+        Util.sleeper(800); // Artificial sleep.*//*
     }
 
 
-    /**
+    *//**
      * Testing user functionality
-     */
+     *//*
     public static void UserLoginTest() {
         log.info("\n------> User login test");
         MenuMain mainMenu = new MenuMain();
         mainMenu.display();
-    }
+    }*/
 }
