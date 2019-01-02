@@ -18,8 +18,8 @@ kaiWork/
 # 7) log file folder
 log/
 
-# Contains database access details. no longer as moved to application.properties.
-#hibernate.cfg.xml
+# Contains database access details. hibernate.cfg.xml no longer ignored as moved to application.properties.
+application.properties
 
 #1 Ignore Gradle project-specific cache directory and Gradle build output directory
 .gradle
