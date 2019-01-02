@@ -33,7 +33,7 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(mappedBy = "dungeonID", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
     private List<Dungeon> dungeon = new LinkedList<Dungeon>();
 
     //TODO dafuq? Usure of mappings, currently mapping onto same column for both Dungeon and Avatar, works?
