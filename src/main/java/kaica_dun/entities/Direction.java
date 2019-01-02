@@ -2,6 +2,8 @@ package kaica_dun.entities;
 
 /**
  * Clockwise representation of the four directions with a string for printing and a number for basic algebra.
+ *
+ * TODO directionNumber possibly superflous, matches the ordinal.
  */
 public enum Direction {
     N    ("North", 0),

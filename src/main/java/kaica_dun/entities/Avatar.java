@@ -17,6 +17,17 @@ public class Avatar extends Fighter {
     @JoinColumn(name = "userID", nullable = true, updatable = false)
     private User user;
 
+    @OneToOne(mappedBy = "currAvatar")
+    private User currUser;
+
+    //Unidirectional, the Dungeon doesn't "know" there's an avatar in it. TODO think! TEST!
+    @OneToOne
+    private Dungeon currDungeon;
+
+    //Unidirectional, the Room doesn't "know" there's an avatar in it. TODO think! TEST!
+    @OneToOne
+    private Room currRoom;
+
     //Seems correct to cascade almost everything here, so ALL is a good PH-strategy. TODO remove some of the cascades.
     //http://docs.jboss.org/hibernate/stable/annotations/reference/en/html_single/#entity-hibspec-cascade
     @OneToOne(mappedBy = "wielder", optional = true, cascade = CascadeType.ALL)
@@ -134,6 +145,17 @@ public class Avatar extends Fighter {
 
     public Inventory getInventory() { return inventory; }
 
+    public User getCurrUser() { return currUser; }
+
+    public void setCurrUser(User currUser) { this.currUser = currUser; }
+
+    public Dungeon getCurrDungeon() { return currDungeon; }
+
+    public void setCurrDungeon(Dungeon currDungeon) { this.currDungeon = currDungeon; }
+
+    public Room getCurrRoom() { return currRoom; }
+
+    public void setCurrRoom(Room currRoom) { this.currRoom = currRoom; }
 
 
     // ********************** Model Methods ********************** //

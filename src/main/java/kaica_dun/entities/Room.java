@@ -75,7 +75,7 @@ public class Room {
     }
 
 
-
+    // ********************** Accessor Methods ********************** //
 
     public Long getRoomId() {
         return id;
@@ -84,20 +84,6 @@ public class Room {
     public void setRoomId(Long roomId) {
         this.id = roomId;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Room that = (Room) o;
-        return id.equals(that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
 
     public Dungeon getDungeon() {
         return this.dungeon;
@@ -123,11 +109,6 @@ public class Room {
         this.monsters = monsters;
     }
 
-    public void addMonster(Monster monster) {
-        this.monsters.add(monster);
-        monster.setRoom(this);
-    }
-
     public List<Direction> getExits() {
         return exits;
     }
@@ -144,7 +125,36 @@ public class Room {
         this.incomingDoor = incomingDoor;
     }
 
-    //Return an array of possible outgoing door directions
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Room that = (Room) o;
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+
+    // ********************** Model Methods ********************** //
+
+    //use this method to manage the bidirectional pointers
+    public void addMonster(Monster monster) {
+        this.monsters.add(monster);
+        monster.setRoom(this);
+    }
+
+    //use this method to manage the bidirectional pointers
+    public void removeMonster(Monster monster) {
+        monster.setRoom(null);
+        monsters.remove(monster);
+    }
+
+    //Return an array of possible outgoing door directions, not used currently.
+    //TODO: Develop for random dungeon generation.
     //TODO: Possible refactor. This method has a thousand and one possible implementations, dunno which is the best.
     private Direction[] legalDirections() {
 
@@ -161,7 +171,6 @@ public class Room {
 
         //check for walls
         dungeon.getRooms().get(0);
-
 
         //check for existing rooms
 
