@@ -33,32 +33,12 @@ public class UserServiceImpl implements UserService {
     private static final Logger log = LogManager.getLogger();
 
     @Autowired
-    private UserInterface daoInterface;
-
-//    @Autowired
-//    private UserInterface mDao;
-
-    //@Autowired
-    //private UserRepository userRepository;
+    private UserInterface userInterface;
 
     // User management
     private User selectedUser;  // user object that is subject to operations.
     private User authenticatedUser; // holds a reference to the user object if isAuthenticated.
 
-    /* // Removedconstructor injection in favour of property injection.
-    @Autowired
-    public UserServiceImpl() { }
-
-    // Removed constructor so now
-       this.userDao = new DaoFactory().getUserDao();
-    }
-
-    @Autowired
-    public UserServiceImpl(UserDao userDao) {
-        this.userDao = userDao;
-    }
-
-*/
 
 
     // ********************** Persistence Methods ********************** //
@@ -73,7 +53,7 @@ public class UserServiceImpl implements UserService {
         log.debug("Creating user '{}'.", user.getName());
 
         try {
-            User nUser = (User) daoInterface.save(user);
+            User nUser = (User) userInterface.save(user);
 
             if (nUser.getId() != null) {
                 log.debug("Created new user with ID: '{}'.", user.getId());
@@ -103,7 +83,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
 
         try {
-            Optional<User> dbUser = daoInterface.findById(userId);
+            Optional<User> dbUser = userInterface.findById(userId);
             if (dbUser.isPresent()) {
                 user = dbUser.get();
             }
@@ -142,7 +122,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
 
         try {
-            //user = daoInterface.findByName(userName);
+            user = userInterface.findByName(userName);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -178,7 +158,7 @@ public class UserServiceImpl implements UserService {
 
         try {
 
-            return (List) daoInterface.findAll();
+            return (List) userInterface.findAll();
 
         } catch (Exception e) {
             e.printStackTrace();

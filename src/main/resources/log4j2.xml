@@ -27,6 +27,7 @@
         <Logger name="org.hibernate.SQL" level="info"/>
         <Logger name="org.hibernate.type.descriptor.sql" level="info"/>
         <Logger name="org.hibernate.stat" level="info"/>
+        <Logger name="org.hibernate.tool" level="error"/>
 
 
         <Logger name="org.springframework.boot" level="warn"/>
@@ -36,6 +37,10 @@
         <Logger name="org.springframework.beans.factory" level="warn"/>
         <Logger name="org.springframework.data" level="warn"/>
         <Logger name="org.springframework.context" level="warn"/>
+        <Logger name="org.springframework.orm" level="warn"/>
+        <Logger name="org.springframework.jmx" level="warn"/>
+
+        <Logger name="org.jboss.logging" level="warn"/>
 
 
 

@@ -1,6 +1,9 @@
 package kaica_dun.resources;
 
-import kaica_dun.entities.*;
+import kaica_dun.entities.Direction;
+import kaica_dun.entities.Dungeon;
+import kaica_dun.entities.Monster;
+import kaica_dun.entities.Room;
 import kaica_dun_system.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -1,14 +1,15 @@
 package kaica_dun.config;
 
 
-import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AvailableSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
+import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
@@ -17,6 +18,9 @@ public class HibernateCfg {
 
     @Autowired
     private Environment env;
+
+    @Autowired
+    private DataSource dataSource;
 
     private Properties getHibernateProperties() {
         Properties properties = new Properties();
@@ -28,16 +32,16 @@ public class HibernateCfg {
         return properties;
     }
 
-/*
-    @Bean // Set up a shared Hibernate SessionFactory in a Spring application context.
+
+    @Bean(name = "HibernateSessionFactory") // Set up a shared Hibernate SessionFactory in a Spring application context.
     public LocalSessionFactoryBean getSessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-        sessionFactory.setDataSource(getDataSource());
+        sessionFactory.setDataSource(dataSource);
         sessionFactory.setPackagesToScan(new String[] {"kaica_dun", "kaica_dun_system"});//, "kaica_dun.dao"});
         sessionFactory.setHibernateProperties(getHibernateProperties());
         return sessionFactory;
     }
-
+/*
     @Bean
     public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
         // Binds a Hibernate Session from the specified factory to the thread, potentially allowing for one

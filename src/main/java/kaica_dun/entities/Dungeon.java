@@ -3,7 +3,9 @@ package kaica_dun.entities;
 import kaica_dun_system.User;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "Dungeon")

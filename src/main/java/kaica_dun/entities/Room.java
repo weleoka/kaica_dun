@@ -1,7 +1,9 @@
 package kaica_dun.entities;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "Room")

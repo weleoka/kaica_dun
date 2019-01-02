@@ -1,94 +1,103 @@
 package kaica_dun;
 
-import kaica_dun.config.DataSourceCfg;
-import kaica_dun.config.EntityManagerFactoriesCfg;
-import kaica_dun.config.HibernateCfg;
-import kaica_dun.config.TransactionManagersCfg;
 import kaica_dun.resources.TestDb;
-
 import kaica_dun_system.User;
-
 import kaica_dun_system.UserServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+
+import java.util.List;
 
 import static java.lang.System.out;
 
-@SpringBootApplication
+
 //@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class,HibernateJpaAutoConfiguration.class})
-@ComponentScan({"kaica_dun_system", "kaica_dun", "java"})
 //@EntityScan({"kaica_dun.entities", "kaica_dun_system"})
-//@Import({HibernateCfg.class})//, DataSourceCfg.class, EntityManagerFactoriesCfg.class, TransactionManagersCfg.class})
+@Import({TestDb.class})//, DataSourceCfg.class, EntityManagerFactoriesCfg.class, TransactionManagersCfg.class})
+
+// This:
+//@SpringBootApplication
+// is equivalent to this:
+@Configuration
+@EnableAutoConfiguration
+@ComponentScan({"kaica_dun_system", "kaica_dun"})
+
 public class App implements CommandLineRunner {
     // This logger has a name so that it can retrieved for use from anywhere in the application.
     private static final Logger log = LogManager.getLogger("MAIN");
-    //private static final Logger logger = LogManager.getLogger(App.class);
-
-    //@Autowired
-    //private HibernateCfg hibernateCfg;
 
     @Autowired
     private UserServiceImpl service;
 
+    @Autowired
+    private TestDb testdb;
+
+    @Autowired
+    @Qualifier("HibernateSessionFactory")
+    SessionFactory sessionFactory;
 
     public static void main(String[] args) {
-
         SpringApplication.run(App.class, args);
-
-        //SpringApplication.run(HibernateCfg.class, args);
-        //SpringApplication.run(BeansJpaCfg.class, args);
-
-
-        out.println("- - - K A I C A    D U N G E O N - - - ");
-
-
-/*        AnnotationConfigApplicationContext context = null;
-
-        try {
-            context = new AnnotationConfigApplicationContext(HibernateCfg.class);
-            TestDb testDb = context.getBean(TestDb.class);
-            //App app = context.getBean(App.class);
-
-            //app.run();
-            TestDb.main(args);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            context.close();
-        }*/
-
-        //User player = new User();
-        //makeStaticDungeon msd = new makeStaticDungeon(player);
-        //Dungeon d = msd.buildDungeon();
-
-
-        // Testing scenarios:
-
-        //TestDb.main(arguments); // Run all the tests.
-        //TestDb.testDb_Monster();
-        //TestDb.testDb_Room();
     }
 
 
-    //@Override
     public void run(String... strings) {
 
-        log.info("Current objects in DB: {}", this.service.findAll());
+        try {
+            out.println("\n- - - K A I C A    D U N G E O N - - - ");
 
-        Long userId = this.service.createUser(new User("testUser", "123"));
-        log.info("Person created in DB : {}", userId);
+            log.info("Current objects in DB: {}", this.service.findAll());
 
-        TestDb tdb = new TestDb();
-        tdb.main();
+            Long userId = this.service.createUser(new User("testUser", "123"));
+            log.info("Person created in DB : {}", userId);
+
+            Long userId2 = this.service.createUser(new User("testUser2", "123"));
+            log.info("Person created in DB : {}", userId2);
+
+            List<User> userList = this.service.findAll();
+            log.debug(userList);
+
+            testdb.main();
+
+        } catch (Exception e) {
+            log.warn(e);
+        }
+
+        sessionFactory.close();
+        System.exit(0);
     }
+
+
+
+
+
+/*    List<Object> beanList = getInstantiatedSigletons(this.applicationContext);
+        log.debug(beanList);
+
+    public static List<Object> getInstantiatedSigletons(ApplicationContext ctx) {
+        List<Object> singletons = new ArrayList<Object>();
+
+        String[] all = ctx.getBeanDefinitionNames();
+
+        ConfigurableListableBeanFactory clbf = ((AbstractApplicationContext) ctx).getBeanFactory();
+        for (String name : all) {
+            Object s = clbf.getSingleton(name);
+            if (s != null)
+                singletons.add(s);
+        }
+
+        return singletons;
+
+    }*/
 
 
 }

@@ -1,7 +1,6 @@
 package kaica_dun.entities;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @DiscriminatorValue("ARM")

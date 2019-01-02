@@ -5,7 +5,6 @@ import kaica_dun.entities.Monster;
 import kaica_dun.entities.Room;
 
 import java.util.List;
-import java.util.Queue;
 
 public class CombatUtil {
 
