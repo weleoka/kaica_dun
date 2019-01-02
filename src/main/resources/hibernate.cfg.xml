@@ -13,18 +13,21 @@ https://o7planning.org/en/10201/java-hibernate-tutorial-for-beginners -->
 
     <session-factory>
         <!-- Class annotations mapping. It's also possible to do with basic mapping files:
-        <mapping resource="Employee.hbm.xml"/> -->
-        <mapping class="kaica_dun.entities.Avatar"/>
-        <!--<mapping class="kaica_dun.entities.Room_direction"/>--> <!-- A join table created dynamically -->
-        <mapping class="kaica_dun.entities.Dungeon"/>
-        <mapping class="kaica_dun.entities.Fighter"/>
-        <mapping class="kaica_dun.entities.Item"/>
-        <mapping class="kaica_dun.entities.ItemConsumable"/>
-        <!-- <mapping class="kaica_dun.entities.ItemEquippable"/> --> <!-- removed -->
-        <mapping class="kaica_dun.entities.Monster"/>
-        <mapping class="kaica_dun.entities.Room"/>
+         -->
 
         <mapping class="kaica_dun_system.User"/>
+
+        <mapping class="kaica_dun.entities.Dungeon"/>
+        <mapping class="kaica_dun.entities.Room"/>
+        <mapping class="kaica_dun.entities.Direction"/>
+        <mapping class="kaica_dun.entities.ItemConsumable"/>
+        <mapping class="kaica_dun.entities.Item"/>
+        <mapping class="kaica_dun.entities.Armor"/>
+        <mapping class="kaica_dun.entities.Weapon"/>
+        <mapping class="kaica_dun.entities.Fighter"/>
+        <mapping class="kaica_dun.entities.Avatar"/>
+        <mapping class="kaica_dun.entities.Monster"/>
+        <mapping class="kaica_dun.entities.Inventory"/>
 
     </session-factory>
 

@@ -9,7 +9,7 @@ import java.util.Objects;
  * Representing items that can be picked up and worn/used by an Avatar.
  *
  * Current implementation allows equipping a weapon to the armor slot and an armor to the weapon slot. This is bad.
- * TODO move stuff out to ItemEquippable->Weapon/Armor and ItemConsumable
+ * TODO move stuff out to ItemConsumable
  */
 @Entity
 @Table(name = "Item")
@@ -31,34 +31,18 @@ public class Item implements Describable {
     @Column(name = "description")
     private String description;
 
-    //points to the inventory of an avatar if the item is located there
+    //points to the inventory of an avatar if the item is located there. TODO possibly remove this pointer and make unidirectional
     @ManyToOne
     @JoinColumn(name = "fighterID", nullable = true, updatable = true)
     private Inventory inventory;
-
-    //TODO move out to Weapon once Item inheritance is up and running!
-    @Basic
-    @Column(name = "low_damage")
-    private int lowDamage;
-
-    //TODO move out to Weapon once Item inheritance is up and running!
-    @Basic
-    @Column(name = "damage_range")
-    private int damageRange;
-
-    @OneToOne(optional = true)
-    @JoinColumn(name = "wielderID")
-    private Avatar wielder;
 
 
     // Default empty constructor
     public Item(){}
 
-    public Item(String itemName, String description, int lowDamage, int damageRange) {
+    public Item(String itemName, String description) {
         this.itemName = itemName;
         this.description = description;
-        this.lowDamage = lowDamage;
-        this.damageRange = damageRange;
     }
 
 
@@ -100,15 +84,12 @@ public class Item implements Describable {
         Item that = (Item) o;
         return id.equals(that.id) &&
                 Objects.equals(itemName, that.itemName) &&
-                Objects.equals(description, that.description) &&
-                lowDamage == that.lowDamage &&
-                damageRange == that.damageRange &&
-                Objects.equals(wielder, that.wielder);
+                Objects.equals(description, that.description);
 
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, itemName, description, lowDamage, damageRange, wielder);
+        return Objects.hash(id, itemName, description);
     }
 }

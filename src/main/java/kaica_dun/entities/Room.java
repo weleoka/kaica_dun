@@ -32,7 +32,7 @@ public class Room {
     @Column(name = "room_directionID")
     private List<Direction> exits;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)    //TODO CascadeType.ALL is possibly bad, check later.
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true) //TODO CascadeType.ALL, rework to minimum
     private List<Monster> monsters = new LinkedList<Monster>();
 
 

@@ -1,6 +1,7 @@
 package kaica_dun.entities;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,11 +35,17 @@ public class Inventory {
     @OneToMany(mappedBy = "id", cascade = CascadeType.ALL) // Kai: Changed from "avatar_inventory"
     private List<Item> items;
 
-    public Inventory() {}
+    //Default no-args constructor
+    protected Inventory() {}
 
-    public Inventory(int maxSize, List<Item> items) {
+    /**
+     * Full constructor. The length of the items ArrayList is set to be the length of the specified maxSize.
+     *
+     * @param maxSize   the maximum amount of items the inventory can hold
+     */
+    public Inventory(int maxSize) {
         this.maxSize = maxSize;
-        this.items = items;
+        this.items = new ArrayList<Item>(maxSize);
     }
 
 
@@ -52,10 +59,22 @@ public class Inventory {
 
     public void setItems(List<Item> items) { this.items = items; }
 
+
+
+    // ********************** Model Methods ********************** //
+
     //use this method to manage the bidirectional pointers
     public void addItem(Item item) {
         items.add(item);
         item.setInventory(this);
+        //Remove the bidirectional pointers between the item and any Armor/Weapon and the Avatar.
+        if (item.getClass() == Weapon.class) {
+            if (((Weapon)item).getWielder() == null){
+                ((Weapon) item).getWielder().unEquippWeapon();
+            }
+        } else if (item.getClass() == Armor.class) {
+            ((Armor)item).getWearer().unEquippArmor();
+        }
     }
 
     //use this method to manage the bidirectional pointers
@@ -63,9 +82,6 @@ public class Inventory {
         item.setInventory(null);
         items.remove(item);
     }
-
-    // ********************** Model Methods ********************** //
-
 
 
     // ********************** Common Methods ********************** //

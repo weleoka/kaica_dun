@@ -14,6 +14,10 @@ import org.apache.logging.log4j.Logger;
 
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.swing.text.html.parser.Entity;
 import java.util.List;
 
 
@@ -37,20 +41,28 @@ public class TestDb {
      */
     public static void main(String[] args) {
 
-        UserServiceImpl usi = new UserServiceImpl();
+        //UserServiceImpl usi = new UserServiceImpl();
 
-        Long newUserId = createUserTest(2);
-        printUserListTest();
-        User userById = findUserByIdTest(newUserId);
-        User userByName = findUserByNameTest("kai");
+        //Long newUserId = createUserTest(2);
+        //printUserListTest();
+        //User userById = findUserByIdTest(newUserId);
+        //User userByName = findUserByNameTest("kai");
         //UserLoginTest();
 
-        MonsterCreatorTest();
+        //MonsterCreatorTest();
         //MonsterCreatorTest2();
 
-        MonsterFinderTest();
+        //MonsterFinderTest();
 
-        //DungeonCreatorTest(newUser);
+        /**
+         * Making a static user just to get this test up and running.
+         */
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("dung");
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        User dungeonUser = new User("Duggy", "DuggyIsBest123" );
+        em.persist(dungeonUser);
+        DungeonCreatorTest(dungeonUser);
 
         //AvatarEqItemTest(newUser);
         System.exit(0);  // Quit the application.
