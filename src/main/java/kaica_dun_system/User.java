@@ -61,6 +61,16 @@ public class User {
         this.currDungeon = currDungeon;
     }
 
+    /**
+     * Partial constructor.
+     *
+     * @param userName      name of the user
+     * @param password      password of the user
+     */
+    public User(String userName, String password) {
+        this.userName = userName;
+        this.password = password;
+    }
 
     // ********************** Accessor Methods ********************** //
 
