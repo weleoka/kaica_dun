@@ -23,9 +23,8 @@ import org.springframework.context.annotation.Import;
 import static java.lang.System.out;
 
 @SpringBootApplication
-@EnableAutoConfiguration
 //@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class,HibernateJpaAutoConfiguration.class})
-@ComponentScan({"kaica_dun_system", "kaica_dun"})
+@ComponentScan({"kaica_dun_system", "kaica_dun", "java"})
 //@EntityScan({"kaica_dun.entities", "kaica_dun_system"})
 //@Import({HibernateCfg.class})//, DataSourceCfg.class, EntityManagerFactoriesCfg.class, TransactionManagersCfg.class})
 public class App implements CommandLineRunner {
@@ -84,7 +83,7 @@ public class App implements CommandLineRunner {
 
         log.info("Current objects in DB: {}", this.service.findAll());
 
-        Long userId = this.service.createUser(new User("testUSer", "123"));
+        Long userId = this.service.createUser(new User("testUser", "123"));
         log.info("Person created in DB : {}", userId);
 
         TestDb tdb = new TestDb();
