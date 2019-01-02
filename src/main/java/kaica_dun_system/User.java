@@ -37,10 +37,10 @@ public class User {
     private List<Dungeon> dungeon = new LinkedList<Dungeon>();
 
     //TODO dafuq? Usure of mappings, currently mapping onto same column for both Dungeon and Avatar, works?
-    @OneToOne(mappedBy = "currUser", optional = true, cascade = CascadeType.ALL)
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
     private Dungeon currDungeon;
 
-    @OneToOne(mappedBy = "currUser", optional = true, cascade = CascadeType.ALL)  //TODO cascades?
+    @OneToOne(optional = true, cascade = CascadeType.ALL)  //TODO cascades?
     private Avatar currAvatar;
 
     // Default empty constructor

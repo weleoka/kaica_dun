@@ -12,15 +12,12 @@ public class Dungeon {
     // Field variable declarations and Hibernate annotation scheme
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false, nullable = false)
+    @Column(name = "dungeonID", updatable = false, nullable = false)
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "userID", updatable = false, nullable = false)
     private User user;
-
-    @OneToOne
-    private User currUser;
 
     @Basic
     @Column(name = "room_rows")
