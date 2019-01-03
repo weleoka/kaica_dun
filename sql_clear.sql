@@ -2,6 +2,7 @@ SET FOREIGN_KEY_CHECKS=0;
 
 DELETE FROM dungeon;
 DELETE FROM fighter;
+DELETE FROM inventory;
 DELETE FROM item;
 DELETE FROM room;
 DELETE FROM room_direction;

@@ -26,7 +26,6 @@ public class Inventory {
     private Long id;
 
     @OneToOne(optional = true) // todo: change to non-optional
-    @PrimaryKeyJoinColumn
     private Avatar owner;
 
     @Basic

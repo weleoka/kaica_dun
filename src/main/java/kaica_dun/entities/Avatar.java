@@ -165,9 +165,12 @@ public class Avatar extends Fighter {
         this.equippedWeapon = weapon;
         equippedWeapon.setWielder(this);
         //Remove the weapon from Avatar.inventory if it's in the inventory
-        if (this.getInventory().getItems().contains(weapon)) {
-            this.getInventory().getItems().remove(weapon);
+        if(this.inventory != null) {
+            if (this.getInventory().getItems().contains(weapon)) {
+                this.getInventory().getItems().remove(weapon);
+            }
         }
+
     }
 
     //Unequipp your currently equipped weapon. Set references to null on both entities.
@@ -181,8 +184,10 @@ public class Avatar extends Fighter {
         this.equippedArmor = armor;
         equippedArmor.setWearer(this);
         //Remove the armor from Avatar.inventory if it's in the inventory
-        if (this.getInventory().getItems().contains(armor)) {
-            this.getInventory().getItems().remove(armor);
+        if (this.inventory != null) {
+            if (this.getInventory().getItems().contains(armor)) {
+                this.getInventory().getItems().remove(armor);
+            }
         }
     }
 
