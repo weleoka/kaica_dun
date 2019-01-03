@@ -39,18 +39,14 @@ public class Inventory {
     //Default no-args constructor
     protected Inventory() {}
 
-    protected Inventory(Avatar avatar, int maxSize) {
-        this.maxSize = maxSize;
-        this.owner = avatar;
-    }
-
     /**
-     * Full constructor. The length of the items ArrayList is set to be the length of the specified maxSize.
+     * Full constructor.
      *
-     * @param maxSize   the maximum amount of items the inventory can hold
+     * @param avatar the avatar to which the inventory belongs
      */
-    public Inventory(int maxSize) {
-        this.maxSize = maxSize;
+    protected Inventory(Avatar avatar) {
+        this.maxSize = 20;
+        this.owner = avatar;
         this.items = new ArrayList<Item>(maxSize);
     }
 

@@ -34,7 +34,9 @@ public class User {
     //TODO dafuq? Usure of mappings, currently mapping onto same column for both Dungeon and Avatar, works?
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private Dungeon currDungeon;
-    @OneToOne(optional = true, cascade = CascadeType.ALL)  //TODO cascades?
+
+    //Unidirectional, I think
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
     private Avatar currAvatar;
 
 
@@ -103,6 +105,7 @@ public class User {
         this.getDungeon().add(dungeon);
         dungeon.setUser(this);
     }
+
 
 
     // ********************** Common Methods ********************** //

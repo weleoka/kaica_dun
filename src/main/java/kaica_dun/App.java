@@ -99,13 +99,7 @@ public class App implements CommandLineRunner {
 
 
 
-
-
-
-
             menuMain.display();
-
-
 
 
             testdb.main();

@@ -7,7 +7,7 @@ public class makePlayerAvatar {
     private User user;
 
     /**
-     * Create a new dungeon with static structure for testing, belonging to a user, that we can then save to the db.
+     * Create a new avatar with static fields for testing, belonging to a user, that we can then save to the db.
      *
      * @param user        the User that the Dungeon belongs to
      */
