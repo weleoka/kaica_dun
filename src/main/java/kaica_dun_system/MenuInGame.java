@@ -1,9 +1,11 @@
 package kaica_dun_system;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import static java.lang.System.out;
 
+@Component
 public class MenuInGame extends Menu {
 
     @Autowired
