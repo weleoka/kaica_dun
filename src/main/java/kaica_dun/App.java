@@ -1,6 +1,10 @@
 package kaica_dun;
 
+import kaica_dun.dao.AvatarInterface;
+import kaica_dun.entities.Avatar;
+import kaica_dun.entities.Dungeon;
 import kaica_dun.resources.TestDb;
+import kaica_dun_system.GameServiceImpl;
 import kaica_dun_system.MenuMain;
 import kaica_dun_system.User;
 import kaica_dun_system.UserServiceImpl;
@@ -40,7 +44,13 @@ public class App implements CommandLineRunner {
     private UserServiceImpl usi;
 
     @Autowired
+    private GameServiceImpl gsi;
+
+    @Autowired
     private TestDb testdb;
+
+    @Autowired
+    private AvatarInterface avatarInterface;
 
     @Autowired
     private MenuMain menuMain;
@@ -69,9 +79,31 @@ public class App implements CommandLineRunner {
             Long userId2 = usi.createUser(new User("user2", "123"));
             log.info("Person created in DB : {}", userId2);
 
+
+            // AVATAR Creation
+            User createdUser = usi.findUserById(userId);
+
+            gsi.createNewAvatar(new String[] {"Rolphius", "A wiry old warrior."}, createdUser);
+            //Avatar avatar = avatarInterface.save(new Avatar("Rolphius", "A Long wiry old warrior.", createdUser));
+            //log.info("Avatar created in DB : {}", avatar.getName());
+
+            log.info("Avatars belonging to user: '{}' are: {}", createdUser.getName(), gsi.fetchAvatarByUser(createdUser));
+
             usi.printUserList();
 
+
+            Dungeon dungeon = gsi.createDungeon(createdUser);
+
+            
+
+
+
+
+
             menuMain.display();
+
+
+
 
             testdb.main();
 

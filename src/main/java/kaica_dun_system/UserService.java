@@ -1,6 +1,5 @@
 package kaica_dun_system;
 
-
 import java.util.List;
 
 public interface UserService {

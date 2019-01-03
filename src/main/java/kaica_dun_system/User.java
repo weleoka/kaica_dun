@@ -1,11 +1,5 @@
 package kaica_dun_system;
 
-/*
-Example of using JPQL named query
-JPA also provides a way for building static queries, as named queries, using the @NamedQuery and @NamedQueries annotations.
-It is considered to be a good practice in JPA to prefer named queries over dynamic queries when possible.
-*/
-
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Dungeon;
 
@@ -116,7 +110,6 @@ public class User {
     @Override
     public String toString() {
         return "User: " + userName + "\n" + "Id: " + id;
-
     }
 
     @Override

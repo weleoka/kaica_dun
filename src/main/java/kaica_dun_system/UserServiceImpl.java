@@ -2,6 +2,7 @@ package kaica_dun_system;
 
 
 import kaica_dun.dao.UserInterface;
+import kaica_dun.dao.UserInterfaceCustom;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserInterface userInterface;
+
+    @Autowired
+    private UserInterfaceCustom userInterfaceCustom;
 
     // User management
     private User authenticatedUser; // holds a reference to the user object if isAuthenticated.
@@ -118,7 +122,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
 
         try {
-            List<User> users = userInterface.findByName(userName);
+            List<User> users = userInterfaceCustom.findByName(userName);
             user = users.get(0);
 
         } catch (IndexOutOfBoundsException e) {
@@ -183,6 +187,10 @@ public class UserServiceImpl implements UserService {
     }
 
 
+
+
+    // ********************** Authentication Methods ********************** //
+
     /**
      * Checks if authenticatedUser is set and returns result
      *
@@ -217,6 +225,7 @@ public class UserServiceImpl implements UserService {
 
 
 
+
     // ********************** Operation Methods ********************** //
     /**
      * setAuthenticated
@@ -247,6 +256,7 @@ public class UserServiceImpl implements UserService {
     public void logoutUser() {
         this.authenticatedUser = null;
     }
+
 
 
 

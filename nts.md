@@ -1,69 +1,74 @@
 
-// // https://howtodoinjava.com/spring-core/how-to-use-spring-component-repository-service-and-controller-annotations/
-// Always use the annotations over concrete classes; not over interfaces.
+ https:howtodoinjava.com/spring-core/how-to-use-spring-component-repository-service-and-controller-annotations/
+ Always use the annotations over concrete classes; not over interfaces.
 
-// @Component - marks a java class as a bean so the component-scanning mechanism of spring can pick
-// it up and pull it into the application context. @Component used to auto-detect and auto-configure
-// beans using classpath scanning. There’s an implicit one-to-one mapping between the
-// annotated class and the bean (i.e. one bean per class).
+ @Component - marks a java class as a bean so the component-scanning mechanism of spring can pick
+ it up and pull it into the application context. @Component used to auto-detect and auto-configure
+ beans using classpath scanning. There’s an implicit one-to-one mapping between the
+ annotated class and the bean (i.e. one bean per class).
 
-// @Repository - Although above use of @Component is good enough but we can use more suitable annotation that provides
-// additional benefits specifically for DAOs i.e. @Repository annotation. The @Repository annotation is
-// a specialization of the @Component annotation with similar use and functionality.
-// In addition to importing the DAOs into the DI container, it also makes the unchecked exceptions
-// (thrown from DAO methods) eligible for translation into Spring DataAccessException.*/
+ @Repository - Although above use of @Component is good enough but we can use more suitable annotation that provides
+ additional benefits specifically for DAOs i.e. @Repository annotation. The @Repository annotation is
+ a specialization of the @Component annotation with similar use and functionality.
+ In addition to importing the DAOs into the DI container, it also makes the unchecked exceptions
+ (thrown from DAO methods) eligible for translation into Spring DataAccessException.*/
 
-// @Service - is a specialization of the @Component annotation.
-// It doesn’t currently provide any additional behavior over the @Component annotation,
-// but it’s a good idea to use @Service over @Component in service-layer classes because it specifies intent better.
+ @Service - is a specialization of the @Component annotation.
+ It doesn’t currently provide any additional behavior over the @Component annotation,
+ but it’s a good idea to use @Service over @Component in service-layer classes because it specifies intent better.
 
-// @Controller - marks a class as a Spring Web MVC controller.
-// It too is a @Component specialization, so beans marked with it are automatically imported into the DI container.
-// When we add the @Controller annotation to a class, we can use another
-// annotation i.e. @RequestMapping; to map URLs to instance methods of a class.
-// We will face very rare situations where we will need to use @Component annotation.
-// Most of the time, we will using @Repository, @Service and @Controller annotations. @Component should be used
-// when the class does not fall into either of three categories i.e. controller, manager and dao.
+ @Controller - marks a class as a Spring Web MVC controller.
+ It too is a @Component specialization, so beans marked with it are automatically imported into the DI container.
+ When we add the @Controller annotation to a class, we can use another
+ annotation i.e. @RequestMapping; to map URLs to instance methods of a class.
+ We will face very rare situations where we will need to use @Component annotation.
+ Most of the time, we will using @Repository, @Service and @Controller annotations. @Component should be used
+ when the class does not fall into either of three categories i.e. controller, manager and dao.
 
-// @Bean - is used to explicitly declare a single bean, rather than letting Spring do it automatically for us.
-// Another big difference is that @Component is a class level annotation where as @Bean is a method level
-// annotation and ,by default, name of the method serves as the bean name.  is used to explicitly declare
-// a single bean, rather than letting Spring do it automatically for us.
+ @Bean - is used to explicitly declare a single bean, rather than letting Spring do it automatically for us.
+ Another big difference is that @Component is a class level annotation where as @Bean is a method level
+ annotation and ,by default, name of the method serves as the bean name.  is used to explicitly declare
+ a single bean, rather than letting Spring do it automatically for us.
 
-// @Autowired - allows you to inject directly using fields, setter methods, or constructors.
-// If you want final fields autowired, use constructor injection, just like you would do if you did 
-// the injection by yourself. Generally speaking, field autowiring is not 
-// regarded as good practice and constructor injection is preferred instead. The only case where it is relatively 
-// acceptable is within test classes, which do not have constructors. The default scope is singleton, so you will 
-// have only one instance of the bean, which is injected in multiple places. If you explicitly define the 
-// scope to be "prototype", then multiple instances will exist, possibly lazy (depending on configuration)
-// https://www.tutorialspoint.com/spring/spring_autowired_annotation.htm
-// https://stackoverflow.com/a/34580087/3092830
-// https://stackoverflow.com/a/634754/3092830 - Annotations or XML for bean configuration?
+ @Autowired - allows you to inject directly using fields, setter methods, or constructors.
+ If you want final fields autowired, use constructor injection, just like you would do if you did 
+ the injection by yourself. Generally speaking, field autowiring is not 
+ regarded as good practice and constructor injection is preferred instead. The only case where it is relatively 
+ acceptable is within test classes, which do not have constructors. The default scope is singleton, so you will 
+ have only one instance of the bean, which is injected in multiple places. If you explicitly define the 
+ scope to be "prototype", then multiple instances will exist, possibly lazy (depending on configuration)
+ https://www.tutorialspoint.com/spring/spring_autowired_annotation.htm
+ https://stackoverflow.com/a/34580087/3092830
+ https://stackoverflow.com/a/634754/3092830 - Annotations or XML for bean configuration?
 
-// @Inject - the javax.inject.Inject annotations. @Inject is part of the Java CDI (Contexts and Dependency Injection) 
-// standard introduced in Java EE 6 (JSR-299), read more. Spring has chosen to support using @Inject synonymously 
-// with their own @Autowired annotation.
+ @Inject - the javax.inject.Inject annotations. @Inject is part of the Java CDI (Contexts and Dependency Injection) 
+ standard introduced in Java EE 6 (JSR-299), read more. Spring has chosen to support using @Inject synonymously 
+ with their own @Autowired annotation.
 
-// @EnableJpaRepositories(basePackages = "demo_pckg.main")
+ @EnableJpaRepositories(basePackages = "demo_pckg.main")
 
-// @SpringBootApplication is equivalent to @Configuration, @EnableAutoConfiguration, and @ComponentScan with their default attributes.
+ @SpringBootApplication is equivalent to @Configuration, @EnableAutoConfiguration, and @ComponentScan with their default attributes.
 
-// @DataJpaTest
+ @DataJpaTest
 
-// @Indexed
+ @Indexed
 
-// @Transactional
+ @Transactional
 
-// @Test
+ @Test
 
-// @PersistenceContext
+ @PersistenceContext
 
-// @PersistenceUnit
+ @PersistenceUnit
 
-// @Resource
+ @Resource
 
-// @EntityScan
+ @EntityScan
+
+
+
+
+
 
 ## Next to know about Spring
 - Why Autowire to the interface rather than an implementing class? How does Spring know the context?
@@ -77,7 +82,7 @@ https://stackoverflow.com/questions/633158/spring-autowired-usage?rq=1
 - What is actually the implementation of @Transactional
 
 
-
+```java
     /* - - - Example 1 - Usage of session and sessionFactory
 
     public void testBasicUsage() {
@@ -134,6 +139,7 @@ https://stackoverflow.com/questions/633158/spring-autowired-usage?rq=1
 
         em.persist(item);
         Long ITEM_ID = item.getId();
+```
 
 ### session.persist(my_object) Vs. session.save(my_object)
 persist() is well defined. It makes a transient instance persistent. However, it doesn't guarantee that the identifier value will be assigned to the persistent instance immediately, the assignment might happen at flush time. The spec doesn't say that, which is the problem I have with persist().
@@ -156,5 +162,6 @@ UnitUtil#getIdentifier() if your identifier property is a primitive (a long and 
 a Long).
 
 
-
-    */
+## JPA notes
+JPA also provides a way for building static queries, as named queries, using the @NamedQuery and @NamedQueries annotations.
+It is considered to be a good practice in JPA to prefer named queries over dynamic queries when possible.

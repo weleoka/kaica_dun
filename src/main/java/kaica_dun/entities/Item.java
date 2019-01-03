@@ -33,7 +33,7 @@ public class Item implements Describable {
 
     //points to the inventory of an avatar if the item is located there. TODO possibly remove this pointer and make unidirectional
     @ManyToOne
-    @JoinColumn(name = "fighterID", nullable = true, updatable = true)
+    @JoinColumn(name = "inventoryID", nullable = true, updatable = true)
     private Inventory inventory;
 
 

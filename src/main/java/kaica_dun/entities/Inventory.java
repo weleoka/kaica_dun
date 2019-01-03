@@ -20,23 +20,29 @@ import java.util.List;
 public class Inventory {
 
     @Id
-    @GeneratedValue(generator = "avatarInventorySharedPKGenerator")
-    @Column(name = "inventory_id")
-    private Long id = null;
+    //@GeneratedValue(generator = "avatarInventorySharedPKGenerator") // todo: Fix this SharedPK generator.
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "inventoryID")
+    private Long id;
 
-    @OneToOne(optional = false)
+    @OneToOne(optional = true) // todo: change to non-optional
     @PrimaryKeyJoinColumn
     private Avatar owner;
 
     @Basic
-    @Column(name= "max_size")
+    @Column(name = "max_size")
     private int maxSize;
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL) // Kai: Changed from "avatar_inventory"
+    @OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL)
     private List<Item> items;
 
     //Default no-args constructor
     protected Inventory() {}
+
+    protected Inventory(Avatar avatar, int maxSize) {
+        this.maxSize = maxSize;
+        this.owner = avatar;
+    }
 
     /**
      * Full constructor. The length of the items ArrayList is set to be the length of the specified maxSize.

@@ -11,9 +11,13 @@ import java.util.Random;
  */
 @Entity
 @DiscriminatorValue("PA")
+@NamedQuery(name="Avatar.findByUserID", query="SELECT a FROM Avatar a WHERE a.user = :userInstance")//query="SELECT u FROM User u WHERE u.userName = :name")
+//@NamedQuery(name="Avatar.findByUserID", query="SELECT f FROM Fighter f WHERE f.'userID'' = :user")
+// todo: Make this into JPQL or NamedQuery not NativeQuery.
+//@NamedNativeQuery(name="Avatar.findByUserID", query="SELECT f FROM Fighter f WHERE f.userId = ?")
 public class Avatar extends Fighter {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "userID", nullable = true, updatable = false)
     private User user;
 
@@ -37,9 +41,10 @@ public class Avatar extends Fighter {
     @OneToOne(mappedBy = "wearer", optional = true, cascade = CascadeType.ALL)
     private Armor equippedArmor;
 
-    @OneToOne(cascade = CascadeType.ALL)
+
+    @OneToOne(cascade = CascadeType.ALL, optional = true)
     @PrimaryKeyJoinColumn
-    private Inventory inventory = new Inventory();
+    private Inventory inventory;
 
     @Transient
     private Random rand;
@@ -54,14 +59,17 @@ public class Avatar extends Fighter {
         this.description = description;
         this.type = "User Avatar";
         this.user = user;               //For use in the dealDamage-method.
+
+        // todo: not implemented because creating the inventory cant be done before knowing the AvatarId(FighterId)
+        this.inventory = new Inventory(this, 5);
     }
 
 
     // Creating a new avatar - depreciated?
-    public Avatar(User user, String name, String description, String type, int currHealth, int maxHealth, int damage, int armor) {
+/*    public Avatar(User user, String name, String description, String type, int currHealth, int maxHealth, int damage, int armor) {
         super(name, description, type, currHealth, maxHealth, damage, armor);
         this.user = user;
-    }
+    }*/
 
     /**
      * Full constructor. Needs a Weapon and Armor.

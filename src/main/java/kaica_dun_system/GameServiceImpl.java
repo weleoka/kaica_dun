@@ -2,8 +2,11 @@ package kaica_dun_system;
 
 
 import kaica_dun.dao.AvatarInterface;
+import kaica_dun.dao.DungeonInterface;
 import kaica_dun.dao.UserInterface;
 import kaica_dun.entities.Avatar;
+import kaica_dun.entities.Dungeon;
+import kaica_dun.resources.makeStaticDungeon;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,6 +16,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 @Service
@@ -28,13 +32,43 @@ public class GameServiceImpl implements GameService {
 
     // Fields declared
     private static final Logger log = LogManager.getLogger();
-    private Avatar avatar = null;
+    private Avatar avatar;
+    private Dungeon dungeon;
 
     @Autowired
     private AvatarInterface avatarInterface;
 
     @Autowired
+    private DungeonInterface dungeonInterface;
+
+    @Autowired
     private EntityManager entityManager;
+
+
+    public Dungeon createDungeon(User user) {
+
+        if (this.avatar != null) {
+            log.debug("Creating static dungeon for user: {}", user.getName());
+            makeStaticDungeon msd = new makeStaticDungeon(user);
+            dungeon = msd.buildDungeon();
+            dungeonInterface.save(dungeon);
+            this.dungeon = dungeon;
+        }
+
+        return this.dungeon;
+    }
+
+
+    public void playGame() {
+        //Game.engine(this.avatar, this.dungeon)
+    }
+
+
+
+
+
+    // ********************** Persistence Methods ********************** //
+
     /**
      * Uses native SQL.
      *
@@ -42,20 +76,31 @@ public class GameServiceImpl implements GameService {
      * @param user a User instance
      * @return
      */
-    public List<Avatar> fetchAvatarByUser(User user) {
+    public List<Avatar> fetchAvatarByUser
+      (User user) {
         log.debug("Searching for all Avatars belonging to {}.", user.getName());
 
+/*
         Query query = entityManager.createQuery(
-                "SELECT avatar FROM Fighter avatar WHERE avatar.userID LIKE :userID")
+                //"SELECT fighter FROM Fighter fighter WHERE Fighter.userID LIKE :userId")
+                "SELECT Avatar FROM Avatar avatar WHERE avatar.userID = :userId")
                 //.addEntity(Avatar.class)
-                .setParameter("userID", user.getId());
+                .setParameter("userId", user.getId());
         List<Avatar> avatarList = query.getResultList();
+*/
+        // todo: adapt this method to the JPA criteria API.... It is hard with the inheritance strategy and
+        //  having to reference columns by field variable names and not column names.
+        TypedQuery<Avatar> query = this.entityManager.createNamedQuery("Avatar.findByUserID", Avatar.class);
+        //Query query = this.entityManager.createNativeQuery("SELECT * FROM Fighter f WHERE f.userId = ?", Avatar.class);
 
-        log.debug("A List of avatars was fetched: {}", avatarList);
 
-        return avatarList;
+        query.setParameter("userInstance", user); // Named
+        //query.setParameter(1, user.getId()); // Native
+        List<Avatar> results = query.getResultList();
+        log.debug("A List of avatars was fetched: {}", results);
+
+        return results;
     }
-
 
     /**
      *
@@ -65,9 +110,8 @@ public class GameServiceImpl implements GameService {
      */
     public boolean createNewAvatar(String[] arr, User user) {
         Avatar avatar = new Avatar(arr[0], arr[1], user);
-        //MainDao dao = new DaoFactory().getMainDao(Avatar.class);
 
-        //dao.save(avatar);
+        avatarInterface.save(avatar);
         return true;
     }
 
