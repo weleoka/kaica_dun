@@ -21,10 +21,6 @@ public class Avatar extends Fighter {
     @JoinColumn(name = "userID", nullable = true, updatable = false)
     private User user;
 
-
-    @OneToOne(mappedBy = "currAvatar")
-    private User currUser;
-
     //Unidirectional, the Dungeon doesn't "know" there's an avatar in it. TODO think! TEST!
     @OneToOne
     private Dungeon currDungeon;
@@ -61,7 +57,7 @@ public class Avatar extends Fighter {
         this.user = user;               //For use in the dealDamage-method.
 
         // todo: not implemented because creating the inventory cant be done before knowing the AvatarId(FighterId)
-        this.inventory = new Inventory(this, 5);
+        this.inventory = new Inventory(this);
     }
 
 
@@ -84,15 +80,14 @@ public class Avatar extends Fighter {
      * @param armor
      * @param equippedWeapon
      * @param equippedArmor
-     * @param inventory
      */
-    public Avatar(User user, String name, String description, String type, int currHealth, int maxHealth, int damage,
-                  int armor, Weapon equippedWeapon, Armor equippedArmor, Inventory inventory) {
+    public Avatar(String name, String description, User user, String type, int currHealth, int maxHealth, int damage,
+                  int armor, Weapon equippedWeapon, Armor equippedArmor) {
         super(name, description, type, currHealth, maxHealth, damage, armor);
         this.user = user;
         equippWeapon(equippedWeapon);
         equippArmor(equippedArmor);
-        this.inventory = inventory;
+        this.inventory = new Inventory(this);
     }
 
     /**
@@ -106,13 +101,12 @@ public class Avatar extends Fighter {
      * @param maxHealth
      * @param damage
      * @param armor
-     * @param inventory
      */
     public Avatar(User user, String name, String description, String type, int currHealth, int maxHealth, int damage,
-                  int armor, Inventory inventory) {
+                  int armor) {
         super(name, description, type, currHealth, maxHealth, damage, armor);
         this.user = user;
-        this.inventory = inventory;
+        this.inventory = new Inventory(this);
     }
 
 
@@ -129,6 +123,7 @@ public class Avatar extends Fighter {
         this.maxHealth = currHealth;
         this.damage = 1;
         this.armor = 2;
+        this.inventory = new Inventory(this);
     }
 
 
@@ -154,10 +149,6 @@ public class Avatar extends Fighter {
 
     public Inventory getInventory() { return inventory; }
 
-    public User getCurrUser() { return currUser; }
-
-    public void setCurrUser(User currUser) { this.currUser = currUser; }
-
     public Dungeon getCurrDungeon() { return currDungeon; }
 
     public void setCurrDungeon(Dungeon currDungeon) { this.currDungeon = currDungeon; }
@@ -174,9 +165,12 @@ public class Avatar extends Fighter {
         this.equippedWeapon = weapon;
         equippedWeapon.setWielder(this);
         //Remove the weapon from Avatar.inventory if it's in the inventory
-        if (this.getInventory().getItems().contains(weapon)) {
-            this.getInventory().getItems().remove(weapon);
+        if(this.inventory != null) {
+            if (this.getInventory().getItems().contains(weapon)) {
+                this.getInventory().getItems().remove(weapon);
+            }
         }
+
     }
 
     //Unequipp your currently equipped weapon. Set references to null on both entities.
@@ -190,8 +184,10 @@ public class Avatar extends Fighter {
         this.equippedArmor = armor;
         equippedArmor.setWearer(this);
         //Remove the armor from Avatar.inventory if it's in the inventory
-        if (this.getInventory().getItems().contains(armor)) {
-            this.getInventory().getItems().remove(armor);
+        if (this.inventory != null) {
+            if (this.getInventory().getItems().contains(armor)) {
+                this.getInventory().getItems().remove(armor);
+            }
         }
     }
 

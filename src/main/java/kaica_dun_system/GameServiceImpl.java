@@ -6,6 +6,7 @@ import kaica_dun.dao.DungeonInterface;
 import kaica_dun.dao.UserInterface;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Dungeon;
+import kaica_dun.resources.makeAvatar;
 import kaica_dun.resources.makeStaticDungeon;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,12 +48,15 @@ public class GameServiceImpl implements GameService {
 
     public Dungeon createDungeon(User user) {
 
+        // @Kai TODO move this somewhere?
+        avatar = makeAvatar.make(user);
+        avatarInterface.save(avatar);
+
         if (this.avatar != null) {
             log.debug("Creating static dungeon for user: {}", user.getName());
             makeStaticDungeon msd = new makeStaticDungeon(user);
             dungeon = msd.buildDungeon();
             dungeonInterface.save(dungeon);
-            this.dungeon = dungeon;
         }
 
         return this.dungeon;

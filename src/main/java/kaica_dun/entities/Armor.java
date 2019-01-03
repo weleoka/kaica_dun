@@ -17,6 +17,14 @@ public class Armor extends Item {
     // Default empty constructor
     public Armor(){}
 
+    /**
+     * Full constructor.
+     */
+    public Armor(String itemName, String description, int armorValue) {
+        super(itemName, description);
+        this.armorValue = armorValue;
+    }
+
 
     // ********************** Accessor Methods ********************** //
 

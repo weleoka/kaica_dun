@@ -98,14 +98,11 @@ public class App implements CommandLineRunner {
 
             Dungeon dungeon = gsi.createDungeon(createdUser);
 
-
             try {
                 menuMain.display();
             } catch (KaicaException e) {
                 log.debug(e);
             }
-
-
 
             testdb.main();
 
