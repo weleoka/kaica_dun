@@ -1,10 +1,12 @@
 package kaica_dun.resources;
 
+import kaica_dun.dao.AvatarInterface;
 import kaica_dun.entities.Armor;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Item;
 import kaica_dun.entities.Weapon;
 import kaica_dun_system.User;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class makeAvatar {
     private User user;

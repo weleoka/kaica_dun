@@ -87,7 +87,7 @@ public class App implements CommandLineRunner {
             // AVATAR Creation
             User createdUser = usi.findUserById(userId);
 
-            gsi.createNewAvatar(new String[]{"Rolphius", "A wiry old warrior."}, createdUser);
+            gsi.createStaticAvatar(createdUser);
             //Avatar avatar = avatarInterface.save(new Avatar("Rolphius", "A Long wiry old warrior.", createdUser));
             //log.info("Avatar created in DB : {}", avatar.getName());
 

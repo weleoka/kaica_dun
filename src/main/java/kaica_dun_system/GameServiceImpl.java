@@ -48,11 +48,8 @@ public class GameServiceImpl implements GameService {
 
     public Dungeon createDungeon(User user) {
 
-        // @Kai TODO move this somewhere?
-        avatar = makeAvatar.make(user);
-        avatarInterface.save(avatar);
-
-        if (this.avatar != null) {
+        //TODO PH??? @Kai what's the purpose of the (avatar != null) check???
+        if ( true /*this.avatar != null */) {
             log.debug("Creating static dungeon for user: {}", user.getName());
             makeStaticDungeon msd = new makeStaticDungeon(user);
             dungeon = msd.buildDungeon();
@@ -103,6 +100,16 @@ public class GameServiceImpl implements GameService {
         log.debug("A List of {} avatars was fetched.", results.size());
 
         return results;
+    }
+
+    /**
+     * @param user a User instance
+     * @return boolean if success
+     */
+    public boolean createStaticAvatar(User user) {
+        Avatar avatar =  makeAvatar.make(user);
+        avatarInterface.save(avatar);
+        return true;
     }
 
     /**
