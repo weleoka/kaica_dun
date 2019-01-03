@@ -33,17 +33,16 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Dungeon> dungeon = new LinkedList<Dungeon>();
 
-    /**
-     *     //TODO dafuq? Usure of mappings, currently mapping onto same column for both Dungeon and Avatar, works?
-     *     @OneToOne(optional = true, cascade = CascadeType.ALL)
-     *     private Dungeon currDungeon;
-     *
-     *     @OneToOne(optional = true, cascade = CascadeType.ALL)  //TODO cascades?
-     *     private Avatar currAvatar;
-     */
+
+    //TODO dafuq? Usure of mappings, currently mapping onto same column for both Dungeon and Avatar, works?
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    private Dungeon currDungeon;
+    @OneToOne(optional = true, cascade = CascadeType.ALL)  //TODO cascades?
+    private Avatar currAvatar;
+
 
     // Default empty constructor
     public User() {}
@@ -58,12 +57,12 @@ public class User {
      * @param currAvatar    the currently active avatar on the user account
      * @param currDungeon   the currently active dungeon on the user account
      */
-   // public User(String userName, String password, Avatar currAvatar, Dungeon currDungeon) {
-  //      this.userName = userName;
-   //     this.password = password;
-  //      this.currAvatar = currAvatar;
-  //      this.currDungeon = currDungeon;
-  //  }
+    public User(String userName, String password, Avatar currAvatar, Dungeon currDungeon) {
+        this.userName = userName;
+        this.password = password;
+        this.currAvatar = currAvatar;
+        this.currDungeon = currDungeon;
+    }
 
     /**
      * Partial constructor.
@@ -92,13 +91,13 @@ public class User {
 
     public List<Dungeon> getDungeon() { return this.dungeon; }
 
-  //  public Avatar getCurrAvatar() { return currAvatar; }
+    public Avatar getCurrAvatar() { return currAvatar; }
 
-  //  public void setCurrAvatar(Avatar currAvatar) { this.currAvatar = currAvatar; }
+    public void setCurrAvatar(Avatar currAvatar) { this.currAvatar = currAvatar; }
 
-  //  public Dungeon getCurrDungeon() { return currDungeon; }
+    public Dungeon getCurrDungeon() { return currDungeon; }
 
-  //  public void setCurrDungeon(Dungeon currDungeon) { this.currDungeon = currDungeon; }
+    public void setCurrDungeon(Dungeon currDungeon) { this.currDungeon = currDungeon; }
 
 
     // ********************** Model Methods ********************** //

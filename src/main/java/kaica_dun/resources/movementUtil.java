@@ -1,9 +1,15 @@
 package kaica_dun.resources;
 
+import kaica_dun.entities.Avatar;
+import kaica_dun.entities.Direction;
+import kaica_dun.entities.Dungeon;
+import kaica_dun.entities.Room;
+import kaica_dun_system.User;
+
 public class movementUtil {
 
     private movementUtil() {}
-/*
+
     public static void moveCurrAvatar(User user, Direction direction) {
         Avatar avatar = user.getCurrAvatar();
         Dungeon dungeon = user.getCurrDungeon();
@@ -47,5 +53,5 @@ public class movementUtil {
                 break;
         }
     }
-    */
+
 }

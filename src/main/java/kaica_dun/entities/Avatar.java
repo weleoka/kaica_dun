@@ -18,8 +18,8 @@ public class Avatar extends Fighter {
     private User user;
 
 
-//    @OneToOne(mappedBy = "currAvatar")
-//    private User currUser;
+    @OneToOne(mappedBy = "currAvatar")
+    private User currUser;
 
     //Unidirectional, the Dungeon doesn't "know" there's an avatar in it. TODO think! TEST!
     @OneToOne
@@ -146,9 +146,9 @@ public class Avatar extends Fighter {
 
     public Inventory getInventory() { return inventory; }
 
-//    public User getCurrUser() { return currUser; }
+    public User getCurrUser() { return currUser; }
 
- //   public void setCurrUser(User currUser) { this.currUser = currUser; }
+    public void setCurrUser(User currUser) { this.currUser = currUser; }
 
     public Dungeon getCurrDungeon() { return currDungeon; }
 
@@ -226,7 +226,7 @@ public class Avatar extends Fighter {
     public String toString() {
         // User user, String name, String description, String type, int currHealth, int maxHealth, int damage, int armor, Item equippedWeapon
         String string = String.format(
-                "\nAvatar:" +
+                        "\nAvatar:" +
                         "\nUser: %s" +
                         "\nAvatar name: %s" +
                         "\ndescription: %s" +
@@ -234,7 +234,7 @@ public class Avatar extends Fighter {
                         "\nMax Health: %s" +
                         "\nDamage: %s" +
                         "\nArmor: %s",
-                user.getName(), this.getName(), this.getDescription(), this.getType(), this.getCurrHealth(), this.getMaxHealth(), this.getDamage(), this.getArmor());
+                user.getName(), this.getName(), this.getDescription(), this.getCurrHealth(), this.getMaxHealth(), this.getDamage(), this.getArmor());
 
         return string;
     }
