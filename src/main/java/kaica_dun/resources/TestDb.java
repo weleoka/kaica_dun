@@ -1,5 +1,6 @@
 package kaica_dun.resources;
 
+import kaica_dun_system.MenuMain;
 import kaica_dun_system.User;
 import kaica_dun_system.UserServiceImpl;
 import org.apache.logging.log4j.LogManager;
@@ -24,12 +25,14 @@ public class TestDb {
     @Autowired
     private UserServiceImpl service;
 
+    @Autowired
+    private MenuMain menuMain;
+
     /**
      * This method is static and can be called directly.
-     *
      */
     public void main() {
-        Long newUserId = createUserTest(2);
+        Long newUserId = createUserTest(1);
         printUserListTest();
         User userById = findUserByIdTest(newUserId);
         User userByName = findUserByNameTest("kai");
@@ -43,6 +46,7 @@ public class TestDb {
         //DungeonCreatorTest(userById);
 
         //AvatarEqItemTest(newUser);
+        log.info("\n\n------> All tests completed.");
         System.exit(0);  // Quit the application.
     }
 
@@ -51,10 +55,11 @@ public class TestDb {
      * Create a new user.
      * Can be default user, kai or carl.
      * Always returns a user object but could be not saved.
+     *
      * @param userSelection int defining which defaults to make user from
      * @return user a User instance
      */
-    public Long createUserTest (int userSelection) {
+    public Long createUserTest(int userSelection) {
         log.info("\n\n------> Persisting new User test...");
         User user;
 
@@ -85,33 +90,21 @@ public class TestDb {
     public User findUserByIdTest(Long userId) {
         log.info("\n\n------> Finding user by id test...");
 
-        return this.service.findById(1L);
+        return service.findUserById(1L);
     }
 
     public void printUserListTest() {
         log.info("\n\n------> Output user list test...");
+        service.printUserList();
 
-        List<User> userList = this.service.findAll();
-        System.out.println("- - userlist - -");
-        for (int id = 0; id < userList.size(); id++) {
-
-            try {
-                User currentUser = userList.get(id);
-                System.out.printf("%s - UserName: %s\n", id + 1, currentUser.getName());
-
-            } catch (IndexOutOfBoundsException e) {
-                log.warn("Index out of bounds: {}", e);
-            }
-        }
-        System.out.println();
     }
 
     public User findUserByNameTest(String userName) {
         log.info("\n\n------> Finding user by name...");
-        User user = this.service.findByName(userName);
+        User user = service.findUserByName(userName);
         return user;
     }
-
+}
 /*
 
     *//**
@@ -176,7 +169,7 @@ public class TestDb {
         Monster monster = null;
 
         try {
-            Optional<Monster> dbMonster = mdao.findById(monsterID);
+            Optional<Monster> dbMonster = mdao.findUserById(monsterID);
 
             if (dbMonster.isPresent()) {
                 monster = dbMonster.get();
@@ -250,16 +243,4 @@ public class TestDb {
 
 
         //TODO test to unequipp weapon and update database to see if it works as planned
-        Util.sleeper(800); // Artificial sleep.*//*
-    }
-
-
-    *//**
-     * Testing user functionality
-     *//*
-    public static void UserLoginTest() {
-        log.info("\n------> User login test");
-        MenuMain mainMenu = new MenuMain();
-        mainMenu.display();
-    }*/
-}
+        Util.sleeper(800); // Artificial sleep.*/

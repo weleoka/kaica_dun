@@ -2,12 +2,13 @@ package kaica_dun_system;
 
 import kaica_dun.entities.Avatar;
 import kaica_dun.util.Util;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 import static java.lang.System.out;
 
-
+@Component
 public class MenuLoggedIn extends Menu {
 
     MenuLoggedIn() {}
@@ -23,7 +24,7 @@ public class MenuLoggedIn extends Menu {
     void display() {
         int selection;
 
-        if (!USERCONTROL.isAuthenticatedUser()) {
+        if (!usi.isAuthenticatedUser()) {
             out.println(UI_strings.userNotAuthenticated);
             returnToMainMenu();
         }
@@ -66,7 +67,7 @@ public class MenuLoggedIn extends Menu {
      */
     private void createAvatar() {
         String[] arr = this.createAvatarPrompt();
-        if (GAMECONTROL.createNewAvatar(arr, USERCONTROL.getSelectedUser())) {
+        if (gsi.createNewAvatar(arr, usi.getAuthenticatedUser())) {
             out.println(UI_strings.newAvatarCreated);
         }
 
@@ -80,7 +81,7 @@ public class MenuLoggedIn extends Menu {
         Avatar tmpAvatar = selectAvatarPrompt();
 
         if (tmpAvatar != null) {
-            GAMECONTROL.setAvatar(tmpAvatar);
+            gsi.setAvatar(tmpAvatar);
         }
     }
 
@@ -109,7 +110,7 @@ public class MenuLoggedIn extends Menu {
     private Avatar selectAvatarPrompt() {
         int selection;
         String selectionOptions = "";
-        List<Avatar> avatarList = GAMECONTROL.fetchAvatarByUser(USERCONTROL.getSelectedUser());
+        List<Avatar> avatarList = gsi.fetchAvatarByUser(usi.getAuthenticatedUser());
 
         if (avatarList.size() == 0) {
             out.println(UI_strings.noAvatarAvailable);
@@ -161,7 +162,7 @@ public class MenuLoggedIn extends Menu {
      * Steps for logging user out.
      */
     private void logoutUser() {
-        USERCONTROL.logoutSelectedUser();
+        usi.logoutUser();
         out.println(UI_strings.logoutSuccessfull);
         Util.sleeper(700);
         returnToMainMenu();
