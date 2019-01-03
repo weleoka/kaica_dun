@@ -76,8 +76,7 @@ public class GameServiceImpl implements GameService {
      * @param user a User instance
      * @return
      */
-    public List<Avatar> fetchAvatarByUser
-      (User user) {
+    public List<Avatar> fetchAvatarByUser (User user) {
         log.debug("Searching for all Avatars belonging to {}.", user.getName());
 
 /*
@@ -97,7 +96,7 @@ public class GameServiceImpl implements GameService {
         query.setParameter("userInstance", user); // Named
         //query.setParameter(1, user.getId()); // Native
         List<Avatar> results = query.getResultList();
-        log.debug("A List of avatars was fetched: {}", results);
+        log.debug("A List of {} avatars was fetched.", results.size());
 
         return results;
     }

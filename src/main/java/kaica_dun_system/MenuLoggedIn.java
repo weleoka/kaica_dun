@@ -2,6 +2,7 @@ package kaica_dun_system;
 
 import kaica_dun.entities.Avatar;
 import kaica_dun.util.Util;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -10,6 +11,12 @@ import static java.lang.System.out;
 
 @Component
 public class MenuLoggedIn extends Menu {
+
+    @Autowired
+    MenuMain menuMain;
+
+    @Autowired
+    MenuInGame menuInGame;
 
     MenuLoggedIn() {}
 
@@ -26,7 +33,7 @@ public class MenuLoggedIn extends Menu {
 
         if (!usi.isAuthenticatedUser()) {
             out.println(UI_strings.userNotAuthenticated);
-            returnToMainMenu();
+            menuMain.display();
         }
 
         inputLoop:
@@ -82,6 +89,7 @@ public class MenuLoggedIn extends Menu {
 
         if (tmpAvatar != null) {
             gsi.setAvatar(tmpAvatar);
+            menuInGame.display(true);
         }
     }
 
@@ -131,9 +139,11 @@ public class MenuLoggedIn extends Menu {
             out.println(UI_strings.makeSelectionPrompt);
 
             if (userInput.hasNextInt()) {
-                selection = userInput.nextInt() - 1;    // Minus 1 for correct index.
+                selection = userInput.nextInt() - 1;
 
                 if (selection > 0 && selection < avatarList.size()) {
+                    Avatar avatar = avatarList.get(selection);     // Minus 1 for correct index.
+                    out.println(UI_strings.avatarSelectedSuccess + avatar.getName());
 
                     return avatarList.get(selection);
 
@@ -146,18 +156,6 @@ public class MenuLoggedIn extends Menu {
     }
 
 
-
-
-
-    /**
-     * Return to Main Menu.
-     */
-    private void returnToMainMenu() {
-        MenuMain menuMain = new MenuMain();
-        menuMain.display();
-    }
-
-
     /**
      * Steps for logging user out.
      */
@@ -165,6 +163,6 @@ public class MenuLoggedIn extends Menu {
         usi.logoutUser();
         out.println(UI_strings.logoutSuccessfull);
         Util.sleeper(700);
-        returnToMainMenu();
+        menuMain.display();
     }
 }

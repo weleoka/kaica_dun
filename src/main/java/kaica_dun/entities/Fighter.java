@@ -12,6 +12,7 @@ import java.util.Objects;
 @Table(name = "Fighter")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "fighter_discriminator")
+@DiscriminatorValue("null")
 public abstract class Fighter implements Describable {
 
     @Id

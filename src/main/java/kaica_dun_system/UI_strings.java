@@ -20,6 +20,12 @@ public class UI_strings
     public static String loggedInMenuAlternatives = "\n1. New Game\n2. Create Avatar\n9. Log out";
     public static String loggedInMenu = menuHeader2 + loggedInMenuAlternatives + makeSelectionPrompt;
 
+    // In-game menu
+    public static String menuHeader3 = "\n - - - Game Menu - - -";
+    public static String inGameMenuAlternatives = "\n1. Resume\n2. Restart\n3.Save and Quit\n9. Quit Game";
+    public static String inGameMenu = menuHeader3 + inGameMenuAlternatives + makeSelectionPrompt;
+
+
 
     // Avatar creation
     public static String promptAvatarName = "Enter a name for your Avatar: ";
@@ -29,6 +35,9 @@ public class UI_strings
     // Avatar selection
     public static String selectYourAvatarHeader = "\n - - - Avatar List - - -";
     public static String noAvatarAvailable = "You don't have any Avatars to play as. Create a new one.";
+    public static String avatarSelectedSuccess = "You have selected to play as: ";
+
+
 
 
     // User creation
@@ -48,42 +57,6 @@ public class UI_strings
     public static String unsuccessfullLogin = "Log-in failed. Try again.";
     public static String logoutSuccessfull = "You are now logged out.";
 
-
-
-
-
-
-
-
-
-
-
-    // Activity booking
-    public static String userNotActive = "Ni har inte ett giltigt medlemskap.";
-    public static String userSubscriptionUsable = "Abonnemang hittat och är giltigt.";
-    public static String userSubscriptionNotUsable = "Abonnemang inte giltigt, skapa ett nytt abonnemang.";
-    public static String noSuchActivity = "Den aktiviteten finns inte. Försök igen.";
-    public static String selectActivityPrompt = "Välj aktivitet:";
-    public static String selectRoomPlacePrompt = "Välj plats (ex. 2b eller 1d): ";
-    public static String assignedUserToPlace = "Du har registrerats på platsen i rummet.";
-    public static String assignedUserToPlaceFail = "Den platsen är redan bokad.";
-    public static String bookingActivitySuccess = "Bra! Aktiviteten är bokad!";
-
-    // Subscription management
-    public static String selectSubscriptionPrompt = "Hur många månader väljer ni: ";
-    public static String confirmSubscriptionPrompt = "Vill ni gå vidare med betalningen? (j/n): ";
-    public static String assignedSubscriptionToUser = "Bra! Abonnemanget är fixat!";
-    public static String assignedSubscriptionToUserFail = "Nej! Något fungerade inte. Ni har inget abonnemang fixat.";
-    public static String noSuchSubscription = "Det abonnemanget finns inte.";
-    public static String userSubscriptionNotFound = "Ni har inget giltigt abonnemang.";
-    public static String membershipNeeded = "Ni behöver även ett medlemsskap för 100kr. ";
-    public static String priceListPretty = "\n - - - WakeUp Gym Prislista - - - \n" +
-            "Medlemskap – 100 SEK\n" +
-            "1-2 månader – 400 SEK/månad\n" +
-            "3-6 månader – 350 SEK/månad\n" +
-            "7-12 månader – 300 SEK/månad\n" +
-            "Längre än 12 månader – 250 SEK/månad";
-    public static String subscriptionPriceTotal = "Totalt så blir priset för abonnemanget ";
 
 
 }

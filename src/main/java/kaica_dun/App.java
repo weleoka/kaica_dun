@@ -19,6 +19,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 
 import java.util.List;
 
@@ -33,8 +34,10 @@ import static java.lang.System.out;
 //@SpringBootApplication
 // is equivalent to this:
 @Configuration
+//@Profile("local")
 @EnableAutoConfiguration
-@ComponentScan({"kaica_dun_system", "kaica_dun"})
+// lazyInit means the bans are loaded as used. Gained 1 second boot time. todo: learn the @Lazy annotation.
+@ComponentScan(basePackages = {"kaica_dun_system", "kaica_dun"}, lazyInit=true)
 
 public class App implements CommandLineRunner {
     // This logger has a name so that it can retrieved for use from anywhere in the application.
@@ -94,7 +97,7 @@ public class App implements CommandLineRunner {
 
             Dungeon dungeon = gsi.createDungeon(createdUser);
 
-            
+
 
 
 
