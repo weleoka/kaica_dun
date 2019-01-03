@@ -1,6 +1,8 @@
 package kaica_dun.dao;
 
 import kaica_dun_system.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,8 +12,11 @@ import java.util.List;
 
 public class UserInterfaceImpl implements UserInterfaceCustom {
 
+    private static final Logger log = LogManager.getLogger();
+
     @Autowired
     private EntityManager entityManager;
+
     /**
      * Read from storage and find a user by user name.
      * <p>
@@ -44,22 +49,24 @@ public class UserInterfaceImpl implements UserInterfaceCustom {
      */
     //@Override
     @Transactional
-    public User findByName(String name) {
+    public List<User> findByName(String name) {
         //EntityManager em = getEntityManager();
         // Method using JPQL named query and EntityManager
         //Named query is at annotation on class
 
         TypedQuery<User> query = this.entityManager.createNamedQuery("User.findByName", User.class);
         query.setParameter("name", name);
-        List<User> result = query.getResultList();
+        List<User> results = query.getResultList();
 
-        if (result.size() == 1) {
-            return result.get(0);
+        if (results.size() == 1) {
+            return results;
+        } else if (results.size() == 0) {
+            log.debug("No user found with name: {}", name);
         } else {
-            throw new RuntimeException("More than one user with the same name.");
+            log.warn("More than one user with name: {}", name);
         }
 
-
+        return results;
         /* // Method using JPA criteria API.
         CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<User> query = builder.createQuery(User.class);

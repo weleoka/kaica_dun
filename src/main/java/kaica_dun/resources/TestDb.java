@@ -1,12 +1,10 @@
 package kaica_dun.resources;
 
-import kaica_dun.dao.UserInterface;
-
-import kaica_dun_system.*;
-
+import kaica_dun_system.MenuMain;
+import kaica_dun_system.User;
+import kaica_dun_system.UserServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,20 +23,19 @@ public class TestDb {
     private static final Logger log = LogManager.getLogger();
 
     @Autowired
-    private UserInterface mdao;
+    private UserServiceImpl service;
+
+    @Autowired
+    private MenuMain menuMain;
 
     /**
      * This method is static and can be called directly.
-     *
      */
     public void main() {
-
-        UserServiceImpl usi = new UserServiceImpl();
-
-        //Long newUserId = createUserTest(2);
+        Long newUserId = createUserTest(1);
         printUserListTest();
-        User userById = findUserByIdTest((long) 1);
-        //User userByName = findUserByNameTest("kai");
+        User userById = findUserByIdTest(newUserId);
+        User userByName = findUserByNameTest("kai");
         //UserLoginTest();
 
         //MonsterCreatorTest();
@@ -49,6 +46,7 @@ public class TestDb {
         //DungeonCreatorTest(userById);
 
         //AvatarEqItemTest(newUser);
+        log.info("\n\n------> All tests completed.");
         System.exit(0);  // Quit the application.
     }
 
@@ -57,12 +55,12 @@ public class TestDb {
      * Create a new user.
      * Can be default user, kai or carl.
      * Always returns a user object but could be not saved.
+     *
      * @param userSelection int defining which defaults to make user from
      * @return user a User instance
      */
-    public static Long createUserTest (int userSelection) {
-        log.info("\n------> Persisting new User test...");
-        UserServiceImpl us = new UserServiceImpl();
+    public Long createUserTest(int userSelection) {
+        log.info("\n\n------> Persisting new User test...");
         User user;
 
         switch (userSelection) {
@@ -80,7 +78,7 @@ public class TestDb {
                 break;
         }
 
-        Long newUserId = us.createUser(user);
+        Long newUserId = this.service.createUser(user);
 
         if (newUserId != null) {
             log.info("User '{}' with password '{}' created.", user.getName(), user.getPassword());
@@ -89,38 +87,24 @@ public class TestDb {
         return newUserId;
     }
 
-    public static User findUserByIdTest(Long userId) {
-        log.info("\n------> Finding user by id test...");
-        UserServiceImpl us = new UserServiceImpl();
+    public User findUserByIdTest(Long userId) {
+        log.info("\n\n------> Finding user by id test...");
 
-        return us.findById(1L);
+        return service.findUserById(1L);
     }
 
-    public static void printUserListTest() {
-        log.info("\n------> Output user list test...");
-        UserServiceImpl us = new UserServiceImpl();
-        List<User> userList = us.findAll();
-        System.out.println("- - userlist - -");
-        for (int id = 0; id < userList.size(); id++) {
+    public void printUserListTest() {
+        log.info("\n\n------> Output user list test...");
+        service.printUserList();
 
-            try {
-                User currentUser = userList.get(id);
-                System.out.printf("%s - UserName: %s\n", id, currentUser.getName());
-
-            } catch (IndexOutOfBoundsException e) {
-                log.warn("Index out of bounds: {}", e);
-            }
-        }
-        System.out.println();
     }
 
-    public static User findUserByNameTest(String userName) {
-        log.info("\n------> Finding user by name...");
-        UserServiceImpl us = new UserServiceImpl();
-
-        return us.findByName(userName);
+    public User findUserByNameTest(String userName) {
+        log.info("\n\n------> Finding user by name...");
+        User user = service.findUserByName(userName);
+        return user;
     }
-
+}
 /*
 
     *//**
@@ -185,7 +169,7 @@ public class TestDb {
         Monster monster = null;
 
         try {
-            Optional<Monster> dbMonster = mdao.findById(monsterID);
+            Optional<Monster> dbMonster = mdao.findUserById(monsterID);
 
             if (dbMonster.isPresent()) {
                 monster = dbMonster.get();
@@ -259,16 +243,4 @@ public class TestDb {
 
 
         //TODO test to unequipp weapon and update database to see if it works as planned
-        Util.sleeper(800); // Artificial sleep.*//*
-    }
-
-
-    *//**
-     * Testing user functionality
-     *//*
-    public static void UserLoginTest() {
-        log.info("\n------> User login test");
-        MenuMain mainMenu = new MenuMain();
-        mainMenu.display();
-    }*/
-}
+        Util.sleeper(800); // Artificial sleep.*/

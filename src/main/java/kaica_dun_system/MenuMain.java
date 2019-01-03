@@ -1,14 +1,18 @@
 package kaica_dun_system;
 
 import kaica_dun.util.Util;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 import static java.lang.System.out;
 
+@Component
 public class MenuMain extends Menu {
 
-
+    @Autowired
+    private MenuLoggedIn menuLoggedIn;
 
     public MenuMain () {}
     /**
@@ -39,7 +43,6 @@ public class MenuMain extends Menu {
                     case 1:
                         if (loginUser()) {
                             out.println(UI_strings.successfullLogin);
-                            MenuLoggedIn menuLoggedIn = new MenuLoggedIn();
                             menuLoggedIn.display();
                             break inputLoop;
 
@@ -60,7 +63,7 @@ public class MenuMain extends Menu {
                         //bookActivity();
 
                     case 5: // Secret case for listing users.
-                        listUsers();
+                        usi.printUserList();
 
                     case 9:
                         quit();
@@ -104,12 +107,12 @@ public class MenuMain extends Menu {
      */
     private boolean loginUser() {
         String[] creds = credentialsPrompt();
+        User user = usi.findUserByName(creds[0]);
 
-        if (USERCONTROL.findByName(creds[0]).getId() != null) {
+        if (user != null) {
             out.println(UI_strings.userNameFound);
 
-
-            if (USERCONTROL.loginSelectedUser()) {
+            if (usi.loginUser(user, creds[1])) {
 
                 return true;
 
@@ -145,10 +148,11 @@ public class MenuMain extends Menu {
         out.println(UI_strings.createUserHeader);
         String[] creds = credentialsPrompt();
         User user = new User(creds[0], creds[1]);
+        log.debug("Creating user: {} with password: {}", creds[0], creds[1]);
 
-        if (USERCONTROL.checkNewUserName(creds[0])) {
+        if (usi.checkNewUserName(creds[0])) {
 
-            if (USERCONTROL.createUser(user) != null) {
+            if (usi.createUser(user) != null) {
                 out.println(UI_strings.createUserSuccess);
                 Util.sleeper(700);
                 this.display(); // display the main menu again, could instead go direct to logged in.
@@ -166,18 +170,12 @@ public class MenuMain extends Menu {
 
 
     /**
-     * List all the users in the database.
-     */
-    private void listUsers() {
-        //List<User> USERCONTROL.findAll();
-    }
-
-    /**
      * End the application.
      */
     private void quit() {
         out.println(UI_strings.goodbyeString);
-        System.exit(0);
+        //System.exit(0);
+        // Returns to caller
     }
 
 }

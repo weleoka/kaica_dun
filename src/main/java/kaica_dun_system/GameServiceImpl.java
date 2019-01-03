@@ -1,29 +1,40 @@
 package kaica_dun_system;
 
 
+import kaica_dun.dao.AvatarInterface;
+import kaica_dun.dao.UserInterface;
 import kaica_dun.entities.Avatar;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
 
 @Service
-public class GameControl {
+@EnableTransactionManagement
+public class GameServiceImpl implements GameService {
+
     // Singleton
-    private static GameControl ourInstance = new GameControl();
-    public static GameControl getInstance() {
+    private static GameServiceImpl ourInstance = new GameServiceImpl();
+    public static GameServiceImpl getInstance() {
         return ourInstance;
     }
-    private GameControl() {}
+    private GameServiceImpl() {}
 
     // Fields declared
     private static final Logger log = LogManager.getLogger();
     private Avatar avatar = null;
 
+    @Autowired
+    private AvatarInterface avatarInterface;
 
+    @Autowired
+    private EntityManager entityManager;
     /**
      * Uses native SQL.
      *
@@ -34,18 +45,15 @@ public class GameControl {
     public List<Avatar> fetchAvatarByUser(User user) {
         log.debug("Searching for all Avatars belonging to {}.", user.getName());
 
-        //MainDao avatarDao = new DaoFactory().getMainDao(Avatar.class);
-
- /*       Query query = session.createSQLQuery(
-                "SELECT * FROM fighter avatar WHERE avatar.userID LIKE :userID")
-                .addEntity(Avatar.class)
+        Query query = entityManager.createQuery(
+                "SELECT avatar FROM Fighter avatar WHERE avatar.userID LIKE :userID")
+                //.addEntity(Avatar.class)
                 .setParameter("userID", user.getId());
-        List<Avatar> avatarList = query.getResultList(); // List<User> result = query.getResultList();
-        session.getTransaction().commit();
-*/
-        //log.debug("A List of avatars was fetched: {}", avatarList);
+        List<Avatar> avatarList = query.getResultList();
 
-        return null;//avatarList;
+        log.debug("A List of avatars was fetched: {}", avatarList);
+
+        return avatarList;
     }
 
 

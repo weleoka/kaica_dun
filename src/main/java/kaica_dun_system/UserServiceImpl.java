@@ -33,32 +33,11 @@ public class UserServiceImpl implements UserService {
     private static final Logger log = LogManager.getLogger();
 
     @Autowired
-    private UserInterface daoInterface;
-
-//    @Autowired
-//    private UserInterface mDao;
-
-    //@Autowired
-    //private UserRepository userRepository;
+    private UserInterface userInterface;
 
     // User management
-    private User selectedUser;  // user object that is subject to operations.
     private User authenticatedUser; // holds a reference to the user object if isAuthenticated.
 
-    /* // Removedconstructor injection in favour of property injection.
-    @Autowired
-    public UserServiceImpl() { }
-
-    // Removed constructor so now
-       this.userDao = new DaoFactory().getUserDao();
-    }
-
-    @Autowired
-    public UserServiceImpl(UserDao userDao) {
-        this.userDao = userDao;
-    }
-
-*/
 
 
     // ********************** Persistence Methods ********************** //
@@ -71,14 +50,12 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public Long createUser(User user) { // Change to package private after testing.
         log.debug("Creating user '{}'.", user.getName());
-        log.debug("user ID '{}'.", user.getId() + "");
 
         try {
-            User nUser = (User) daoInterface.save(user);
+            User nUser = userInterface.save(user);
 
             if (nUser.getId() != null) {
                 log.debug("Created new user with ID: '{}'.", user.getId());
-                this.selectedUser = user;
 
                 return nUser.getId();
             }
@@ -99,12 +76,12 @@ public class UserServiceImpl implements UserService {
      * @param userId a Long of the users id to look for
      */
     @Transactional(readOnly = true)
-    public User findById(Long userId) { // Change to package private after testing.
+    public User findUserById(Long userId) { // Change to package private after testing.
         log.debug("Searching for user with ID: {}.", userId);
-        User user = new User();
+        User user = null;
 
         try {
-            Optional<User> dbUser = daoInterface.findById(userId);
+            Optional<User> dbUser = userInterface.findById(userId);
             if (dbUser.isPresent()) {
                 user = dbUser.get();
             }
@@ -114,12 +91,10 @@ public class UserServiceImpl implements UserService {
             log.error(e);
         }
 
-        if (user.getId() != null) {
+        if (user != null) {
             log.debug("Found user with ID: '{}'", user.getId());
-            this.selectedUser = user;
-
         } else {
-            log.debug("Found no user with ID: '{}'", user.getId());
+            log.debug("Found no user with ID: '{}'", userId);
         }
 
         return user;
@@ -138,27 +113,28 @@ public class UserServiceImpl implements UserService {
      * @param userName a String of the name too look for
      */
     @Transactional(readOnly = false)
-    public User findByName(String userName) { // Change to package private after testing.
+    public User findUserByName(String userName) { // Change to package private after testing.
         log.debug("Searching for user '{}' by name.", userName);
         User user = new User();
 
         try {
-            //user = daoInterface.findByName(userName);
+            List<User> users = userInterface.findByName(userName);
+            user = users.get(0);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error(e);
+        } catch (IndexOutOfBoundsException e) {
+            //e.printStackTrace();
+            log.debug("Found no user with name: '{}'", userName);
+
+            return null;
         }
 
         if (user.getId() != null) {
-            log.debug("Found user with name: '{}'", user.getName());
-            this.selectedUser = user;
-
-        } else {
-            log.debug("Found no user with name: '{}'", user.getName());
+            log.debug("Found user with name: '{}'", userName);
+            //this.selectedUser = user;
+            return user;
         }
 
-        return user;
+        return null;
     }
 
 
@@ -179,7 +155,7 @@ public class UserServiceImpl implements UserService {
 
         try {
 
-            return daoInterface.findAll();
+            return (List<User>) userInterface.findAll();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -194,18 +170,18 @@ public class UserServiceImpl implements UserService {
     // ********************** Checking Methods ********************** //
 
     /**
-     * Check if the username is available
+     * Check if the username is taken
      */
     public boolean checkNewUserName(String userName) {
 
-        if (findByName(userName) != null) {
-            this.selectedUser = null;
+        if (findUserByName(userName) != null) {
 
             return false;
         }
 
         return true;
     }
+
 
     /**
      * Checks if authenticatedUser is set and returns result
@@ -227,17 +203,21 @@ public class UserServiceImpl implements UserService {
      *
      * @return userID           true if user is set and thus logged in
      */
-    public Long getSelectedUserID() {
-        return this.selectedUser.getId();
+    public Long getAuthenticatedUserId() {
+        return this.authenticatedUser.getId();
     }
 
-    public User getSelectedUser() {
-        return this.selectedUser;
+    /**
+     *
+     * @return User
+     */
+    public User getAuthenticatedUser() {
+        return this.authenticatedUser;
     }
 
 
 
-
+    // ********************** Operation Methods ********************** //
     /**
      * setAuthenticated
      *
@@ -249,24 +229,13 @@ public class UserServiceImpl implements UserService {
      *  which is probably excessive.
      * todo: Refactor: move id, name and password checks into user class.
      */
-    public boolean loginSelectedUser() {
+    public boolean loginUser(User user, String password) {
+        log.debug("Comparing passwords: '{}' VS '{}'", user.getPassword(), password); //debug line.
 
-        //User that = userDao.findById(userId);
-        Long userId = this.getSelectedUserID();
-        User that = findById(userId);
+        if (user.getPassword().equals(password)) {
+            this.authenticatedUser = user;
 
-        log.debug("Comparing passwords: '{}' VS '{}'", this.selectedUser.getPassword(), that.getPassword()); //debug line.
-
-        if (this.selectedUser.getId().equals(that.getId())) {
-
-            if (this.selectedUser.getName().equals(that.getName())) {
-
-                if (this.selectedUser.getPassword().equals(that.getPassword())) {
-                    this.authenticatedUser = this.selectedUser;
-
-                    return true;
-                }
-            }
+            return true;
         }
 
         return false;
@@ -275,13 +244,31 @@ public class UserServiceImpl implements UserService {
     /**
      * set authenticatedUser to null.
      */
-    public void logoutSelectedUser() {
+    public void logoutUser() {
         this.authenticatedUser = null;
     }
 
 
 
+    // ********************** Development helper Methods ********************** //
+    public void printUserList() {
+        List<User> userList = (List<User>) userInterface.findAll();
+        System.out.println("- - userlist - -");
+        for (int id = 0; id < userList.size(); id++) {
 
+            try {
+                User currentUser = userList.get(id);
+                System.out.printf("%s - UserName: %s\n", id + 1, currentUser.getName());
+
+            } catch (IndexOutOfBoundsException e) {
+                log.warn("Index out of bounds: {}", e);
+            }
+        }
+        if (userList.size() == 0) {
+            System.out.println("[empty]");
+        }
+        System.out.println();
+    }
 
 
 }
