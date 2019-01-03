@@ -1,5 +1,6 @@
 package kaica_dun_system;
 
+import kaica_dun.util.KaicaException;
 import kaica_dun.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,7 +29,7 @@ public class MenuMain extends Menu {
      * <p>
      * todo: test the inputLoop breaking and what happens to following switch cases.
      */
-    public void display() {
+    public void display() throws KaicaException {
         int selection = 0;
 
         inputLoop:
@@ -53,27 +54,21 @@ public class MenuMain extends Menu {
 
                     case 2: // Create a new user.
                         createUser();
-                        break inputLoop;
+                        continue;
+                        //break inputLoop;
 
-                    case 3: // Secret case for making default rooms.
-                        //generateDefaultRooms();
-                        break inputLoop;
-
-                    case 4: // Secret case for booking an activity.
-                        //bookActivity();
-
-                    case 5: // Secret case for listing users.
+                    case 3: // Secret case for listing users.
                         usi.printUserList();
 
                     case 9:
                         quit();
                         break inputLoop;
                 }
-                userInput.reset(); // flush the in buffer
 
             } else {
                 out.println(UI_strings.menuSelectionFailed);
             }
+            userInput.reset(); // flush the in buffer
         }
     }
 
@@ -155,7 +150,6 @@ public class MenuMain extends Menu {
             if (usi.createUser(user) != null) {
                 out.println(UI_strings.createUserSuccess);
                 Util.sleeper(700);
-                this.display(); // display the main menu again, could instead go direct to logged in.
 
             } else {
                 out.println(UI_strings.createUserFail);
@@ -165,15 +159,15 @@ public class MenuMain extends Menu {
             out.println(UI_strings.userNameExists);
         }
         Util.sleeper(700);
-        this.display();
     }
 
 
     /**
      * End the application.
      */
-    private void quit() {
+    private void quit() throws KaicaException {
         out.println(UI_strings.goodbyeString);
+        throw new KaicaException("Quit application");
         //System.exit(0);
         // Returns to caller
     }

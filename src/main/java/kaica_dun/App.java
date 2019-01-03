@@ -4,6 +4,7 @@ import kaica_dun.dao.AvatarInterface;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Dungeon;
 import kaica_dun.resources.TestDb;
+import kaica_dun.util.KaicaException;
 import kaica_dun_system.GameServiceImpl;
 import kaica_dun_system.MenuMain;
 import kaica_dun_system.User;
@@ -86,7 +87,7 @@ public class App implements CommandLineRunner {
             // AVATAR Creation
             User createdUser = usi.findUserById(userId);
 
-            gsi.createNewAvatar(new String[] {"Rolphius", "A wiry old warrior."}, createdUser);
+            gsi.createNewAvatar(new String[]{"Rolphius", "A wiry old warrior."}, createdUser);
             //Avatar avatar = avatarInterface.save(new Avatar("Rolphius", "A Long wiry old warrior.", createdUser));
             //log.info("Avatar created in DB : {}", avatar.getName());
 
@@ -98,25 +99,20 @@ public class App implements CommandLineRunner {
             Dungeon dungeon = gsi.createDungeon(createdUser);
 
 
-
-
-
-
-
-            menuMain.display();
-
+            try {
+                menuMain.display();
+            } catch (KaicaException e) {
+                log.debug(e);
+            }
 
 
 
             testdb.main();
 
-
-
         } catch (Exception e) {
             log.warn(e);
             e.printStackTrace();
         }
-
         sessionFactory.close();
         System.exit(0);
     }

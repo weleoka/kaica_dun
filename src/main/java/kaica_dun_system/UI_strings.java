@@ -17,12 +17,12 @@ public class UI_strings
 
     // Logged in menu
     public static String menuHeader2 = "\n - - - User Logged in Menu - - -";
-    public static String loggedInMenuAlternatives = "\n1. New Game\n2. Create Avatar\n9. Log out";
+    public static String loggedInMenuAlternatives = "\n1. Select Avatar\n2. Create Avatar\n9. Log out";
     public static String loggedInMenu = menuHeader2 + loggedInMenuAlternatives + makeSelectionPrompt;
 
     // In-game menu
     public static String menuHeader3 = "\n - - - Game Menu - - -";
-    public static String inGameMenuAlternatives = "\n1. Resume\n2. Restart\n3.Save and Quit\n9. Quit Game";
+    public static String inGameMenuAlternatives = "\n1. Resume\n2. Restart\n3. Save and Quit\n9. Quit Game";
     public static String inGameMenu = menuHeader3 + inGameMenuAlternatives + makeSelectionPrompt;
 
 

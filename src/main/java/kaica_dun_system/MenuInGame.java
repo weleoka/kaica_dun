@@ -47,12 +47,13 @@ public class MenuInGame extends Menu {
                         continue;
 
                     case 3:
-                        menuLoggedIn.display();
                         //saveAndQuit();
-                        continue;
+                        menuLoggedIn.display();
+                        break inputLoop;
 
                     case 9:
-                        menuLoggedIn.display(); // Quits no saving.
+                        // closeGameActions();
+                        //menuLoggedIn.display(); // Quits no saving.
                         break inputLoop;
                 }
 

@@ -16,4 +16,7 @@ public interface GameService {
     boolean createNewAvatar(String[] arr, User user);
 
     void setAvatar(Avatar avatar);
+
+    String printAvatarListByUser(User user, boolean stdout);
+
 }

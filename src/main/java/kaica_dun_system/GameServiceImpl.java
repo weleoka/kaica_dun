@@ -118,4 +118,23 @@ public class GameServiceImpl implements GameService {
         log.debug("An avatar(id:{}) has been set for username '{}'.", avatar.getId(), avatar.getUser().getName());
         this.avatar = avatar;
     }
+
+
+    public String printAvatarListByUser(User user, boolean stdout) {
+        String stringOutput = "";
+        String row = "";
+        List<Avatar> avatarList = fetchAvatarByUser(user);
+
+        for (int i = 0; i < avatarList.size(); i++) {
+            Avatar tmpAvatar = avatarList.get(i);
+            row = String.format("\n[%s] - %s", i + 1, tmpAvatar.getName()); // plus 1 for readability
+
+            if (stdout) {
+                System.out.println(row);
+            }
+            stringOutput += row;
+        }
+
+        return stringOutput;
+    }
 }

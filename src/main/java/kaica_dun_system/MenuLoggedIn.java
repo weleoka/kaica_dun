@@ -33,7 +33,8 @@ public class MenuLoggedIn extends Menu {
 
         if (!usi.isAuthenticatedUser()) {
             out.println(UI_strings.userNotAuthenticated);
-            menuMain.display();
+            return;
+            //menuMain.display();
         }
 
         inputLoop:
@@ -126,11 +127,8 @@ public class MenuLoggedIn extends Menu {
             return null;
         }
 
-        for (int i = 0; i < avatarList.size(); i++) {
-            Avatar tmpAvatar = avatarList.get(i);
-            //out.println(tmpAvatar.toString());
-            selectionOptions += String.format("[%s] - %s", i + 1, tmpAvatar.getName()); // plus 1 for readability
-        }
+        selectionOptions = gsi.printAvatarListByUser(usi.getAuthenticatedUser(), false); // print to stdout.
+
 
         inputLoop:
         while (true) {
@@ -141,7 +139,7 @@ public class MenuLoggedIn extends Menu {
             if (userInput.hasNextInt()) {
                 selection = userInput.nextInt() - 1;
 
-                if (selection > 0 && selection < avatarList.size()) {
+                if (selection >= 0 && selection < avatarList.size()) {
                     Avatar avatar = avatarList.get(selection);     // Minus 1 for correct index.
                     out.println(UI_strings.avatarSelectedSuccess + avatar.getName());
 
@@ -163,6 +161,7 @@ public class MenuLoggedIn extends Menu {
         usi.logoutUser();
         out.println(UI_strings.logoutSuccessfull);
         Util.sleeper(700);
-        menuMain.display();
+        //menuMain.display();
     }
+
 }
