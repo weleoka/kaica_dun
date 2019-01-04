@@ -45,7 +45,7 @@ public class MenuMain extends Menu {
                         if (loginUser()) {
                             out.println(UI_strings.successfullLogin);
                             menuLoggedIn.display();
-                            break inputLoop;
+                            continue;
 
                         } else {
                             out.println(UI_strings.unsuccessfullLogin);

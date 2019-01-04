@@ -5,10 +5,7 @@ import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Dungeon;
 import kaica_dun.resources.TestDb;
 import kaica_dun.util.KaicaException;
-import kaica_dun_system.GameServiceImpl;
-import kaica_dun_system.MenuMain;
-import kaica_dun_system.User;
-import kaica_dun_system.UserServiceImpl;
+import kaica_dun_system.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.SessionFactory;
@@ -72,7 +69,7 @@ public class App implements CommandLineRunner {
     public void run(String... strings) {
 
         try {
-            out.println("\n- - - K A I C A    D U N G E O N - - - ");
+            out.printf(UI_strings.logo);
 
 
             log.info("Current objects in DB: {}", usi.findAll());
@@ -98,9 +95,10 @@ public class App implements CommandLineRunner {
 
             Dungeon dungeon = gsi.createDungeon(createdUser);
 
+
             try {
                 menuMain.display();
-            } catch (KaicaException e) {
+            } catch (KaicaException e) { // Standard way of exiting application menus.
                 log.debug(e);
             }
 
@@ -110,7 +108,8 @@ public class App implements CommandLineRunner {
             log.warn(e);
             e.printStackTrace();
         }
-        sessionFactory.close();
+        sessionFactory.close(); // This is important for Hibernate to drop tables if create-drop is set.
+
         System.exit(0);
     }
 
