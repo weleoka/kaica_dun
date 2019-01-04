@@ -26,6 +26,20 @@ public class UI_strings
     public static String inGameMenu = menuHeader3 + inGameMenuAlternatives + makeSelectionPrompt;
 
 
+    // ACTION menus
+    // In-game menu
+    public static String menuHeader4 = "\n - - - Game Actions - - -";
+    public static String lookAtMenuHeader = "\n - - - Look at something - - -";
+    public static String moveMenuHeader = "\n - - - Time to move to the next room - - -";
+    //public static String actionMenuRoomAlternatives = "\n1. Look at\n2. Battle\n3. Move\n9. Game menu";
+    public static String actionMenuAlternatives = menuHeader3 + inGameMenuAlternatives + makeSelectionPrompt;
+
+
+
+
+
+
+
 
     // Avatar creation
     public static String promptAvatarName = "Enter a name for your Avatar: ";
@@ -56,6 +70,24 @@ public class UI_strings
     public static String successfullLogin = "Log-in successful.";
     public static String unsuccessfullLogin = "Log-in failed. Try again.";
     public static String logoutSuccessfull = "You are now logged out.";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     public static String logo =

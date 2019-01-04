@@ -15,7 +15,6 @@ public class ActionEngineServiceImpl implements ActionEngineService {
 
     User user;
     Avatar avatar;
-
     Dungeon dungeon;
     Room selectedRoom;
 
@@ -28,22 +27,25 @@ public class ActionEngineServiceImpl implements ActionEngineService {
     @Autowired
     DungeonInterface di;
 
+    @Autowired
+    ActionMenuRoom amr;
+
 
 
     // Prime the game world and get it ready
-    // This could be the constructor as well
+    // This could be the constructor as well but with Autowired it's better to use method injection in this case.
     public void prime(User user, Avatar avatar, Dungeon dungeon) {
         this.user = user;
         this.avatar = avatar;
         this.dungeon = dungeon;
-        this.selectedRoom = avatar.getCurrRoom();
     }
 
 
     // Start playing
     public void play() {
-
+        amr.display();//this.user, this.avatar, this.dungeon);
     }
+
 
     // Resume playing
     public void resume() {
@@ -88,7 +90,7 @@ public class ActionEngineServiceImpl implements ActionEngineService {
     }
 
     public Room getRoom() {
-        return selectedRoom;
+        return getAvatar().getCurrRoom();
     }
 
     private void setRoom(Room selectedRoom) {
