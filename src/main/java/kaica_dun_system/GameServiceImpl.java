@@ -63,7 +63,7 @@ public class GameServiceImpl implements GameService {
     /**
      * Create a dungeon for a user.
      *
-     * todo: it stil needs input about hte avatar. In fact a dungeon should be owned
+     * todo: it still needs input about the avatar. In fact a dungeon should be owned
      *   by an avatar and not the user really.
      *
      * @param user

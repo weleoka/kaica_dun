@@ -55,7 +55,7 @@ public class MenuMain extends Menu {
                         continue;
                         //break inputLoop;
 
-                    case 3: // Secret case for listing users.
+                    case 5: // Secret case for listing users.
                         usi.printUserList();
                         continue;
 

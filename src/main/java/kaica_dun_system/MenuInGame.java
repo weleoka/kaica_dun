@@ -18,7 +18,7 @@ public class MenuInGame extends Menu {
      * Menu displayed to a user when it is authenticated.
      * <p>
      * Items:
-     * 1. Book Activity
+     * 1. Resume previous game
      * (2. Change Subscription)
      * 9. Return to Main Menu
      */

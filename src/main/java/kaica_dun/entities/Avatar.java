@@ -167,7 +167,7 @@ public class Avatar extends Fighter {
         //Remove the weapon from Avatar.inventory if it's in the inventory
         if(this.inventory != null) {
             if (this.getInventory().getItems().contains(weapon)) {
-                this.getInventory().getItems().remove(weapon);
+                this.getInventory().removeItem(weapon);
             }
         }
 
@@ -186,7 +186,7 @@ public class Avatar extends Fighter {
         //Remove the armor from Avatar.inventory if it's in the inventory
         if (this.inventory != null) {
             if (this.getInventory().getItems().contains(armor)) {
-                this.getInventory().getItems().remove(armor);
+                this.getInventory().removeItem(armor);
             }
         }
     }
