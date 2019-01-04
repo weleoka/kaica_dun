@@ -5,8 +5,6 @@ import kaica_dun.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 import static java.lang.System.out;
 
 @Component
@@ -59,6 +57,7 @@ public class MenuMain extends Menu {
 
                     case 3: // Secret case for listing users.
                         usi.printUserList();
+                        continue;
 
                     case 9:
                         quit();

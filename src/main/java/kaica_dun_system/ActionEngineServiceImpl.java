@@ -1,12 +1,14 @@
 package kaica_dun_system;
 
+import kaica_dun.entities.Avatar;
+import kaica_dun.entities.Dungeon;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ActionEngineServiceImpl implements ActionEngineService {
 
     // Prime the game world and get it ready
-    public void prime() {
+    public void prime(User user, Avatar avatar, Dungeon dungeon) {
 
     }
 

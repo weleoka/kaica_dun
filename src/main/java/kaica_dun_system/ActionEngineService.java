@@ -1,9 +1,13 @@
 package kaica_dun_system;
 
+import kaica_dun.entities.Avatar;
+import kaica_dun.entities.Dungeon;
+
 public interface ActionEngineService {
 
     // Prime the game world and get it ready
-    void prime();
+    void prime(User user, Avatar avatar, Dungeon dungeon);
+
 
     // Start playing
     void play();

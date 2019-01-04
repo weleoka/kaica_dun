@@ -18,6 +18,9 @@ public class MenuLoggedIn extends Menu {
     @Autowired
     MenuInGame menuInGame;
 
+    @Autowired
+    ActionEngineServiceImpl aesi;
+
     MenuLoggedIn() {}
 
     /**
@@ -47,7 +50,10 @@ public class MenuLoggedIn extends Menu {
                 switch (selection) {
 
                     case 1: // Start a new Dungeon game
-                        selectAvatar();
+                        if (selectAvatar()) {
+                            aesi.prime(usi.getAuthenticatedUser(), gsi.getAvatar(), gsi.getDungeon());
+                            menuInGame.display(true);
+                        }
                         continue;
 
                     case 2: // Create new Avatar
@@ -85,13 +91,16 @@ public class MenuLoggedIn extends Menu {
     /**
      * A selecting an existing Avatar to play as.
      */
-    private void selectAvatar() {
+    private boolean selectAvatar() {
         Avatar tmpAvatar = selectAvatarPrompt();
 
         if (tmpAvatar != null) {
             gsi.setAvatar(tmpAvatar);
-            menuInGame.display(true);
+
+            return true;
         }
+
+        return false;
     }
 
 
@@ -115,7 +124,11 @@ public class MenuLoggedIn extends Menu {
         return tmpArr;
     }
 
-
+    /**
+     * A user can have many avatars and this lets them choose between them.
+     *
+     * @return
+     */
     private Avatar selectAvatarPrompt() {
         int selection;
         String selectionOptions = "";
@@ -152,6 +165,7 @@ public class MenuLoggedIn extends Menu {
             }
         }
     }
+
 
 
     /**

@@ -22,10 +22,10 @@ public class MenuInGame extends Menu {
      * (2. Change Subscription)
      * 9. Return to Main Menu
      */
-    void display(boolean state) {
+    void display(boolean directPlay) {
         int selection;
 
-        if (state) {
+        if (directPlay) {
             aesi.play();// Jump straight in the game.
         }
 

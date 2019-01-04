@@ -3,20 +3,17 @@ package kaica_dun_system;
 
 import kaica_dun.dao.AvatarInterface;
 import kaica_dun.dao.DungeonInterface;
-import kaica_dun.dao.UserInterface;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Dungeon;
 import kaica_dun.resources.makeAvatar;
 import kaica_dun.resources.makeStaticDungeon;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
@@ -43,25 +40,60 @@ public class GameServiceImpl implements GameService {
     private DungeonInterface dungeonInterface;
 
     @Autowired
+    ActionEngineServiceImpl aesi;
+
+    @Autowired
     private EntityManager entityManager;
 
 
-    public Dungeon createDungeon(User user) {
 
-        //TODO PH??? @Kai what's the purpose of the (avatar != null) check???
-        if ( true /*this.avatar != null */) {
-            log.debug("Creating static dungeon for user: {}", user.getName());
-            makeStaticDungeon msd = new makeStaticDungeon(user);
-            dungeon = msd.buildDungeon();
-            dungeonInterface.save(dungeon);
-        }
+
+
+    // ********************** Accessor Methods ********************** //
+
+    /**
+     * getCurrent generated dungeon.
+     *
+     * @return
+     */
+    public Dungeon getDungeon() {
+        return this.dungeon;
+    }
+
+    /**
+     * Create a dungeon for a user.
+     *
+     * todo: it stil needs input about hte avatar. In fact a dungeon should be owned
+     *   by an avatar and not the user really.
+     *
+     * @param user
+     * @return
+     */
+    public Dungeon setDungeon(User user) {
+        log.debug("Creating static dungeon for user: {}", user.getName());
+        makeStaticDungeon msd = new makeStaticDungeon(user);
+        dungeon = msd.buildDungeon();
+        dungeonInterface.save(dungeon);
+        this.dungeon = dungeon;
 
         return this.dungeon;
     }
 
+    /**
+     * get current selected avatar.
+     * @return
+     */
+    public Avatar getAvatar() {
+        return this.avatar;
+    }
 
-    public void playGame() {
-        //Game.engine(this.avatar, this.dungeon)
+    /**
+     * Sets the Game service selected avatar.
+     * @param avatar
+     */
+    public void setAvatar(Avatar avatar) {
+        log.debug("An avatar(id:{}) has been set for username '{}'.", avatar.getId(), avatar.getUser().getName());
+        this.avatar = avatar;
     }
 
 
@@ -75,7 +107,7 @@ public class GameServiceImpl implements GameService {
      *
      * todo: sort out compiler warning about unchecked assignment.
      * @param user a User instance
-     * @return
+     * @return a list of avatars
      */
     public List<Avatar> fetchAvatarByUser (User user) {
         log.debug("Searching for all Avatars belonging to {}.", user.getName());
@@ -125,12 +157,20 @@ public class GameServiceImpl implements GameService {
         return true;
     }
 
-    public void setAvatar(Avatar avatar) {
-        log.debug("An avatar(id:{}) has been set for username '{}'.", avatar.getId(), avatar.getUser().getName());
-        this.avatar = avatar;
-    }
 
 
+
+
+    // ********************** Developer helpers ********************** //
+
+    /**
+     * Find all the avatars belonging to a certain user.
+     * If boolean value is set then print the results to stdout.
+     *
+     * @param user
+     * @param stdout
+     * @return
+     */
     public String printAvatarListByUser(User user, boolean stdout) {
         String stringOutput = "";
         String row = "";

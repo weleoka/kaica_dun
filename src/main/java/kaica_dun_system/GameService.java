@@ -8,7 +8,7 @@ import java.util.List;
 public interface GameService {
 
 
-    Dungeon createDungeon(User user);
+    Dungeon setDungeon(User user);
 
     // ********************** Persistence Methods ********************** //
     List<Avatar> fetchAvatarByUser(User user);

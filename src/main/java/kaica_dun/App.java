@@ -1,7 +1,6 @@
 package kaica_dun;
 
 import kaica_dun.dao.AvatarInterface;
-import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Dungeon;
 import kaica_dun.resources.TestDb;
 import kaica_dun.util.KaicaException;
@@ -19,8 +18,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
-import java.util.List;
-
 import static java.lang.System.out;
 
 
@@ -30,10 +27,14 @@ import static java.lang.System.out;
 
 // This:
 //@SpringBootApplication
+
 // is equivalent to this:
 @Configuration
-//@Profile("local")
+@Profile("default")
+//@Profile("production")
 @EnableAutoConfiguration
+
+
 // lazyInit means the bans are loaded as used. Gained 1 second boot time. todo: learn the @Lazy annotation.
 @ComponentScan(basePackages = {"kaica_dun_system", "kaica_dun"}, lazyInit=true)
 
@@ -62,7 +63,6 @@ public class App implements CommandLineRunner {
 
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
-
     }
 
 
@@ -85,7 +85,7 @@ public class App implements CommandLineRunner {
             User createdUser = usi.findUserById(userId);
 
             gsi.createStaticAvatar(createdUser);
-            //Avatar avatar = avatarInterface.save(new Avatar("Rolphius", "A Long wiry old warrior.", createdUser));
+            //Avatar avatar = avatarInterface.save(new Avatar("Rolphius", "A wiry old warrior.", createdUser));
             //log.info("Avatar created in DB : {}", avatar.getName());
 
             log.info("Avatars belonging to user: '{}' are: {}", createdUser.getName(), gsi.fetchAvatarByUser(createdUser));
@@ -93,7 +93,7 @@ public class App implements CommandLineRunner {
             usi.printUserList();
 
 
-            Dungeon dungeon = gsi.createDungeon(createdUser);
+            Dungeon dungeon = gsi.setDungeon(createdUser);
 
 
             try {
@@ -115,6 +115,7 @@ public class App implements CommandLineRunner {
 
 
 // Trying to load full Bean list from application context
+// Better to do this by reading log output as security measures prevent access to context.
 /*    List<Object> beanList = getInstantiatedSigletons(this.applicationContext);
         log.debug(beanList);
 
