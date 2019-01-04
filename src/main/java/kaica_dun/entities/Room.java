@@ -55,6 +55,7 @@ public class Room {
         this.roomIndex = roomIndex;
         this.incomingDoor = incomingDoor;
         this.exits = exits;
+        this.exits.add(incomingDoor);
         this.monsters = monsters;
     }
 
@@ -73,6 +74,7 @@ public class Room {
         this.roomIndex = roomIndex;
         this.incomingDoor = incomingDoor;
         this.exits = exits;
+        this.exits.add(incomingDoor);
         this.monsters = monsters;
     }
 
@@ -155,6 +157,7 @@ public class Room {
         monsters.remove(monster);
     }
 
+    //TODO NOT IN USE!
     //Return an array of possible outgoing door directions, not used currently.
     //TODO: Develop for random dungeon generation.
     //TODO: Possible refactor. This method has a thousand and one possible implementations, dunno which is the best.

@@ -44,20 +44,38 @@ public class MovementServiceImpl {
         avatarInterface.save(avatar);       //TODO inserting or updating?
     }
 
-    public void moveAvatar(Avatar avatar, Direction direction) {
+    /**
+     * Move the avatar to a new Room.
+     *
+     * @param avatar        the avatar to be moved
+     * @param direction     the direction to move the avatar
+     * @return              the room that you moved the avatar to, returns null if the avatar has exited the dungeon
+     */
+    public Room moveAvatar(Avatar avatar, Direction direction) {
         Dungeon dungeon = avatar.getCurrDungeon();
-        moveAvatar(avatar, dungeon, direction);
+        int directionNum = direction.ordinal();
+        moveAvatar(avatar, dungeon, directionNum);
         //TODO the user might have exited the dungeon at this point, handle!
 
-        //TODO check that this does not insert a new avatar into db instead of updating the current one!
         avatarInterface.save(avatar);
+
+        return avatar.getCurrRoom();
     }
 
-    private void moveAvatar(Avatar avatar, Dungeon dungeon, Direction direction) {
-        int currRoomIndex = avatar.getCurrRoom().getRoomIndex();
-        int directionNum = direction.ordinal();
+    public Room moveAvatar(Avatar avatar, int direction) {
+        Dungeon dungeon = avatar.getCurrDungeon();
+        moveAvatar(avatar, dungeon, direction - 1);
+        //TODO the user might have exited the dungeon at this point, handle!
 
-        switch (directionNum) {
+        avatarInterface.save(avatar);
+
+        return avatar.getCurrRoom();
+    }
+
+    private void moveAvatar(Avatar avatar, Dungeon dungeon, int direction) {
+        int currRoomIndex = avatar.getCurrRoom().getRoomIndex();
+
+        switch (direction) {
             case 0:
                 //TODO simplify logic.
                 int northIndex = avatar.getCurrDungeon().getNorthIndex(currRoomIndex);

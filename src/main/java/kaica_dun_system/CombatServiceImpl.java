@@ -1,35 +1,67 @@
-package kaica_dun.resources;
+package kaica_dun_system;
 
+import kaica_dun.dao.AvatarInterface;
+import kaica_dun.dao.RoomInterface;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Monster;
 import kaica_dun.entities.Room;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.List;
 
-public class CombatUtil {
+@Service
+@EnableTransactionManagement
+public class CombatServiceImpl {
 
-    private CombatUtil() {}
+    // Singleton
+    private static CombatServiceImpl ourInstance = new CombatServiceImpl();
+    public static CombatServiceImpl getInstance() {
+        return ourInstance;
+    }
+    private CombatServiceImpl() {}
+
+    // Fields declared
+    private static final Logger log = LogManager.getLogger();
+
+    @Autowired
+    private AvatarInterface avatarInterface;
+
+    @Autowired
+    private RoomInterface roomInterface;
 
     /**
      * Fight all the monsters in a given Room.
      *
-     * @param a     the Avatar fighting
-     * @param r     the Room whose monsters the avatar wants to engage
+     * @param avatar     the Avatar fighting
+     * @return      return true if avatar wins, false if avatar is defeated
      */
-    public static void roomAutoCombat(Avatar a, Room r) {
-
+    public boolean roomAutoCombat(Avatar avatar) {
+        boolean avatarWins = true;
+        Room room = avatar.getCurrRoom();
         //Disconnect the monster->room pointers to make the link unidirectional.
         //TODO ugly PH, rework. Might not be needed, test later. Depends on orphan removal and how that works.
-        for (Monster m : r.getMonsters()) {
+        for (Monster m : room.getMonsters()) {
             m.setRoom(null);
         }
 
-        autoCombat(a, r.getMonsters());
+        autoCombat(avatar, room.getMonsters());
 
         //Reestablish db integrity if the monsters win.
-        for (Monster m : r.getMonsters()) {
-            m.setRoom(r);
+        if (!room.getMonsters().isEmpty()) {
+            avatarWins = false;
+            for (Monster m : room.getMonsters()) {
+                m.setRoom(room);
+            }
         }
+
+        avatarInterface.save(avatar);
+        roomInterface.save(room);
+
+        return avatarWins;
     }
 
     /**
@@ -37,7 +69,7 @@ public class CombatUtil {
      * @param a         the avatar fighting the monsters
      * @param monsters  a list of the monsters to be fought
      */
-    private static void autoCombat(Avatar a, List<Monster> monsters) {
+    private void autoCombat(Avatar a, List<Monster> monsters) {
 
         //one round of combat per loop through the while-loop
         //TODO make not-ugly logic.

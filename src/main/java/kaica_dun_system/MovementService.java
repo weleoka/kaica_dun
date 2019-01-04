@@ -3,12 +3,15 @@ package kaica_dun_system;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Direction;
 import kaica_dun.entities.Dungeon;
+import kaica_dun.entities.Room;
 
 import java.util.List;
 
 public interface MovementService {
 
-    void moveAvatar(Avatar avatar, Direction direction);
+    Room moveAvatar(Avatar avatar, Direction direction);
+
+    Room moveAvatar(Avatar avatar, int direction);
 
     void enterDungeon(Avatar avatar, Dungeon dungeon);
 
