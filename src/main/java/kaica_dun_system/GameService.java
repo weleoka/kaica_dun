@@ -14,7 +14,7 @@ public interface GameService {
     // ********************** Persistence Methods ********************** //
     List<Avatar> fetchAvatarByUser(User user);
 
-    boolean createStaticAvatar(User user);
+    Avatar createStaticAvatar(User user);
 
     boolean createNewAvatar(String[] arr, User user);
 

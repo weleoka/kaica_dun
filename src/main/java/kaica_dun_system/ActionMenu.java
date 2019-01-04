@@ -1,5 +1,8 @@
 package kaica_dun_system;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -20,6 +23,8 @@ import static java.lang.System.out;
  *
  */
 public abstract class ActionMenu {
+
+    public static final Logger log = LogManager.getLogger();
 
     static final Scanner userInput = new Scanner(in);
 

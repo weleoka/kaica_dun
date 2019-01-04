@@ -79,16 +79,16 @@ public class Room {
 
     // ********************** Accessor Methods ********************** //
 
-    public Long getRoomId() {
-        return id;
+    public Long getId() {
+        return this.id;
     }
 
-    public void setRoomId(Long roomId) {
+    public void setId(Long roomId) {
         this.id = roomId;
     }
 
     public Dungeon getDungeon() {
-        return this.dungeon;
+        return dungeon;
     }
 
     public void setDungeon(Dungeon dungeon) {
@@ -104,7 +104,7 @@ public class Room {
     }
 
     public List<Monster> getMonsters() {
-        return this.monsters;
+        return monsters;
     }
 
     public void setMonsters(List<Monster> monsters) {

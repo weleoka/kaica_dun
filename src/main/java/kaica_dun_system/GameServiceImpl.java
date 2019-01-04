@@ -157,7 +157,7 @@ public class GameServiceImpl implements GameService {
 
     /*
     public List<Monster> fetchMonsterByRoom (Room room) {
-        log.debug("Searching for all Monsters in {}.", room.getRoomId());
+        log.debug("Searching for all Monsters in {}.", room.getId());
 
         TypedQuery<Monster> query = this.entityManager.createNamedQuery("Monster.findByRoomID", Monster.class);
 
@@ -174,10 +174,10 @@ public class GameServiceImpl implements GameService {
      * @param user a User instance
      * @return boolean if success
      */
-    public boolean createStaticAvatar(User user) {
+    public Avatar createStaticAvatar(User user) {
         Avatar avatar =  makeAvatar.make(user);
         avatarInterface.save(avatar);
-        return true;
+        return avatar;
     }
 
     /**

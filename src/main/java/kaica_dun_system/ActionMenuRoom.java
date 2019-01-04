@@ -9,8 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import static java.lang.System.out;
-
 /**
  * The actions in a room concerning looking at things
  * and attacking monsters. finally also selecting movement options,
@@ -20,7 +18,6 @@ import static java.lang.System.out;
  */
 @Component
 public class ActionMenuRoom extends ActionMenu {
-
 
     @Autowired
     ActionEngineServiceImpl aesi;
@@ -135,6 +132,7 @@ public class ActionMenuRoom extends ActionMenu {
         String output = "";
         HashMap<Integer, Monster> options = null;
         Room room = aesi.getRoom();
+        log.debug("Looking at items in room id: {}.", room.getId());
 
 /*        List<Item> items = room.getItems();
         for (int i = 0; i < items.size(); i++) {

@@ -1,7 +1,9 @@
 package kaica_dun;
 
 import kaica_dun.dao.AvatarInterface;
+import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Dungeon;
+import kaica_dun.entities.Room;
 import kaica_dun.resources.TestDb;
 import kaica_dun.util.KaicaException;
 import kaica_dun_system.*;
@@ -17,6 +19,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
+
+import java.util.List;
 
 import static java.lang.System.out;
 
@@ -58,6 +62,12 @@ public class App implements CommandLineRunner {
     private MenuMain menuMain;
 
     @Autowired
+    ActionEngineServiceImpl aesi;
+
+    @Autowired
+    MenuInGame mig;
+
+    @Autowired
     @Qualifier("HibernateSessionFactory")
     SessionFactory sessionFactory;
 
@@ -84,17 +94,31 @@ public class App implements CommandLineRunner {
             // AVATAR Creation
             User createdUser = usi.findUserById(userId);
 
-            gsi.createStaticAvatar(createdUser);
-            //Avatar avatar = avatarInterface.save(new Avatar("Rolphius", "A wiry old warrior.", createdUser));
-            //log.info("Avatar created in DB : {}", avatar.getName());
-
-            log.info("Avatars belonging to user: '{}' are: {}", createdUser.getName(), gsi.fetchAvatarByUser(createdUser));
-
-            usi.printUserList();
-
+            Avatar avatar = gsi.createStaticAvatar(createdUser);
 
             Dungeon dungeon = gsi.setDungeon(createdUser);
 
+
+
+            // Trying to artificially create a game
+            log.debug("ID of latest dungeon is {}", dungeon.getDungeonId());
+
+            List<Room> rooms = dungeon.getRooms();
+
+            for (Room room : rooms) {
+                log.debug("Found a room in the dungeon with id: {}", room.getId());
+            }
+            //Avatar avatar = avatarInterface.save(new Avatar("Rolphius", "A wiry old warrior.", createdUser));
+            //log.info("Avatar created in DB : {}", avatar.getName());
+
+            //log.info("Avatars belonging to user: '{}' are: {}", createdUser.getName(), gsi.fetchAvatarByUser(createdUser));
+            //usi.printUserList();
+
+            //Avatar avatar = ai.findById(1L);
+
+
+            aesi.prime(createdUser, avatar, dungeon);
+            mig.display(true);
 
             try {
                 menuMain.display();

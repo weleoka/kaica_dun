@@ -28,7 +28,7 @@ public class MenuInGame extends Menu {
      * (2. Change Subscription)
      * 9. Return to Main Menu
      */
-    void display(boolean directPlay) {
+    public void display(boolean directPlay) { // todo: change to private after testing.
         int selection;
 
         if (directPlay) {
