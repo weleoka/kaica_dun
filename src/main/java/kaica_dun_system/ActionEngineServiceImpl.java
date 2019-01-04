@@ -1,9 +1,6 @@
 package kaica_dun_system;
 
-import kaica_dun.dao.AvatarInterface;
-import kaica_dun.dao.DungeonInterface;
-import kaica_dun.dao.RoomInterface;
-import kaica_dun.dao.UserInterface;
+import kaica_dun.dao.*;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Dungeon;
 import kaica_dun.entities.Room;
@@ -36,6 +33,9 @@ public class ActionEngineServiceImpl implements ActionEngineService {
     DungeonInterface di;
 
     @Autowired
+    RoomInterfaceCustom ric;
+
+    @Autowired
     RoomInterface ri;
 
     @Autowired
@@ -57,42 +57,23 @@ public class ActionEngineServiceImpl implements ActionEngineService {
      * @param dungeon
      */
     public void prime(User user, Avatar avatar, Dungeon dungeon) {
-        log.debug("Primed the Action Engine environment.");
+        log.debug("Priming Action Engine environment...");
         this.user = user;
         this.avatar = avatar;
         this.dungeon = dungeon;
+        log.debug("User: '{}', Avatar: '{}', Dungeon:'{}'", user.getName(), avatar.getName(), dungeon.getDungeonId());
         Room firstRoom = null;
+        Long firstRoomId = ric.findFirstRoomInDungeon(dungeon.getDungeonId());
+        log.debug("The room with the lowest ID in the dungeon is: {}.", firstRoomId);
 
-        List<Room> rooms = dungeon.getRooms();
-        if (rooms.size() == 0) {
-            log.warn("No rooms in the dungeon!");
+        Optional result = ri.findById(firstRoomId);
+
+        if (result.isPresent()) {
+            firstRoom = (Room) result.get();
         }
 
-        Long smallestLong = 9999L;
-        Long tmp = 10000L;
-
-        for (Room room : rooms) {
-            log.debug(room);
-            try {
-                tmp = room.getId();
-            } catch (NullPointerException e) {
-                log.warn("Invalid room with null ID.");
-                e.printStackTrace();
-            }
-            if (tmp < smallestLong);
-                smallestLong = tmp;
-        }
-
-        log.debug("The room with the lowest ID in the dungeon is: {}.", smallestLong);
-        Optional<Room> dbRoom = ri.findById(smallestLong);
-
-        if (dbRoom.isPresent()) {
-            firstRoom = dbRoom.get();
-        }
-        if (firstRoom != null) {
-            this.avatar.setCurrRoom(firstRoom);
-        }
-
+        log.debug("Fetched the first room (id: {}) from db and applying to Avatar.", firstRoom.getId());
+        this.avatar.setCurrRoom(firstRoom);
     }
 
 

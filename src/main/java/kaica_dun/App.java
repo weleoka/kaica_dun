@@ -98,16 +98,10 @@ public class App implements CommandLineRunner {
 
             Dungeon dungeon = gsi.setDungeon(createdUser);
 
-
-
             // Trying to artificially create a game
             log.debug("ID of latest dungeon is {}", dungeon.getDungeonId());
 
-            List<Room> rooms = dungeon.getRooms();
 
-            for (Room room : rooms) {
-                log.debug("Found a room in the dungeon with id: {}", room.getId());
-            }
             //Avatar avatar = avatarInterface.save(new Avatar("Rolphius", "A wiry old warrior.", createdUser));
             //log.info("Avatar created in DB : {}", avatar.getName());
 

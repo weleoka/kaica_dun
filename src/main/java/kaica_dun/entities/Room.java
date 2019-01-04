@@ -7,6 +7,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "Room")
+@NamedQuery(name="Room.findFirstRoomInDungeon", query="SELECT MIN(r.id) FROM Room r WHERE r.dungeon = :dungeonId GROUP BY r.dungeon")
+@NamedQuery(name="Room.findLastRoomInDungeon", query="SELECT MAX(r.id) FROM Room r WHERE r.dungeon = :dungeonId GROUP BY r.dungeon")
 public class Room {
 
     // Field variable declarations and Hibernate annotation scheme
