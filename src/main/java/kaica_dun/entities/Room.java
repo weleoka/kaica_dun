@@ -55,7 +55,6 @@ public class Room {
         this.roomIndex = roomIndex;
         this.incomingDoor = incomingDoor;
         this.exits = exits;
-        this.exits.add(incomingDoor);
         this.monsters = monsters;
     }
 
@@ -74,7 +73,6 @@ public class Room {
         this.roomIndex = roomIndex;
         this.incomingDoor = incomingDoor;
         this.exits = exits;
-        this.exits.add(incomingDoor);
         this.monsters = monsters;
     }
 

@@ -3,6 +3,7 @@ package kaica_dun_system;
 
 import kaica_dun.dao.AvatarInterface;
 import kaica_dun.dao.DungeonInterface;
+import kaica_dun.dao.UserInterface;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Dungeon;
 import kaica_dun.entities.Monster;
@@ -34,6 +35,9 @@ public class GameServiceImpl implements GameService {
     private static final Logger log = LogManager.getLogger();
     private Avatar avatar;
     private Dungeon dungeon;
+
+    @Autowired
+    private UserInterface userInterface;
 
     @Autowired
     private AvatarInterface avatarInterface;
@@ -75,8 +79,13 @@ public class GameServiceImpl implements GameService {
         log.debug("Creating static dungeon for user: {}", user.getName());
         makeStaticDungeon msd = new makeStaticDungeon(user);
         dungeon = msd.buildDungeon();
+
+
+        log.debug("Adding dungeon to {}s list of dungeons.", user.getName());
+        user.addDungeon(dungeon);
+
+        userInterface.save(user);
         dungeonInterface.save(dungeon);
-        this.dungeon = dungeon;
 
         return this.dungeon;
     }
@@ -145,6 +154,8 @@ public class GameServiceImpl implements GameService {
      *
      * @Deprecated
      */
+
+    /*
     public List<Monster> fetchMonsterByRoom (Room room) {
         log.debug("Searching for all Monsters in {}.", room.getRoomId());
 
@@ -157,6 +168,7 @@ public class GameServiceImpl implements GameService {
 
         return results;
     }
+    */
 
     /**
      * @param user a User instance

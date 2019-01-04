@@ -6,7 +6,6 @@ import javax.persistence.*;
 
 @Entity
 @DiscriminatorValue("MO")
-@NamedQuery(name="Monster.findByRoomID", query="SELECT m FROM Monster m WHERE m.roomID = :currRoom")
 public class Monster extends Fighter implements Describable {
 
     @ManyToOne

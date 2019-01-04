@@ -27,8 +27,8 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Dungeon> dungeon = new LinkedList<Dungeon>();
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Dungeon> dungeons = new LinkedList<Dungeon>();
 
 
     //TODO dafuq? Usure of mappings, currently mapping onto same column for both Dungeon and Avatar, works?
@@ -85,7 +85,7 @@ public class User {
 
     public void setPassword(String password) { this.password = password; }
 
-    public List<Dungeon> getDungeon() { return this.dungeon; }
+    public List<Dungeon> getDungeons() { return this.dungeons; }
 
     public Avatar getCurrAvatar() { return currAvatar; }
 
@@ -102,7 +102,7 @@ public class User {
         if (dungeon == null) {
             throw new IllegalArgumentException("Can't add a null Dungeon.");
         }
-        this.getDungeon().add(dungeon);
+        this.getDungeons().add(dungeon);
         dungeon.setUser(this);
     }
 

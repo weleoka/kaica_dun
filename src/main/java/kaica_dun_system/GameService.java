@@ -10,6 +10,7 @@ public interface GameService {
 
     Dungeon setDungeon(User user);
 
+
     // ********************** Persistence Methods ********************** //
     List<Avatar> fetchAvatarByUser(User user);
 
