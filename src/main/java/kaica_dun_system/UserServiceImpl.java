@@ -72,6 +72,7 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+
     /**
      * Read single from storage and find a user by user id.
      * If found in DB then set selectedUser to relevant instance.

@@ -2,13 +2,11 @@ package kaica_dun.entities;
 
 import kaica_dun.interfaces.Describable;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 @DiscriminatorValue("MO")
+@NamedQuery(name="Monster.findByRoomID", query="SELECT m FROM Monster m WHERE m.roomID = :currRoom")
 public class Monster extends Fighter implements Describable {
 
     @ManyToOne

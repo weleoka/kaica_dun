@@ -5,6 +5,8 @@ import kaica_dun.dao.AvatarInterface;
 import kaica_dun.dao.DungeonInterface;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Dungeon;
+import kaica_dun.entities.Monster;
+import kaica_dun.entities.Room;
 import kaica_dun.resources.makeAvatar;
 import kaica_dun.resources.makeStaticDungeon;
 import org.apache.logging.log4j.LogManager;
@@ -135,6 +137,28 @@ public class GameServiceImpl implements GameService {
     }
 
     /**
+     * Uses native SQL.
+     *
+     * todo: sort out compiler warning about unchecked assignment.
+     * @param room a Room instance
+     * @return a list of monsters
+     *
+     * @Deprecated
+     */
+    public List<Monster> fetchMonsterByRoom (Room room) {
+        log.debug("Searching for all Monsters in {}.", room.getRoomId());
+
+        TypedQuery<Monster> query = this.entityManager.createNamedQuery("Monster.findByRoomID", Monster.class);
+
+        query.setParameter("currRoom", room); // Named
+
+        List<Monster> results = query.getResultList();
+        log.debug("A List of {} avatars was fetched.", results.size());
+
+        return results;
+    }
+
+    /**
      * @param user a User instance
      * @return boolean if success
      */
@@ -161,7 +185,7 @@ public class GameServiceImpl implements GameService {
 
 
 
-    // ********************** Developer helpers ********************** //
+    // ********************** Model logic access ********************** //
 
     /**
      * Find all the avatars belonging to a certain user.

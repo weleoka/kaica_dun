@@ -5,6 +5,12 @@ import org.springframework.stereotype.Component;
 
 import static java.lang.System.out;
 
+
+/**
+ * The menu for entering and leaving a game.
+ *
+ * See abstract superclass for details.
+ */
 @Component
 public class MenuInGame extends Menu {
 
