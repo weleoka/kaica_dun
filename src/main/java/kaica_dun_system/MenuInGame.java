@@ -1,5 +1,6 @@
 package kaica_dun_system;
 
+import kaica_dun.util.KaicaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +29,7 @@ public class MenuInGame extends Menu {
      * (2. Change Subscription)
      * 9. Return to Main Menu
      */
-    public void display(boolean directPlay) { // todo: change to private after testing.
+    public void display(boolean directPlay) throws KaicaException { // todo: change to private after testing.
         int selection;
 
         if (directPlay) {
@@ -44,22 +45,20 @@ public class MenuInGame extends Menu {
 
                 switch (selection) {
 
-                    case 1: // Resume the game
+                    case 1: // Resume playing the game
                         aesi.resume();
                         continue;
 
-                    case 2:
+                    case 2: // Restart the same dungeon
                         aesi.restart();
                         continue;
 
-                    case 3:
-                        //saveAndQuit();
-                        menuLoggedIn.display();
+                    case 3: // Quits with saving
+                        //closeGameActions();
                         break inputLoop;
 
-                    case 9:
-                        // closeGameActions();
-                        //menuLoggedIn.display(); // Quits no saving.
+                    case 9: // Quits no saving.
+                        //closeGameActions();
                         break inputLoop;
                 }
 
@@ -68,5 +67,7 @@ public class MenuInGame extends Menu {
             }
             userInput.reset(); // flush the in buffer
         }
+        // Break out to the top menu.
+        throw new KaicaException("Quit the game"); //menuLoggedIn.display();
     }
 }

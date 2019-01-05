@@ -2,12 +2,13 @@ package kaica_dun_system;
 
 
 import kaica_dun.entities.*;
+import kaica_dun.util.KaicaException;
+import kaica_dun.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 /**
  * The actions in a room concerning looking at things
@@ -15,6 +16,12 @@ import java.util.Set;
  * But you can't leave a room until all the monsters are dead, dead, dead!
  *
  * This menu also brings you to the Avatar menu.
+ *
+ * It works by always calling buildMainOptions(), that will then call other option scenarios
+ * valid for the current room and build menu choices from that.
+ *
+ * todo: consider only building menu options after selecting a main Action menu choice so speed up loop.
+ * todo: decide at exactly what interval/loop sequence to refresh the loops.
  */
 @Component
 public class ActionMenuRoom extends ActionMenu {
@@ -32,14 +39,20 @@ public class ActionMenuRoom extends ActionMenu {
     MenuInGame mig;
 
     private String mainOutput;
+    private HashMap<Integer, String> mainOptions;
+
     private String lookAtOutput;
+    private HashMap<Integer, Monster> lookAtOptions; // Currently only look at Monsters.
+
     private String battleOutput;
+    private HashMap<Integer, Monster> battleOptions;
+
     private String moveOutput;
+    private HashMap<Integer, Direction> moveOptions;
+
     private Room room;
 
-    ActionMenuRoom() {
-
-    }
+    ActionMenuRoom() {}
 
 
     /**
@@ -50,14 +63,13 @@ public class ActionMenuRoom extends ActionMenu {
      * (2. Change Subscription)
      * 9. Return to Main Menu
      */
-    void display() {
+    void display() throws KaicaException {
         int selection;
-        HashMap<Integer, String> options = buildMainOptions();
+        mainOptions = buildMainOptions();
 
-        Set<Integer> validOptions = options.keySet();
         String formatted = UI_strings.menuHeader4 + mainOutput + UI_strings.makeSelectionPrompt;
 
-        selection = getUserInput(validOptions, formatted);
+        selection = getUserInput(mainOptions.keySet(), formatted);
 
         switch (selection) {
             case 1:
@@ -76,10 +88,12 @@ public class ActionMenuRoom extends ActionMenu {
                 mig.display(false);
                 break;
         }
-
     }
 
 
+
+
+    // ********************** Builder Methods ********************** //
 
     /**
      * Depending on what is in the room the menu needs
@@ -90,31 +104,36 @@ public class ActionMenuRoom extends ActionMenu {
      * @return
      */
     private HashMap<Integer, String> buildMainOptions() {
-        String output = "";
-        HashMap<Integer, String> options = null;
+        StringBuilder output = new StringBuilder();
+        HashMap<Integer, String> options = new HashMap<>();
 
-        room = aesi.getRoom();
-        HashMap<Integer, Monster> opt1 = buildLookAtOptions();
-        HashMap<Integer, Monster> opt2 = buildBattleOptions();
-        HashMap<Integer, Direction> opt3 = buildMoveOptions();
+        room = aesi.getAvatarCurrentRoom();
 
-        if (opt1 != null) {
-            output += String.format("\n[1] - Look at things");
-            options.put(1, "lookAt");
+        lookAtOptions = buildLookAtOptions();
+        battleOptions = buildBattleOptions();
+        moveOptions = buildMoveOptions();
+
+
+        if (lookAtOptions.size() > 0) {
+            output.append(String.format("\n[1] - Look at things"));
+            options.put(1, "lookAt"); // This should be dynamic and not [1]
         }
-        if (opt2 != null) {
-            output += String.format("\n[2] - Fight monsters ");
+        if (battleOptions.size() > 0) {
+            output.append(String.format("\n[2] - Fight monsters "));
             options.put(2, "fight");
         }
-        if (opt3 != null) {
-            output += String.format("\n[3] - Movevement options");
+        if (moveOptions.size() > 0) {
+            output.append(String.format("\n[3] - Movement options"));
             options.put(3, "move");
         }
 
-        output += String.format("\n[4] - Inventory management");
+        output.append(String.format("\n[4] - Inventory management(not working)"));
         options.put(4, "inventory");
-        output += String.format("\n[9] - Game menu");
-        options.put(9, "gameMenu");
+
+        output.append(String.format("\n[9] - Game menu"));
+        options.put(9, "gameMenu"); // This can always be at [9].
+
+        mainOutput = output.toString();
 
         return options;
     }
@@ -125,14 +144,10 @@ public class ActionMenuRoom extends ActionMenu {
      * These are: monsters, exits, chests, other avatars?
      *
      * todo: implement looking at items and other things, not only monsters.
-     *
-     * @return
      */
     private HashMap<Integer, Monster> buildLookAtOptions() {
-        String output = "";
-        HashMap<Integer, Monster> options = null;
-        Room room = aesi.getRoom();
-        log.debug("Looking at items in room id: {}.", room.getId());
+        StringBuilder output = new StringBuilder();
+        HashMap<Integer, Monster> options = new HashMap<>();
 
 /*        List<Item> items = room.getItems();
         for (int i = 0; i < items.size(); i++) {
@@ -141,15 +156,18 @@ public class ActionMenuRoom extends ActionMenu {
 
         List<Monster> monsters = room.getMonsters();
 
-        for (int i = 0; i < monsters.size(); i++) {
-            Monster monster = monsters.get(i);
-            output +=  String.format("\n[%s] - %s.", i, monster.getType());
+        log.debug("There are {} monsters in the room (id: {}).", monsters.size(), room.getId());
+
+        for (int i = 1; i < monsters.size() + 1; i++) {
+            Monster monster = monsters.get(i - 1);
+            log.debug("Found: {}(id: {}), building look-at options.", monster.getType(), monster.getId());
+            output.append(String.format("\n[%s] - %s.", i, monster.getType()));
             options.put(i, monster);
         }
 
         //output = "There are no items in the room.";
 
-        lookAtOutput = output;
+        lookAtOutput = output.toString();
 
         return options;
     }
@@ -162,22 +180,21 @@ public class ActionMenuRoom extends ActionMenu {
      * @return
      */
     private HashMap<Integer, Monster> buildBattleOptions() {
-        String output = "";
-        HashMap<Integer, Monster> options = null;
-        Room room = aesi.getRoom();
+        StringBuilder output = new StringBuilder();
+        HashMap<Integer, Monster> options = new HashMap<>();
 
         List<Monster> monsters = room.getMonsters(); // SELECT Fighter FROM Fighter f where f.RoomId = :currRoom
 
-        for (int i = 0; i < monsters.size(); i++) {
-            Monster monster = monsters.get(i);
-            output += String.format("\n[%s] - %s (HP: %s)", i + 1, monster.getType(), monster.getCurrHealth());
+        for (int i = 1; i < monsters.size() + 1; i++) {
+            Monster monster = monsters.get(i - 1);
+            output.append(String.format("\n[%s] - %s (HP: %s)", i + 1, monster.getType(), monster.getCurrHealth()));
             options.put(i, monster);
         }
 
         // Doing this because of berserk mode.
-        output = "\n----> Auto battle is enabled. Stand back and watch the slaughter.";
+        output.append("\n----> Auto battle is enabled. Stand back and watch the slaughter.");
 
-        battleOutput = output;
+        battleOutput = output.toString();
 
         return options;
     }
@@ -193,66 +210,63 @@ public class ActionMenuRoom extends ActionMenu {
      * @return
      */
     private HashMap<Integer, Direction> buildMoveOptions() {
-        String output = "";
-        HashMap<Integer, Direction> options = null;
+        StringBuilder output = new StringBuilder();
+        HashMap<Integer, Direction> options = new HashMap<>();
+
         List<Direction> exits = room.getExits();
 
+        log.debug("There are {} exits from the room (id: {})", exits.size(), room.getId());
 
-        for (int i = 0; i < exits.size(); i++) {
-            Direction direction = exits.get(i);
-            output += String.format("[%s] - %s", direction.getDirectionNumber(), direction.toString());
+        for (Direction direction: exits) {
+            output.append(String.format("\n[%s] - %s", direction.getDirectionNumber(), direction.toString()));
+            options.put(direction.getDirectionNumber(), direction);
         }
 
-        // OR enhanced loop:
-
-        for (Direction exit: room.getExits()) {
-            output += String.format("[%s] - %s", exit.getDirectionNumber(), exit.toString());
-        }
-
-        moveOutput = output;
+        moveOutput = output.toString();
 
         return options;
+
+        /*
+        for (int i = 1; i < exits.size() + 1; i++) {
+            Direction direction = exits.get(i);
+            output.append(String.format("\n[%s] - %s", direction.getDirectionNumber(), direction.toString()));
+        }*/
     }
 
 
 
 
-    private void selectMainOptions() {
-
-    }
+    // ********************** Selection Methods ********************** //
 
 
     private void selectLookAtOption() {
-        // todo: needs to be able to look at everything in room and its exits.
-        HashMap<Integer, Monster> options = buildLookAtOptions();
-        Set<Integer> validOptions = options.keySet();
-
-        String formatted = UI_strings.lookAtMenuHeader + moveOutput + UI_strings.makeSelectionPrompt;
-
-        int selection = getUserInput(validOptions, moveOutput);
-
-        Monster monster = options.get(selection);
+        String str = UI_strings.lookAtMenuHeader + lookAtOutput + UI_strings.makeSelectionPrompt;
+        int sel = getUserInput(lookAtOptions.keySet(), str);
+        Monster monster = lookAtOptions.get(sel);
         System.out.println(monster.getDescription());
     }
 
 
     private void selectBattleOption() {
+        String str = UI_strings.battleMenuHeader + battleOutput + UI_strings.makeSelectionPrompt;
+        System.out.println(str);
+        //int sel = getUserInput(battleOptions.keySet(), str);
+        //Monster monster = battleOptions.get(sel);
+        //System.out.printf("\nYou are attacking: %s", monster.toString());
 
+        System.out.println("Fighting individual monsters disabled. Commencing auto- battle...");
+        Util.sleeper(1200);
         csi.roomAutoCombat(aesi.getAvatar());
     }
 
 
     private void selectMoveOption() {
-        HashMap<Integer, Direction> options = buildMoveOptions();
-        Set<Integer> validOptions = options.keySet();
-
-        String formatted = UI_strings.moveMenuHeader + moveOutput + UI_strings.makeSelectionPrompt;
-
-        int selection = getUserInput(validOptions, formatted);
-
-        Direction direction = options.get(selection);
-        msi.moveAvatar(aesi.getAvatar(), direction);
+        moveOptions = buildMoveOptions();
+        String str = UI_strings.moveMenuHeader + moveOutput + UI_strings.makeSelectionPrompt;
+        int sel = getUserInput(moveOptions.keySet(), str);
+        Direction direction = moveOptions.get(sel);
+        log.debug("Movement selection made {}, resulting in direction: {}", sel, direction.toString());
+        Room newRoom = msi.moveAvatar(aesi.getAvatar(), direction);
+        log.debug("Moved avatar to new room: '{}'", newRoom.getId());
     }
-
-
 }

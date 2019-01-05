@@ -6,7 +6,7 @@ import kaica_dun.entities.Dungeon;
 public interface ActionEngineService {
 
     // Prime the game world and get it ready
-    void prime(User user, Avatar avatar, Dungeon dungeon);
+    void prime(Avatar avatar, Dungeon dungeon);
 
 
     // Start playing

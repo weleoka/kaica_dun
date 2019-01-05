@@ -4,6 +4,7 @@ import kaica_dun.dao.*;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Dungeon;
 import kaica_dun.entities.Room;
+import kaica_dun.util.KaicaException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,9 @@ public class ActionEngineServiceImpl implements ActionEngineService {
 
     private static final Logger log = LogManager.getLogger();
 
-    User user;
     Avatar avatar;
     Dungeon dungeon;
-    Room selectedRoom;
+    Room currentRoom;
 
     @Autowired
     UserInterface ui;
@@ -41,6 +41,9 @@ public class ActionEngineServiceImpl implements ActionEngineService {
     @Autowired
     ActionMenuRoom amr;
 
+    @Autowired
+    MenuLoggedIn mli;
+
 
     /**
      * Prime the game world and get it ready.
@@ -52,47 +55,69 @@ public class ActionEngineServiceImpl implements ActionEngineService {
      *
      * todo: Currently the logic for finding the first room in a dungeon is a bit unsatisfying.
      *
-     * @param user
      * @param avatar
      * @param dungeon
      */
-    public void prime(User user, Avatar avatar, Dungeon dungeon) {
+    public void prime(Avatar avatar, Dungeon dungeon) {
         log.debug("Priming Action Engine environment...");
-        this.user = user;
+        log.debug("User: {}, Avatar: '{}', Dungeon: {}", dungeon.getUser().getName(), avatar.getName(), dungeon.getDungeonId());
+
         this.avatar = avatar;
         this.dungeon = dungeon;
-        log.debug("User: '{}', Avatar: '{}', Dungeon:'{}'", user.getName(), avatar.getName(), dungeon.getDungeonId());
+
         Room firstRoom = null;
-        Long firstRoomId = ric.findFirstRoomInDungeon(dungeon.getDungeonId());
-        log.debug("The room with the lowest ID in the dungeon is: {}.", firstRoomId);
+        Long firstRoomId = ric.findFirstRoomInDungeon(dungeon);
 
+        log.debug("Fetching first room (id: {}) of the dungeon.", firstRoomId);
         Optional result = ri.findById(firstRoomId);
-
         if (result.isPresent()) {
             firstRoom = (Room) result.get();
         }
 
-        log.debug("Fetched the first room (id: {}) from db and applying to Avatar.", firstRoom.getId());
+        log.debug("Dropping avatar into room (id: {}) -> good luck!.", firstRoom.getId());
         this.avatar.setCurrRoom(firstRoom);
     }
 
-
-    // Start playing
+    /**
+     * The method for initialising game loop and handling
+     * exception bubbling thrown in nested loops.
+     *
+     */
     public void play() {
-        log.debug("Started new game.");
-        amr.display();//this.user, this.avatar, this.dungeon);
+        log.debug("Starting game loop.");
+
+        mainGameLoop:
+        while(true) {
+
+            try {
+                amr.display();
+
+            } catch (KaicaException e) {
+                log.debug("Quit the game. Breaking mainGameLoop.");
+                break mainGameLoop;
+            }
+        }
+        mli.display();
+
     }
 
-
-    // Resume playing
+    /**
+     * Resume a game that has been paused.
+     *
+     */
     public void resume() {
         log.debug("Resuming game.");
+        play();
     }
 
-    // Restart a dungeon (Random re-generation as original parameters are not saved...)
-    // todo: implement original values for all rooms etc for real re-start.
+    /**
+     * Restart the current game with the same parameters.
+     * Currently it is a random re-generation, as original parameters were not saved.
+     * todo: implement original values for all rooms etc for real re-start.
+     */
     public void restart() {
         log.debug("Restarted the game.");
+        play();
     }
 
 
@@ -102,13 +127,6 @@ public class ActionEngineServiceImpl implements ActionEngineService {
 
 
     // ********************** Accessor Methods ********************** //
-    public User getUser() {
-        return user;
-    }
-
-    private void setUser(User user) {
-        this.user = user;
-    }
 
     public Avatar getAvatar() {
         return avatar;
@@ -126,11 +144,8 @@ public class ActionEngineServiceImpl implements ActionEngineService {
         this.dungeon = dungeon;
     }
 
-    public Room getRoom() {
+    public Room getAvatarCurrentRoom() {
         return getAvatar().getCurrRoom();
     }
 
-    private void setRoom(Room selectedRoom) {
-        this.selectedRoom = selectedRoom;
-    }
 }

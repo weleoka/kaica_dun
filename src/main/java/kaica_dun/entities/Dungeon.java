@@ -1,6 +1,8 @@
 package kaica_dun.entities;
 
 import kaica_dun_system.User;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -29,7 +31,11 @@ public class Dungeon {
     @Column(name = "room_columns")
     private int roomColumns;
 
-    @OneToMany(mappedBy = "dungeon", cascade = CascadeType.ALL)
+    @OneToMany(
+            mappedBy = "dungeon",
+            cascade = CascadeType.ALL
+    )
+    @LazyCollection(LazyCollectionOption.FALSE) // workaround. Should really use Set and not List.
     private List<Room> rooms = new ArrayList<Room>();
 
 

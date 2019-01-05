@@ -66,6 +66,7 @@ public class CombatServiceImpl {
 
     /**
      * Will exit when the monster list is empty or when avatar health drops to less than one.
+     *
      * @param a         the avatar fighting the monsters
      * @param monsters  a list of the monsters to be fought
      */

@@ -1,5 +1,6 @@
 package kaica_dun.dao;
 
+import kaica_dun.entities.Dungeon;
 import kaica_dun.entities.Room;
 import kaica_dun_system.User;
 import org.apache.logging.log4j.LogManager;
@@ -21,18 +22,19 @@ public class RoomInterfaceImpl implements RoomInterfaceCustom {
     /**
      * Read from storage and find the first room in a dungeon
      *
-     * @param dungeonId a String to query with
+     * @param dungeon a String to query with
      * @return a User instance
      */
     //@Override
     @Transactional
-    public Long findFirstRoomInDungeon(Long dungeonId) {
-        log.debug("Searching for first room in Dungeon: {}", dungeonId);
+    public Long findFirstRoomInDungeon(Dungeon dungeon) {
+        log.debug("Searching for first room in Dungeon: {}", dungeon);
         TypedQuery<Long> query = this.entityManager.createNamedQuery("Room.findFirstRoomInDungeon", Long.class);
-        query.setParameter("dungeonId", dungeonId);
-        List<Long> results = query.getResultList();
+        query.setParameter("dungeonId", dungeon);
+        //List<Long> results = query.getResultList();
+        Long result = query.getSingleResult();
 
-        return results.get(0);
+        return result;
     }
 
 
@@ -40,17 +42,17 @@ public class RoomInterfaceImpl implements RoomInterfaceCustom {
     /**
      * Read from storage and find the last room in a dungeon
      *
-     * @param dungeonId a String to query with
+     * @param dungeon a String to query with
      * @return a User instance
      */
     //@Override
     @Transactional
-    public Long findLastRoomInDungeon(Long dungeonId) {
-        log.debug("Searching for last room in Dungeon: {}", dungeonId);
+    public Long findLastRoomInDungeon(Dungeon dungeon) {
+        log.debug("Searching for last room in Dungeon: {}", dungeon);
         TypedQuery<Long> query = this.entityManager.createNamedQuery("Room.findLastRoomInDungeon", Long.class);
-        query.setParameter("dungeonId", dungeonId);
-        List<Long> results = query.getResultList();
+        query.setParameter("dungeonId", dungeon);
+        Long result = query.getSingleResult();
 
-        return results.get(0);
+        return result;
     }
 }

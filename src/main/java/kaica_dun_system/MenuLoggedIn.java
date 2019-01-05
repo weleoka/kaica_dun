@@ -1,11 +1,14 @@
 package kaica_dun_system;
 
+import kaica_dun.dao.UserInterface;
 import kaica_dun.entities.Avatar;
+import kaica_dun.entities.Dungeon;
 import kaica_dun.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.lang.System.out;
 
@@ -20,6 +23,10 @@ public class MenuLoggedIn extends Menu {
 
     @Autowired
     ActionEngineServiceImpl aesi;
+
+    @Autowired // Can be removed in development.
+    UserInterface userInterface;
+
 
     MenuLoggedIn() {}
 
@@ -36,7 +43,24 @@ public class MenuLoggedIn extends Menu {
 
         if (!usi.isAuthenticatedUser()) {
             out.println(UI_strings.userNotAuthenticated);
-            return;
+            Util.sleeper(900);
+
+
+            boolean DEBUG = true;
+            if (DEBUG) {
+                log.debug("No authenticated user currently set. Warning DEBUG enabled!!");
+                log.debug("Setting a default anthenticated user...");
+                Util.sleeper(900);
+                User user = null;
+
+                Optional optional = userInterface.findById(1L);
+                if (optional.isPresent()) {
+                    user = (User) optional.get();
+                }
+                usi.loginUser(user, "123");
+            }
+
+            //return;         // TODO: uncomment after testing to bounce non-auth users out of here!
             //menuMain.display();
         }
 
@@ -49,10 +73,11 @@ public class MenuLoggedIn extends Menu {
 
                 switch (selection) {
 
-                    case 1: // Start a new Dungeon game
+                    case 1: // Start a new game
                         if (selectAvatar()) {
-                            aesi.prime(usi.getAuthenticatedUser(), gsi.getAvatar(), gsi.getDungeon());
-                            menuInGame.display(true);
+                            Dungeon newDungeon = gsi.getNewDungeon(usi.getAuthenticatedUser());
+                            aesi.prime(gsi.getAvatar(), newDungeon);
+                            aesi.play();
                         }
                         continue;
 
@@ -153,7 +178,7 @@ public class MenuLoggedIn extends Menu {
                 selection = userInput.nextInt() - 1;
 
                 if (selection >= 0 && selection < avatarList.size()) {
-                    Avatar avatar = avatarList.get(selection);     // Minus 1 for correct index.
+                    Avatar avatar = avatarList.get(selection);
                     out.println(UI_strings.avatarSelectedSuccess + avatar.getName());
 
                     return avatarList.get(selection);

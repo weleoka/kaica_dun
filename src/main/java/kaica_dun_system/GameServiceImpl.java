@@ -55,16 +55,32 @@ public class GameServiceImpl implements GameService {
 
 
 
-    // ********************** Accessor Methods ********************** //
+    // ********************** Dungeon Methods ********************** //
 
     /**
      * getCurrent generated dungeon.
+     *
+     * So the idea would always be to get dungeon by id. That way it is possible to get a saved game.
+     *
+     * todo: implement fetching dungeon from database.
+     *  Need also to think about how currentRoom for avatar in that particular dungeon is saved.
      *
      * @return
      */
     public Dungeon getDungeon() {
         return this.dungeon;
     }
+
+
+    /**
+     * Get a new generated dungeon
+     *
+     * @return
+     */
+    public Dungeon getNewDungeon(User user) {
+        return setDungeon(user);
+    }
+
 
     /**
      * Create a dungeon for a user.
@@ -80,15 +96,19 @@ public class GameServiceImpl implements GameService {
         makeStaticDungeon msd = new makeStaticDungeon(user);
         dungeon = msd.buildDungeon();
 
-
         log.debug("Adding dungeon to {}s list of dungeons.", user.getName());
         user.addDungeon(dungeon);
 
         userInterface.save(user);
         dungeonInterface.save(dungeon);
+        this.dungeon = dungeon;
 
-        return this.dungeon;
+        return dungeon;
     }
+
+
+
+    // ********************** Avatar Methods ********************** //
 
     /**
      * get current selected avatar.
@@ -145,30 +165,6 @@ public class GameServiceImpl implements GameService {
         return results;
     }
 
-    /**
-     * Uses native SQL.
-     *
-     * todo: sort out compiler warning about unchecked assignment.
-     * @param room a Room instance
-     * @return a list of monsters
-     *
-     * @Deprecated
-     */
-
-    /*
-    public List<Monster> fetchMonsterByRoom (Room room) {
-        log.debug("Searching for all Monsters in {}.", room.getId());
-
-        TypedQuery<Monster> query = this.entityManager.createNamedQuery("Monster.findByRoomID", Monster.class);
-
-        query.setParameter("currRoom", room); // Named
-
-        List<Monster> results = query.getResultList();
-        log.debug("A List of {} avatars was fetched.", results.size());
-
-        return results;
-    }
-    */
 
     /**
      * @param user a User instance

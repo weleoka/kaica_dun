@@ -1,14 +1,18 @@
 package kaica_dun.entities;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "Room")
-@NamedQuery(name="Room.findFirstRoomInDungeon", query="SELECT MIN(r.id) FROM Room r WHERE r.dungeon = :dungeonId GROUP BY r.dungeon")
-@NamedQuery(name="Room.findLastRoomInDungeon", query="SELECT MAX(r.id) FROM Room r WHERE r.dungeon = :dungeonId GROUP BY r.dungeon")
+@NamedQuery(name="Room.findFirstRoomInDungeon", query="SELECT MIN(r.id) FROM Room r WHERE r.dungeon LIKE :dungeonId GROUP BY r.dungeon")
+@NamedQuery(name="Room.findLastRoomInDungeon", query="SELECT MAX(r.id) FROM Room r WHERE r.dungeon LIKE :dungeonId GROUP BY r.dungeon")
 public class Room {
 
     // Field variable declarations and Hibernate annotation scheme
@@ -29,15 +33,25 @@ public class Room {
     @Transient
     private Direction incomingDoor;
 
+
+    @Column(name = "room_directionID")
     @ElementCollection(targetClass = Direction.class)
     @CollectionTable(
             name = "Room_direction",
-            joinColumns = @JoinColumn(name = "roomID"))
-    @Column(name = "room_directionID")
+            joinColumns = @JoinColumn(name = "roomID")
+    )
+    @LazyCollection(LazyCollectionOption.FALSE) // workaround. Should really use Set and not List.
     private List<Direction> exits;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true) //TODO CascadeType.ALL, rework to minimum
-    private List<Monster> monsters = new LinkedList<Monster>();
+
+    @OneToMany( //TODO CascadeType.ALL, rework to minimum
+            //fetch = FetchType.EAGER, // Workaround. Should really use Set and not List.
+            mappedBy = "room",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @LazyCollection(LazyCollectionOption.FALSE) // Workaround. Should really use Set and not List.
+    private List<Monster> monsters;
 
 
     // Default empty constructor

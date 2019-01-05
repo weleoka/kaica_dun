@@ -111,7 +111,7 @@ public class App implements CommandLineRunner {
             //Avatar avatar = ai.findById(1L);
 
 
-            aesi.prime(createdUser, avatar, dungeon);
+            aesi.prime(avatar, dungeon);
             mig.display(true);
 
             try {

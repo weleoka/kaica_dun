@@ -54,4 +54,11 @@ public class Monster extends Fighter implements Describable {
     public void hit(Fighter opponent){
         opponent.takeDamage(this.dealDamage());
     }
+
+    @Override
+    public String toString() {
+        String str = String.format("Name: %s, type: %s, HP: %s, MaxHP: %s, damage: %s, armor: %s",
+                getName(), getType(), getCurrHealth(), getMaxHealth(), getDamage(), getArmor());
+        return str;
+    }
 }
