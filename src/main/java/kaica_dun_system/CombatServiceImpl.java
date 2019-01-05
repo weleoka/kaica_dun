@@ -5,6 +5,7 @@ import kaica_dun.dao.RoomInterface;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Monster;
 import kaica_dun.entities.Room;
+import kaica_dun.util.Util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,23 +82,32 @@ public class CombatServiceImpl {
 
             //break loop if all monsters are dead
             if (monsters.isEmpty()) {
+                System.out.println("The corpses of your enemies litter the floor of the room. Silence falls.");
                 break;
             }
 
             /*TODO Health should be evaluated after each hit, but the Avatar hitting Monster after Avatar is
              * dead shouldn't matter much.
              */
-            for (Monster m : monsters) {
-                m.hit(a);
-            }
-            //hit first monster in list, shouldn't be null bc of null removal, I hope.
-            a.hit(monsters.get(0));
+            combatRound(a, monsters);
 
             for (int i = 0; i < monsters.size(); i++) {
                 if (monsters.get(i).getCurrHealth() <= 0) {
+                    System.out.println(monsters.get(i).getName() + " dies");
                     monsters.remove(i);
                 }
             }
         }
+    }
+
+    private void combatRound(Avatar a, List<Monster> monsters) {
+        for (Monster m : monsters) {
+            int monsterDealsDamage = m.hit(a);
+            System.out.println(m.getName() + " hits " + a.getName() + " for " + monsterDealsDamage + " damage");
+            Util.sleeper(1200);
+        }
+        int avatarDealsDamage = a.hit(monsters.get(0));
+        System.out.println(a.getName() + " hits " + monsters.get(0).getName() + " for " + avatarDealsDamage + " damage");
+        Util.sleeper(1200);
     }
 }

@@ -66,7 +66,6 @@ public class ActionEngineServiceImpl implements ActionEngineService {
         log.debug("Setting the Avatar pointer to the dungeon.");
         avatar.setCurrDungeon(dungeon);
         log.debug("Committing avatar with dungeon pointers to db");
-        as.save(avatar);
 
         Room firstRoom = null;
         Long firstRoomId = ric.findFirstRoomInDungeon(dungeon);
@@ -79,6 +78,7 @@ public class ActionEngineServiceImpl implements ActionEngineService {
 
         log.debug("Dropping avatar into room (id: {}) -> good luck!.", firstRoom.getId());
         this.avatar.setCurrRoom(firstRoom);
+        as.save(avatar);
     }
 
     /**

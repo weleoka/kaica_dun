@@ -267,7 +267,6 @@ public class ActionMenuRoom extends ActionMenu {
         Direction direction = moveOptions.get(sel);
         log.debug("Movement selection made {}, resulting in direction: {}", sel, direction.toString());
         Room newRoom = msi.moveAvatar(aesi.getAvatar(), direction);
-        System.out.println(newRoom.toString());
         log.debug("Moved avatar to new room: '{}'", newRoom.getId());
     }
 }

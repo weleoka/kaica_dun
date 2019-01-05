@@ -43,16 +43,21 @@ public class Monster extends Fighter implements Describable {
 
     //Current health is set to: current health - (the taken damaged reduced by armor)
     @Override
-    public void takeDamage(int damage) {
-        setCurrHealth(getCurrHealth() - (damage - getArmor()));
+    public int takeDamage(int damage) {
+        int takenDamage = damage - getArmor();
+        setCurrHealth(getCurrHealth() - (takenDamage));
+
+        return takenDamage;
     }
 
     @Override
     public int dealDamage() { return getDamage(); }
 
     @Override
-    public void hit(Fighter opponent){
-        opponent.takeDamage(this.dealDamage());
+    public int hit(Fighter opponent){
+        int dealtDamage = opponent.takeDamage(this.dealDamage());
+
+        return dealtDamage;
     }
 
     @Override

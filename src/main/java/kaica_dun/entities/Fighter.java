@@ -144,11 +144,11 @@ public abstract class Fighter implements Describable {
 
     // ********************** Model Methods ********************** //
 
-    abstract void takeDamage(int damage);
+    abstract int takeDamage(int damage);
 
     abstract int dealDamage();
 
-    abstract void hit(Fighter opponent);
+    abstract int hit(Fighter opponent);
 
 
     // ********************** Common Methods ********************** //

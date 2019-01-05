@@ -199,12 +199,18 @@ public class Avatar extends Fighter {
 
 
     @Override
-    public void takeDamage(int damage) {
+    public int takeDamage(int damage) {
+        int takenDamage;
+
         if (equippedArmor == null) {
-            setCurrHealth(getCurrHealth() - (damage - getArmor()));
+            takenDamage = damage - getArmor();
+            setCurrHealth(getCurrHealth() - (takenDamage));
         } else {
-            setCurrHealth(getCurrHealth() - (damage - equippedArmor.getArmorValue())); ;
+            takenDamage = damage - equippedArmor.getArmorValue();
+            setCurrHealth(getCurrHealth() - (takenDamage)); ;
         }
+
+        return takenDamage;
     }
 
     @Override
@@ -220,8 +226,11 @@ public class Avatar extends Fighter {
     }
 
     @Override
-    public void hit(Fighter opponent){
-        opponent.takeDamage(this.dealDamage());
+    public int hit(Fighter opponent){
+
+        int dealtDamage = opponent.takeDamage(this.dealDamage());
+
+        return dealtDamage;
     }
 
     // ********************** Common Methods ********************** //

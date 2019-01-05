@@ -45,35 +45,35 @@ public final class makeStaticDungeon {
         ex0.add(Direction.S);
         Room r0 = new Room(0, Direction.U, ex0, MonsterFactory.makeEasyGreenskinGroup());
         updateMonsters(r0);
-        rooms.add(0, r0);
+        rooms.set(0, r0);
 
         List<Direction> ex5 = new LinkedList<Direction>();
         ex5.add(Direction.N);
         ex5.add(Direction.E);
         Room r5 = new Room(5, Direction.N, ex5, MonsterFactory.makeEasyGreenskinGroup());
         updateMonsters(r5);
-        rooms.add(5, r5);
+        rooms.set(5, r5);
 
         List<Direction> ex6 = new LinkedList<Direction>();
         ex6.add(Direction.W);
         ex6.add(Direction.E);
         Room r6 = new Room(6, Direction.W, ex6, MonsterFactory.makeEasyGreenskinGroup());
         updateMonsters(r6);
-        rooms.add(6, r6);
+        rooms.set(6, r6);
 
         List<Direction> ex7 = new LinkedList<Direction>();
         ex7.add(Direction.W);
         ex7.add(Direction.S);
         Room r7 = new Room(7, Direction.W, ex7, MonsterFactory.makeEasyGreenskinGroup());
         updateMonsters(r7);
-        rooms.add(7, r7);
+        rooms.set(7, r7);
 
         List<Direction> ex12 = new LinkedList<Direction>();
         ex12.add(Direction.N);
         ex12.add(Direction.E);
         Room r12 = new Room(12, Direction.N, ex12, MonsterFactory.makeEasyGreenskinGroup());
         updateMonsters(r12);
-        rooms.add(12, r12);
+        rooms.set(12, r12);
 
 
         List<Direction> ex13 = new LinkedList<Direction>();
@@ -81,21 +81,21 @@ public final class makeStaticDungeon {
         ex13.add(Direction.E);
         Room r13 = new Room(13, Direction.W, ex13, MonsterFactory.makeEasyGreenskinGroup());
         updateMonsters(r13);
-        rooms.add(13, r13);
+        rooms.set(13, r13);
 
         List<Direction> ex14 = new LinkedList<Direction>();
         ex14.add(Direction.W);
         ex14.add(Direction.N);
         Room r14 = new Room(14, Direction.W, ex14, MonsterFactory.makeEasyGreenskinGroup());
         updateMonsters(r14);
-        rooms.add(14, r14);
+        rooms.set(14, r14);
 
         List<Direction> ex9 = new LinkedList<Direction>();
         ex9.add(Direction.S);
         ex9.add(Direction.U);
         Room r9 = new Room(9, Direction.S, ex9, makeSmug());
         updateMonsters(r9);
-        rooms.add(9, r9);
+        rooms.set(9, r9);
 
         //User user, int roomRows, int roomColumns, List<Room> rooms
         log.debug("Starting/building dungeon instance...");
@@ -107,6 +107,7 @@ public final class makeStaticDungeon {
                 r.setDungeon(dungeon);
             }
         }
+
         return dungeon;
     }
 

@@ -147,6 +147,13 @@ public class Dungeon {
         return ((currRoomIndex + roomColumns) < (roomColumns * roomRows));
     }
 
+    //TODO print more information about the rooms, like ID for example?
+    public void printRooms() {
+        for (int i = 0; i < rooms.size(); i++) {
+            System.out.printf(i + ": " + rooms.get(i) + "\n");
+        }
+    }
+
 
     // ********************** Common Methods ********************** //
 

@@ -35,13 +35,13 @@ public class MovementServiceImpl {
     public void enterDungeon(Avatar avatar, Dungeon dungeon) {
         avatar.setCurrRoom(dungeon.getRooms().get(0));  //Enter first room of dungeon, always on index 0
         avatar.setCurrDungeon(dungeon);
-        avatarInterface.save(avatar);       //TODO inserting or updating?
+        avatarInterface.save(avatar);       //commit to db
     }
 
     public void exitDungeon(Avatar avatar) {
         avatar.setCurrRoom(null);           //Exit the room
         avatar.setCurrDungeon(null);        //Exit the dungeon
-        avatarInterface.save(avatar);       //TODO inserting or updating?
+        avatarInterface.save(avatar);       //commit to db
     }
 
     /**
@@ -89,8 +89,11 @@ public class MovementServiceImpl {
                 break;
             case 2:
                 int southIndex = avatar.getCurrDungeon().getSouthIndex(currRoomIndex);
+                System.out.println(southIndex);
                 Room southRoom = dungeon.getRooms().get(southIndex);
+                System.out.println(southRoom);
                 avatar.setCurrRoom(southRoom);
+                System.out.println(avatar.getCurrRoom().toString());
                 break;
             case 3:
                 int westIndex = avatar.getCurrDungeon().getWestIndex(currRoomIndex);
