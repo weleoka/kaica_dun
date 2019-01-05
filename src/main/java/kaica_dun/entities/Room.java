@@ -9,6 +9,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+
+/**
+ * Class representing a Room.
+ *
+ * todo: Currently room has multiple List parameters, when fetching data from a
+ *  database it will not be in an ordered list, hence Set is recommended for all cases other than where it
+ *  is absolutely necessary to maintain order.
+ *  https://stackoverflow.com/questions/4334970/hibernate-cannot-simultaneously-fetch-multiple-bags#4335514
+ *
+ */
 @Entity
 @Table(name = "Room")
 @NamedQuery(name="Room.findFirstRoomInDungeon", query="SELECT MIN(r.id) FROM Room r WHERE r.dungeon LIKE :dungeonId GROUP BY r.dungeon")

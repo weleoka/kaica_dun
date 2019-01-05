@@ -53,8 +53,6 @@ public class ActionEngineServiceImpl implements ActionEngineService {
      * It sets values for user, avatar and dungeon. Also the important aspect of identifying the
      * first room in a dungeon is worked at.
      *
-     * todo: Currently the logic for finding the first room in a dungeon is a bit unsatisfying.
-     *
      * @param avatar
      * @param dungeon
      */
