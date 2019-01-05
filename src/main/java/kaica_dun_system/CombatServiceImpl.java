@@ -93,10 +93,9 @@ public class CombatServiceImpl {
             //hit first monster in list, shouldn't be null bc of null removal, I hope.
             a.hit(monsters.get(0));
 
-            for (Monster m : monsters) {
-                if (m.getCurrHealth() <= 0) {
-                    //TODO Check if orphan removal on Room.monsters works as it should
-                    monsters.remove(m);
+            for (int i = 0; i < monsters.size(); i++) {
+                if (monsters.get(i).getCurrHealth() <= 0) {
+                    monsters.remove(i);
                 }
             }
         }

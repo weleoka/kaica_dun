@@ -16,13 +16,13 @@ public class makeAvatar {
     public static Avatar make(User user) {
 
         //Make Weapon
-        Weapon wep = new Weapon("The Smashanizer", "Smashing!", 4, 4);
+        Weapon wep = new Weapon("The Smashanizer", "Smashing!", 7, 4);
 
         //Make Armor
         Armor arm = new Armor("Studded Leather", "A full suit of studded leather armor.", 2);
 
         //Make Avatar with the weapon and the armor equipped
-        Avatar avatar = new Avatar("Billy the Burly", "Oh, yeah!", user, "User Avatar", 90, 90, 1, 2, wep, arm);
+        Avatar avatar = new Avatar("Billy the Burly", "Oh, yeah!", user, "User Avatar", 9000, 90, 1, 2, wep, arm);
 
         return avatar;
     }
