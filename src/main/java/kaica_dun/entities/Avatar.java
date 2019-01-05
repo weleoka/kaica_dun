@@ -43,7 +43,7 @@ public class Avatar extends Fighter {
     private Inventory inventory;
 
     @Transient
-    private Random rand;
+    private Random rand = new Random();
 
     public Avatar() {
     }
