@@ -44,24 +44,14 @@ public class CombatServiceImpl {
     public boolean roomAutoCombat(Avatar avatar) throws GameOverException {
         boolean avatarWins = true;
         Room room = avatar.getCurrRoom();
-        //Disconnect the monster->room pointers to make the link unidirectional.
-        //TODO ugly PH, rework. Might not be needed, test later. Depends on orphan removal and how that works.
-        for (Monster m : room.getMonsters()) {
-            m.setRoom(null);
-        }
-
-        autoCombat(avatar, room.getMonsters());
-        avatarInterface.save(avatar);
-        roomInterface.save(room);
-
-        //Reestablish db integrity if the monsters win.
+        autoCombat(avatar, room);
+        //If room is not empty after combat, then the Avatar has lost.
         if (!room.getMonsters().isEmpty()) {
-            avatarWins = false;
-            for (Monster m : room.getMonsters()) {
-                m.setRoom(room);
-            }
+            avatarWins = false; //TODO use this to display message, set pointers and exit dungeon.
             throw new GameOverException("Your Avatar has fallen in battle.");
         }
+
+        avatarInterface.save(avatar);
 
         return avatarWins;
     }
@@ -70,16 +60,13 @@ public class CombatServiceImpl {
      * Will exit when the monster list is empty or when avatar health drops to less than one.
      *
      * @param a         the avatar fighting the monsters
-     * @param monsters  a list of the monsters to be fought
+     * @param room      the room where the fighting is taking place
      */
-    private void autoCombat(Avatar a, List<Monster> monsters) {
-
+    private void autoCombat(Avatar a, Room room) {
+        List<Monster> monsters = room.getMonsters();
         //one round of combat per loop through the while-loop
         //TODO make not-ugly logic.
         while (a.getCurrHealth() > 0) {
-
-            //remove all nulls from the LinkedList "monsters".
-            while (monsters.remove(null));
 
             //break loop if all monsters are dead
             if (monsters.isEmpty()) {
@@ -90,25 +77,31 @@ public class CombatServiceImpl {
             /*TODO Health should be evaluated after each hit, but the Avatar hitting Monster after Avatar is
              * dead shouldn't matter much.
              */
-            combatRound(a, monsters);
-
-            for (int i = 0; i < monsters.size(); i++) {
-                if (monsters.get(i).getCurrHealth() <= 0) {
-                    System.out.println(monsters.get(i).getName() + " dies");
-                    monsters.remove(i);
-                }
-            }
+            combatRound(a, room);
         }
     }
 
-    private void combatRound(Avatar a, List<Monster> monsters) {
+    private void combatRound(Avatar a, Room room) {
+        List<Monster> monsters = room.getMonsters();
         for (Monster m : monsters) {
             int monsterDealsDamage = m.hit(a);
             System.out.println(m.getName() + " hits " + a.getName() + " for " + monsterDealsDamage + " damage");
-            Util.sleeper(1200);
+            Util.sleeper(800);
         }
         int avatarDealsDamage = a.hit(monsters.get(0));
         System.out.println(a.getName() + " hits " + monsters.get(0).getName() + " for " + avatarDealsDamage + " damage");
-        Util.sleeper(1200);
+        if (deathCheck(monsters.get(0))) {
+            room.removeMonster(monsters.get(0));
+        }
+        Util.sleeper(800);
+    }
+
+    private boolean deathCheck(Monster m) {
+        boolean isDead = false;
+        if (m.getCurrHealth() <= 0) {
+            System.out.println(m.getName() + " dies");
+            isDead = true;
+        }
+        return isDead;
     }
 }

@@ -263,6 +263,10 @@ public class ActionMenuRoom extends ActionMenu {
         System.out.println("Fighting individual monsters disabled. Commencing auto- battle...");
         Util.sleeper(1200);
         csi.roomAutoCombat(aesi.getAvatar());
+        System.out.println(aesi.getAvatar().getCurrRoom().getMonsters().size());
+        for( Monster m : aesi.getAvatar().getCurrRoom().getMonsters()) {
+            System.out.println(m.getName());
+        }
     }
 
 

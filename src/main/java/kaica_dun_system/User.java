@@ -30,11 +30,6 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Dungeon> dungeons = new LinkedList<Dungeon>();
 
-
-    //TODO dafuq? Usure of mappings, currently mapping onto same column for both Dungeon and Avatar, works?
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private Dungeon currDungeon;
-
     //Unidirectional, I think
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private Avatar currAvatar;
@@ -51,13 +46,11 @@ public class User {
      * @param userName      name of the user
      * @param password      password of the user
      * @param currAvatar    the currently active avatar on the user account
-     * @param currDungeon   the currently active dungeon on the user account
      */
-    public User(String userName, String password, Avatar currAvatar, Dungeon currDungeon) {
+    public User(String userName, String password, Avatar currAvatar) {
         this.userName = userName;
         this.password = password;
         this.currAvatar = currAvatar;
-        this.currDungeon = currDungeon;
     }
 
     /**
@@ -91,9 +84,6 @@ public class User {
 
     public void setCurrAvatar(Avatar currAvatar) { this.currAvatar = currAvatar; }
 
-    public Dungeon getCurrDungeon() { return currDungeon; }
-
-    public void setCurrDungeon(Dungeon currDungeon) { this.currDungeon = currDungeon; }
 
 
     // ********************** Model Methods ********************** //

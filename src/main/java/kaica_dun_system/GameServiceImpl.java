@@ -208,6 +208,7 @@ public class GameServiceImpl implements GameService {
     public Avatar createStaticAvatar(User user) {
         Avatar avatar =  makeAvatar.make(user);
         avatarInterface.save(avatar);
+        userInterface.save(user);
         return avatar;
     }
 

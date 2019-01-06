@@ -76,6 +76,7 @@ public class ActionEngineServiceImpl implements ActionEngineService {
 
         log.debug("Setting the Avatar pointer to the dungeon.");
         avatar.setCurrDungeon(dungeon);
+        ai.save(avatar);
         log.debug("Committing avatar with dungeon pointers to db");
     }
 

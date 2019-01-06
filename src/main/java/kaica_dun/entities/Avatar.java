@@ -26,7 +26,7 @@ public class Avatar extends Fighter {
     private Dungeon currDungeon;
 
     //Unidirectional, the Room doesn't "know" there's an avatar in it. TODO think! TEST!
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Room currRoom;
 
     //Seems correct to cascade almost everything here, so ALL is a good PH-strategy. TODO remove some of the cascades.

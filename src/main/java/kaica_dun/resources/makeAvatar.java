@@ -23,7 +23,7 @@ public class makeAvatar {
 
         //Make Avatar with the weapon and the armor equipped
         Avatar avatar = new Avatar("Billy the Burly", "Oh, yeah!", user, "User Avatar", 9000, 90, 1, 2, wep, arm);
-
+        user.setCurrAvatar(avatar);
         return avatar;
     }
 }
