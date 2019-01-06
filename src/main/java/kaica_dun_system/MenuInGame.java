@@ -1,6 +1,6 @@
 package kaica_dun_system;
 
-import kaica_dun.util.KaicaException;
+import kaica_dun.util.MenuException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,16 +29,16 @@ public class MenuInGame extends Menu {
      * (2. Change Subscription)
      * 9. Return to Main Menu
      */
-    public void display(boolean directPlay) throws KaicaException { // todo: change to private after testing.
+    public void display(boolean directPlay) throws MenuException { // todo: change to private after testing.
         int selection;
 
         if (directPlay) {
-            aesi.play();// Jump straight in the game.
+            aesi.playNew(); // Jump straight in the game.
         }
 
         inputLoop:
         while (true) {
-            out.println(UI_strings.inGameMenu);
+            out.println(UiString.inGameMenu);
 
             if (userInput.hasNextInt()) {
                 selection = userInput.nextInt();
@@ -63,11 +63,11 @@ public class MenuInGame extends Menu {
                 }
 
             } else {
-                out.println(UI_strings.menuSelectionFailed);
+                out.println(UiString.menuSelectionFailed);
             }
             userInput.reset(); // flush the in buffer
         }
         // Break out to the top menu.
-        throw new KaicaException("Quit the game"); //menuLoggedIn.display();
+        throw new MenuException("Quit the game"); //menuLoggedIn.display();
     }
 }

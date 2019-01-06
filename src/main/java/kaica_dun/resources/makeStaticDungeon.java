@@ -1,9 +1,6 @@
 package kaica_dun.resources;
 
-import kaica_dun.entities.Direction;
-import kaica_dun.entities.Dungeon;
-import kaica_dun.entities.Monster;
-import kaica_dun.entities.Room;
+import kaica_dun.entities.*;
 import kaica_dun_system.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,6 +41,7 @@ public final class makeStaticDungeon {
         ex0.add(Direction.U);
         ex0.add(Direction.S);
         Room r0 = new Room(0, Direction.U, ex0, MonsterFactory.makeEasyGreenskinGroup());
+        r0.setRoomType(RoomType.FIRST01);
         updateMonsters(r0);
         rooms.set(0, r0);
 
@@ -72,6 +70,7 @@ public final class makeStaticDungeon {
         ex12.add(Direction.N);
         ex12.add(Direction.E);
         Room r12 = new Room(12, Direction.N, ex12, MonsterFactory.makeEasyGreenskinGroup());
+        r12.setRoomType(RoomType.HARD01);
         updateMonsters(r12);
         rooms.set(12, r12);
 
@@ -94,6 +93,7 @@ public final class makeStaticDungeon {
         ex9.add(Direction.S);
         ex9.add(Direction.U);
         Room r9 = new Room(9, Direction.S, ex9, makeSmug());
+        r9.setRoomType(RoomType.LAST01);
         updateMonsters(r9);
         rooms.set(9, r9);
 

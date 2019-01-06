@@ -1,11 +1,10 @@
 package kaica_dun;
 
-import kaica_dun.dao.AvatarInterface;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Dungeon;
-import kaica_dun.entities.Room;
+import kaica_dun.entities.RoomType;
 import kaica_dun.resources.TestDb;
-import kaica_dun.util.KaicaException;
+import kaica_dun.util.MenuException;
 import kaica_dun_system.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,8 +18,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
-
-import java.util.List;
 
 import static java.lang.System.out;
 
@@ -56,9 +53,6 @@ public class App implements CommandLineRunner {
     private TestDb testdb;
 
     @Autowired
-    private AvatarInterface avatarInterface;
-
-    @Autowired
     private MenuMain menuMain;
 
     @Autowired
@@ -71,6 +65,7 @@ public class App implements CommandLineRunner {
     @Qualifier("HibernateSessionFactory")
     SessionFactory sessionFactory;
 
+
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
     }
@@ -78,11 +73,17 @@ public class App implements CommandLineRunner {
 
     public void run(String... strings) {
 
+
         try {
-            out.printf(UI_strings.logo);
+            out.printf(UiString.logo);
 
+            StringBuilder str = new StringBuilder();
+            for (RoomType type : RoomType.values()) {
+                str.append(String.format("'%s', ", type.name()));
+            }
+            log.debug("Check of valid room types: {}.", str.toString());
 
-            log.info("Current objects in DB: {}", usi.findAll());
+            log.info("Current users in DB: {}", usi.findAll());
 
             Long userId = usi.createUser(new User("user1", "123"));
             log.info("Person created in DB : {}", userId);
@@ -116,8 +117,9 @@ public class App implements CommandLineRunner {
 
             try {
                 menuMain.display();
-            } catch (KaicaException e) { // Standard way of exiting application menus.
+            } catch (MenuException e) { // Standard way of exiting application menus.
                 log.debug(e);
+                e.printStackTrace();
             }
 
             testdb.main();

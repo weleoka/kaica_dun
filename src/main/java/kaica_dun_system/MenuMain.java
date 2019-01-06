@@ -1,6 +1,6 @@
 package kaica_dun_system;
 
-import kaica_dun.util.KaicaException;
+import kaica_dun.util.MenuException;
 import kaica_dun.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,12 +27,12 @@ public class MenuMain extends Menu {
      * <p>
      * todo: test the inputLoop breaking and what happens to following switch cases.
      */
-    public void display() throws KaicaException {
+    public void display() throws MenuException {
         int selection = 0;
 
         inputLoop:
         while (true) {
-            out.println(UI_strings.mainMenu);
+            out.println(UiString.mainMenu);
 
             if (userInput.hasNextInt()) {
                 selection = userInput.nextInt();
@@ -41,12 +41,12 @@ public class MenuMain extends Menu {
 
                     case 1:
                         if (loginUser()) {
-                            out.println(UI_strings.successfullLogin);
+                            out.println(UiString.successfullLogin);
                             menuLoggedIn.display();
                             continue;
 
                         } else {
-                            out.println(UI_strings.unsuccessfullLogin);
+                            out.println(UiString.unsuccessfullLogin);
                             continue;
                         }
 
@@ -65,7 +65,7 @@ public class MenuMain extends Menu {
                 }
 
             } else {
-                out.println(UI_strings.menuSelectionFailed);
+                out.println(UiString.menuSelectionFailed);
             }
             userInput.reset(); // flush the in buffer
         }
@@ -82,9 +82,9 @@ public class MenuMain extends Menu {
      */
     private static String[] credentialsPrompt() {
         userInput.nextLine(); // flush the input buffer
-        out.println(UI_strings.promptUserName);
+        out.println(UiString.promptUserName);
         String userName = userInput.nextLine(); // To accept whitespace.
-        out.println(UI_strings.promptUserID);
+        out.println(UiString.promptUserID);
         String userID = userInput.nextLine();
         String[] tmpArr = {userName, userID};
 
@@ -104,21 +104,21 @@ public class MenuMain extends Menu {
         User user = usi.findUserByName(creds[0]);
 
         if (user != null) {
-            out.println(UI_strings.userNameFound);
+            out.println(UiString.userNameFound);
 
             if (usi.loginUser(user, creds[1])) {
 
                 return true;
 
             } else {
-                out.println(UI_strings.userNameToPasswordMismatch); // todo: change to userNameToPwdMismatch
+                out.println(UiString.userNameToPasswordMismatch); // todo: change to userNameToPwdMismatch
                 Util.sleeper(700);
 
                 return false;
             }
 
         } else {
-            out.println(UI_strings.userNameNotFound);
+            out.println(UiString.userNameNotFound);
             Util.sleeper(700);
 
             return false;
@@ -139,7 +139,7 @@ public class MenuMain extends Menu {
      *
      */
     private void createUser() {
-        out.println(UI_strings.createUserHeader);
+        out.println(UiString.createUserHeader);
         String[] creds = credentialsPrompt();
         User user = new User(creds[0], creds[1]);
         log.debug("Creating user: {} with password: {}", creds[0], creds[1]);
@@ -147,15 +147,15 @@ public class MenuMain extends Menu {
         if (usi.checkNewUserName(creds[0])) {
 
             if (usi.createUser(user) != null) {
-                out.println(UI_strings.createUserSuccess);
+                out.println(UiString.createUserSuccess);
                 Util.sleeper(700);
 
             } else {
-                out.println(UI_strings.createUserFail);
+                out.println(UiString.createUserFail);
             }
 
         } else {
-            out.println(UI_strings.userNameExists);
+            out.println(UiString.userNameExists);
         }
         Util.sleeper(700);
     }
@@ -164,9 +164,9 @@ public class MenuMain extends Menu {
     /**
      * End the application.
      */
-    private void quit() throws KaicaException {
-        out.println(UI_strings.goodbyeString);
-        throw new KaicaException("Quit application");
+    private void quit() throws MenuException {
+        out.println(UiString.goodbyeString);
+        throw new MenuException("Quit application");
         //System.exit(0);
         // Returns to caller
     }

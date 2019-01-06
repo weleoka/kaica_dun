@@ -5,8 +5,6 @@ import kaica_dun.entities.Direction;
 import kaica_dun.entities.Dungeon;
 import kaica_dun.entities.Room;
 
-import java.util.List;
-
 public interface MovementService {
 
     Room moveAvatar(Avatar avatar, Direction direction);

@@ -1,8 +1,12 @@
 package kaica_dun_system;
 
 
-import kaica_dun.entities.*;
-import kaica_dun.util.KaicaException;
+import kaica_dun.entities.Direction;
+import kaica_dun.entities.Monster;
+import kaica_dun.entities.Room;
+import kaica_dun.util.GameOverException;
+import kaica_dun.util.GameWonException;
+import kaica_dun.util.MenuException;
 import kaica_dun.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -63,13 +67,13 @@ public class ActionMenuRoom extends ActionMenu {
      * (2. Change Subscription)
      * 9. Return to Main Menu
      */
-    void display() throws KaicaException {
+    void display() throws MenuException, GameOverException, GameWonException {
         int selection;
         mainOptions = buildMainOptions();
 
-        String formatted = UI_strings.menuHeader4 + mainOutput + UI_strings.makeSelectionPrompt;
+        String str = UiString.menuHeader4 + mainOutput + UiString.makeSelectionPrompt;
 
-        selection = getUserInput(mainOptions.keySet(), formatted);
+        selection = getUserInput(mainOptions.keySet(), str);
 
         switch (selection) {
             case 1:
@@ -100,6 +104,7 @@ public class ActionMenuRoom extends ActionMenu {
      * to be built differently.
      *
      * todo: make it dynamic so that options are sequentially numbered.
+     * todo: move strings out to UiString class for language adaption.
      *
      * @return
      */
@@ -116,7 +121,7 @@ public class ActionMenuRoom extends ActionMenu {
 
         if (lookAtOptions.size() > 0) {
             output.append(String.format("\n[1] - Look at things"));
-            options.put(1, "lookAt"); // This should be dynamic and not [1]
+            options.put(1, "lookAt"); // This should be dynamic and not always [1]
         }
         if (battleOptions.size() > 0) {
             output.append(String.format("\n[2] - Fight monsters "));
@@ -156,11 +161,11 @@ public class ActionMenuRoom extends ActionMenu {
 
         List<Monster> monsters = room.getMonsters();
 
-        log.debug("There are {} monsters in the room (id: {}).", monsters.size(), room.getId());
+        //log.debug("There are {} monsters in the room (id: {}).", monsters.size(), room.getId());
 
         for (int i = 1; i < monsters.size() + 1; i++) {
             Monster monster = monsters.get(i - 1);
-            log.debug("Found: {}(id: {}), building look-at options.", monster.getType(), monster.getId());
+            //log.debug("Found: {}(id: {}), building look-at options.", monster.getType(), monster.getId());
             output.append(String.format("\n[%s] - %s.", i, monster.getType()));
             options.put(i, monster);
         }
@@ -215,7 +220,7 @@ public class ActionMenuRoom extends ActionMenu {
 
         List<Direction> exits = room.getExits();
 
-        log.debug("There are {} exits from the room (id: {})", exits.size(), room.getId());
+        //log.debug("There are {} exits from the room (id: {})", exits.size(), room.getId());
 
         for (Direction direction: exits) {
             output.append(String.format("\n[%s] - %s", direction.getDirectionNumber(), direction.toString()));
@@ -240,15 +245,16 @@ public class ActionMenuRoom extends ActionMenu {
 
 
     private void selectLookAtOption() {
-        String str = UI_strings.lookAtMenuHeader + lookAtOutput + UI_strings.makeSelectionPrompt;
+        String str = UiString.lookAtMenuHeader + lookAtOutput + UiString.makeSelectionPrompt;
         int sel = getUserInput(lookAtOptions.keySet(), str);
         Monster monster = lookAtOptions.get(sel);
         System.out.println(monster.getDescription());
+        Util.sleeper(1400);
     }
 
 
-    private void selectBattleOption() {
-        String str = UI_strings.battleMenuHeader + battleOutput + UI_strings.makeSelectionPrompt;
+    private void selectBattleOption() throws GameOverException  {
+        String str = UiString.battleMenuHeader + battleOutput + UiString.makeSelectionPrompt;
         System.out.println(str);
         //int sel = getUserInput(battleOptions.keySet(), str);
         //Monster monster = battleOptions.get(sel);
@@ -262,11 +268,12 @@ public class ActionMenuRoom extends ActionMenu {
 
     private void selectMoveOption() {
         moveOptions = buildMoveOptions();
-        String str = UI_strings.moveMenuHeader + moveOutput + UI_strings.makeSelectionPrompt;
+        String str = UiString.moveMenuHeader + moveOutput + UiString.makeSelectionPrompt;
         int sel = getUserInput(moveOptions.keySet(), str);
         Direction direction = moveOptions.get(sel);
-        log.debug("Movement selection made {}, resulting in direction: {}", sel, direction.toString());
+        //log.debug("Movement selection made {}, resulting in direction: {}", sel, direction.toString());
         Room newRoom = msi.moveAvatar(aesi.getAvatar(), direction);
-        log.debug("Moved avatar to new room: '{}'", newRoom.getId());
+        System.out.printf("\nMoved Avatar to the next room to the %s", direction.toString());
+        //log.debug("Moved avatar to new room: '{}'", newRoom.getId());
     }
 }

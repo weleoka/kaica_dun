@@ -1,19 +1,27 @@
 package kaica_dun_system;
 
 import kaica_dun.dao.*;
-import kaica_dun.entities.Avatar;
-import kaica_dun.entities.Dungeon;
-import kaica_dun.entities.Room;
-import kaica_dun.util.KaicaException;
+import kaica_dun.entities.*;
+import kaica_dun.util.GameOverException;
+import kaica_dun.util.GameWonException;
+import kaica_dun.util.MenuException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Scanner;
+
+import static java.lang.System.in;
 
 
+/**
+ * A class which handles the main entry, setup and leaving of a dungeon game.
+ *
+ * This class will maintain a log of progress
+ *
+ */
 @Service
 public class ActionEngineServiceImpl implements ActionEngineService {
 
@@ -21,16 +29,18 @@ public class ActionEngineServiceImpl implements ActionEngineService {
 
     Avatar avatar;
     Dungeon dungeon;
-    Room currentRoom;
 
     @Autowired
     UserInterface ui;
 
     @Autowired
-    AvatarInterface as;
+    AvatarInterface ai;
 
     @Autowired
     DungeonInterface di;
+
+    @Autowired
+    GameServiceImpl gsi;
 
     @Autowired
     RoomInterfaceCustom ric;
@@ -45,13 +55,14 @@ public class ActionEngineServiceImpl implements ActionEngineService {
     MenuLoggedIn mli;
 
 
+
     /**
      * Prime the game world and get it ready.
      *
      * This could be the constructor as well but with Autowired it's better to use method injection in this case.
      *
-     * It sets values for user, avatar and dungeon. Also the important aspect of identifying the
-     * first room in a dungeon is worked at.
+     * It sets values for avatar and dungeon. Also the important aspect of identifying the
+     * first room in a dungeon is done here.
      *
      * @param avatar
      * @param dungeon
@@ -66,20 +77,55 @@ public class ActionEngineServiceImpl implements ActionEngineService {
         log.debug("Setting the Avatar pointer to the dungeon.");
         avatar.setCurrDungeon(dungeon);
         log.debug("Committing avatar with dungeon pointers to db");
+    }
 
-        Room firstRoom = null;
-        Long firstRoomId = ric.findFirstRoomInDungeon(dungeon);
-
-        log.debug("Fetching first room (id: {}) of the dungeon.", firstRoomId);
-        Optional result = ri.findById(firstRoomId);
-        if (result.isPresent()) {
-            firstRoom = (Room) result.get();
-        }
+    /**
+     * Drops the avatar inte the first room of a dungeon.
+     */
+    public void playNew() {
+        Room firstRoom = gsi.findFirstRoomInDungeon(dungeon);
 
         log.debug("Dropping avatar into room (id: {}) -> good luck!.", firstRoom.getId());
         this.avatar.setCurrRoom(firstRoom);
-        as.save(avatar);
+        ai.save(avatar);
+
+        UiString.printGameIntro();
+
+        play();
     }
+
+    /**
+     * Resume a game that has been paused.
+     *
+     * todo: implement some feedback for this..
+     *
+     */
+    public void resume() {
+
+        try {
+            Room room = avatar.getCurrRoom();
+
+        } catch (NullPointerException e) {
+            log.warn("Trying to resume a game that does not exist. No Current room is set for Avatar.");
+            playNew();
+        }
+        log.debug("Resuming game.");
+        play();
+    }
+
+    /**
+     * Restart the current game with the same parameters.
+     * Currently it is a random re-generation, as original parameters were not saved.
+     * todo: implement original values for all rooms etc for real re-start.
+     */
+    public void restart() {
+        log.debug("Restarted the game. (Done by calling playNew().");
+        playNew();
+    }
+
+
+
+
 
     /**
      * The method for initialising game loop and handling
@@ -93,38 +139,75 @@ public class ActionEngineServiceImpl implements ActionEngineService {
         while(true) {
 
             try {
+                System.out.println(buildStateInfo());
                 amr.display();
 
-            } catch (KaicaException e) {
+            } catch (MenuException e) {
                 log.debug("Quit the game. Breaking mainGameLoop.");
+                System.out.println(e);
+                break mainGameLoop;
+
+            } catch (GameOverException e) {
+                log.debug("Game over. Breaking mainGameLoop.");
+                System.out.println(e);
+                break mainGameLoop;
+
+            } catch (GameWonException e) {
+                log.debug("The avatar has prevailed and won the game! Breaking mainGameLoop.");
+                System.out.println(e);
                 break mainGameLoop;
             }
+
         }
-        mli.display();
-
+        mli.display(); // Return to MenuLoggedIn
     }
+
+
+
+
 
     /**
-     * Resume a game that has been paused.
-     *
+     * Method to collect and output to user interesting information.
      */
-    public void resume() {
-        log.debug("Resuming game.");
-        play();
+    private String buildStateInfo() {
+        StringBuilder str;
+        String monstersInTheRoom;
+        String exitsFromTheroom;
+        String itemsInTheRoom;
+
+        Room room = avatar.getCurrRoom();
+
+        str = new StringBuilder();
+        List<Monster> monsters = room.getMonsters();
+        str.append(String.format("There are %s monsters in the room.", monsters.size()));
+        for (int i = 1; i < monsters.size() + 1; i++) {
+            Monster monster = monsters.get(i - 1);
+            str.append(String.format("\nThe %s has %sHP.", monster.getType(), monster.getCurrHealth()));
+        }
+        monstersInTheRoom = str.toString();
+
+
+        str = new StringBuilder();
+        List<Direction> exits = room.getExits();
+        str.append(String.format("There are %s exits from the room: ", exits.size() - 1));
+
+        for (Direction direction: exits) {
+            str.append(String.format("%s,", direction.getDirectionNumber(), direction.name()));
+        }
+        exitsFromTheroom = str.toString();
+
+
+        str = new StringBuilder();
+        str.append(
+                String.format("\nAvatar health: %s", avatar.getCurrHealth()) +
+                String.format("\n%s", monstersInTheRoom) +
+                String.format("\n\n%s", exitsFromTheroom) +
+                String.format("\n%s", UiString.randomSound()) +
+                String.format("\n%s", UiString.randomVisual())
+        );
+
+        return str.toString();
     }
-
-    /**
-     * Restart the current game with the same parameters.
-     * Currently it is a random re-generation, as original parameters were not saved.
-     * todo: implement original values for all rooms etc for real re-start.
-     */
-    public void restart() {
-        log.debug("Restarted the game.");
-        play();
-    }
-
-
-
 
 
 

@@ -1,7 +1,6 @@
 package kaica_dun_system;
 
 import kaica_dun.dao.AvatarInterface;
-import kaica_dun.dao.DungeonInterface;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Direction;
 import kaica_dun.entities.Dungeon;
@@ -11,8 +10,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import javax.persistence.EntityManager;
 
 @Service
 @EnableTransactionManagement

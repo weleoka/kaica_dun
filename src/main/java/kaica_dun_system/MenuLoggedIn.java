@@ -42,7 +42,7 @@ public class MenuLoggedIn extends Menu {
         int selection;
 
         if (!usi.isAuthenticatedUser()) {
-            out.println(UI_strings.userNotAuthenticated);
+            out.println(UiString.userNotAuthenticated);
             Util.sleeper(900);
 
 
@@ -66,18 +66,18 @@ public class MenuLoggedIn extends Menu {
 
         inputLoop:
         while (true) {
-            out.println(UI_strings.loggedInMenu);
+            out.println(UiString.loggedInMenu);
 
             if (userInput.hasNextInt()) {
                 selection = userInput.nextInt();
 
                 switch (selection) {
 
-                    case 1: // Start a new game
+                    case 1: // Start a new game (or resume a game if the avatar is in a dungeon already.)
                         if (selectAvatar()) {
                             Dungeon newDungeon = gsi.getNewDungeon(usi.getAuthenticatedUser());
                             aesi.prime(gsi.getAvatar(), newDungeon);
-                            aesi.play();
+                            aesi.playNew();
                         }
                         continue;
 
@@ -90,7 +90,7 @@ public class MenuLoggedIn extends Menu {
                         break inputLoop;
                 }
             } else {
-                out.println(UI_strings.menuSelectionFailed);
+                out.println(UiString.menuSelectionFailed);
             }
             userInput.reset(); // flush the in buffer
         }
@@ -107,7 +107,7 @@ public class MenuLoggedIn extends Menu {
     private void createAvatar() {
         String[] arr = this.createAvatarPrompt();
         if (gsi.createNewAvatar(arr, usi.getAuthenticatedUser())) {
-            out.println(UI_strings.newAvatarCreated);
+            out.println(UiString.newAvatarCreated);
         }
 
         this.display(); // Return to Logged in menu prompt.
@@ -140,9 +140,9 @@ public class MenuLoggedIn extends Menu {
      */
     private String[] createAvatarPrompt() {
         userInput.nextLine(); // flush the input buffer
-        out.println(UI_strings.promptAvatarName);
+        out.println(UiString.promptAvatarName);
         String name = userInput.nextLine(); // To accept whitespace.
-        out.println(UI_strings.promptAvatarDescription);
+        out.println(UiString.promptAvatarDescription);
         String description = userInput.nextLine();
         String[] tmpArr = {name, description};
 
@@ -160,7 +160,7 @@ public class MenuLoggedIn extends Menu {
         List<Avatar> avatarList = gsi.fetchAvatarByUser(usi.getAuthenticatedUser());
 
         if (avatarList.size() == 0) {
-            out.println(UI_strings.noAvatarAvailable);
+            out.println(UiString.noAvatarAvailable);
 
             return null;
         }
@@ -170,21 +170,21 @@ public class MenuLoggedIn extends Menu {
 
         inputLoop:
         while (true) {
-            out.println(UI_strings.selectYourAvatarHeader);
+            out.println(UiString.selectYourAvatarHeader);
             out.println(selectionOptions);
-            out.println(UI_strings.makeSelectionPrompt);
+            out.println(UiString.makeSelectionPrompt);
 
             if (userInput.hasNextInt()) {
                 selection = userInput.nextInt() - 1;
 
                 if (selection >= 0 && selection < avatarList.size()) {
                     Avatar avatar = avatarList.get(selection);
-                    out.println(UI_strings.avatarSelectedSuccess + avatar.getName());
+                    out.println(UiString.avatarSelectedSuccess + avatar.getName());
 
                     return avatarList.get(selection);
 
                 } else {
-                    out.println(UI_strings.menuSelectionFailed);
+                    out.println(UiString.menuSelectionFailed);
                 }
                 userInput.reset(); // flush the in buffer
             }
@@ -198,7 +198,7 @@ public class MenuLoggedIn extends Menu {
      */
     private void logoutUser() {
         usi.logoutUser();
-        out.println(UI_strings.logoutSuccessfull);
+        out.println(UiString.logoutSuccessfull);
         Util.sleeper(700);
         //menuMain.display();
     }

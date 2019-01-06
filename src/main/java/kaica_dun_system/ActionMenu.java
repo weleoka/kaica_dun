@@ -3,7 +3,6 @@ package kaica_dun_system;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -52,7 +51,7 @@ public abstract class ActionMenu {
                     break inputLoop;
 
                 } else {
-                    out.println(UI_strings.menuSelectionFailed);
+                    out.println(UiString.menuSelectionFailed);
                 }
             }
             userInput.reset(); // flush the in buffer

@@ -1,13 +1,11 @@
 package kaica_dun_system;
 
 
-import kaica_dun.dao.AvatarInterface;
-import kaica_dun.dao.DungeonInterface;
-import kaica_dun.dao.UserInterface;
+import kaica_dun.dao.*;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Dungeon;
-import kaica_dun.entities.Monster;
 import kaica_dun.entities.Room;
+import kaica_dun.entities.RoomType;
 import kaica_dun.resources.makeAvatar;
 import kaica_dun.resources.makeStaticDungeon;
 import org.apache.logging.log4j.LogManager;
@@ -19,7 +17,15 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.List;
+import java.util.Optional;
 
+
+/**
+ * Class providing useful functions for working with different objects relevant to the game.
+ *
+ * If there is functionality for generating user output and game world sugar define them
+ * in the class called UiString.
+ */
 @Service
 @EnableTransactionManagement
 public class GameServiceImpl implements GameService {
@@ -51,6 +57,11 @@ public class GameServiceImpl implements GameService {
     @Autowired
     private EntityManager entityManager;
 
+    @Autowired
+    private RoomInterfaceCustom ric;
+
+    @Autowired
+    private RoomInterface ri;
 
 
 
@@ -106,6 +117,30 @@ public class GameServiceImpl implements GameService {
         return dungeon;
     }
 
+
+    /**
+     * Search for the room in the dungeon with the correct enum type.
+     *
+     * todo: ensure that a dungeon only contains one single entry for certain enum types
+     *  and modify the method for fetch single result.
+     *
+     * @param dungeon
+     * @return
+     */
+    public Room findFirstRoomInDungeon(Dungeon dungeon) {
+        List<Long> results = ric.findRoomsInDungeonByEnum(dungeon, RoomType.FIRST01);
+        Long firstRoomId = results.get(0);
+
+        Room firstRoom = null;
+
+        log.debug("Fetching first room (id: {}) of the dungeon.", firstRoomId);
+        Optional result = ri.findById(firstRoomId);
+        if (result.isPresent()) {
+            firstRoom = (Room) result.get();
+        }
+
+        return firstRoom;
+    }
 
 
     // ********************** Avatar Methods ********************** //

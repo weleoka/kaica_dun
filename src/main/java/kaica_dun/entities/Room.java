@@ -4,14 +4,16 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 
 /**
  * Class representing a Room.
+ *
+ * A room has a certain type to identify it in a dungeon and select it for special
+ * treatment such as difficulty modifications or added functionality. See enum class
+ * for further details.
  *
  * todo: Currently room has multiple List parameters, when fetching data from a
  *  database it will not be in an ordered list, hence Set is recommended for all cases other than where it
@@ -23,6 +25,7 @@ import java.util.Set;
 @Table(name = "Room")
 @NamedQuery(name="Room.findFirstRoomInDungeon", query="SELECT MIN(r.id) FROM Room r WHERE r.dungeon LIKE :dungeonId GROUP BY r.dungeon")
 @NamedQuery(name="Room.findLastRoomInDungeon", query="SELECT MAX(r.id) FROM Room r WHERE r.dungeon LIKE :dungeonId GROUP BY r.dungeon")
+@NamedQuery(name="Room.findRoomsInDungeonByEnum", query="SELECT r.id FROM Room r WHERE r.roomType LIKE :roomType AND r.dungeon LIKE :dungeonId GROUP BY r.dungeon")
 public class Room {
 
     // Field variable declarations and Hibernate annotation scheme
@@ -37,12 +40,16 @@ public class Room {
     @JoinColumn(name = "dungeonID", nullable = false, updatable = false)
     private Dungeon dungeon;
 
-    @Transient
+    //@Transient // This can be transient, currently not for development aid.
+    @Column(name="room_index")
     private int roomIndex;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "room_type")
+    private RoomType roomType = RoomType.STD01;;
 
     @Transient
     private Direction incomingDoor;
-
 
     @Column(name = "room_directionID")
     @ElementCollection(targetClass = Direction.class)
@@ -65,7 +72,7 @@ public class Room {
 
 
     // Default empty constructor
-    public Room(){}
+    public Room() {}
 
     /**
      * The standard construtor for a room in the dungeon existing on a 2D-matrix. Empty room positions are null valued.
@@ -82,6 +89,7 @@ public class Room {
         this.incomingDoor = incomingDoor;
         this.exits = exits;
         this.monsters = monsters;
+        this.roomType = RoomType.STD01;
     }
 
     /**
@@ -100,7 +108,23 @@ public class Room {
         this.incomingDoor = incomingDoor;
         this.exits = exits;
         this.monsters = monsters;
+        this.roomType = RoomType.STD01;
     }
+
+    /**
+     * After randomness some rooms may get a special difficulty, status, message etc etc.
+     * and this method sets that. See enum RoomType for details of available types.
+     *
+     * Manual setting of first and last rooms use this method as well.
+     *
+     * @param rt            an instance of RoomType enum.
+     */
+    public void setRoomType(RoomType rt) {
+        this.roomType = rt;
+    }
+
+
+
 
 
     // ********************** Accessor Methods ********************** //

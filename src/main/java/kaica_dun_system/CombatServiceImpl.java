@@ -5,6 +5,7 @@ import kaica_dun.dao.RoomInterface;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Monster;
 import kaica_dun.entities.Room;
+import kaica_dun.util.GameOverException;
 import kaica_dun.util.Util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,7 +41,7 @@ public class CombatServiceImpl {
      * @param avatar     the Avatar fighting
      * @return      return true if avatar wins, false if avatar is defeated
      */
-    public boolean roomAutoCombat(Avatar avatar) {
+    public boolean roomAutoCombat(Avatar avatar) throws GameOverException {
         boolean avatarWins = true;
         Room room = avatar.getCurrRoom();
         //Disconnect the monster->room pointers to make the link unidirectional.
@@ -50,6 +51,8 @@ public class CombatServiceImpl {
         }
 
         autoCombat(avatar, room.getMonsters());
+        avatarInterface.save(avatar);
+        roomInterface.save(room);
 
         //Reestablish db integrity if the monsters win.
         if (!room.getMonsters().isEmpty()) {
@@ -57,10 +60,8 @@ public class CombatServiceImpl {
             for (Monster m : room.getMonsters()) {
                 m.setRoom(room);
             }
+            throw new GameOverException("Your Avatar has fallen in battle.");
         }
-
-        avatarInterface.save(avatar);
-        roomInterface.save(room);
 
         return avatarWins;
     }
