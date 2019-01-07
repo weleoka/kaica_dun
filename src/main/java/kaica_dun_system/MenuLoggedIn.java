@@ -2,13 +2,15 @@ package kaica_dun_system;
 
 import kaica_dun.dao.UserInterface;
 import kaica_dun.entities.Avatar;
-import kaica_dun.entities.Dungeon;
 import kaica_dun.util.MenuException;
 import kaica_dun.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static java.lang.System.out;
 
@@ -44,11 +46,11 @@ public class MenuLoggedIn extends Menu {
         if (!usi.isAuthenticatedUser()) {
             out.println(UiString.userNotAuthenticated);
             Util.sleeper(900);
-            //return;         // TODO: uncomment after testing to bounce non-auth users out of here!
+            return;         // TODO: uncomment after testing to bounce non-auth users out of here!
             //menuMain.display();
 
 
-            // START Debug stuff.
+  /*          // START Debug stuff.
             boolean DEBUG = true;
             if (DEBUG) {
                 log.debug("No authenticated user currently set. Warning DEBUG enabled!!");
@@ -62,7 +64,7 @@ public class MenuLoggedIn extends Menu {
                 }
                 usi.loginUser(user, "123");
             } // END of debug stuff.
-
+*/
 
         }
 
@@ -74,8 +76,7 @@ public class MenuLoggedIn extends Menu {
             case 1: // Start a new game (or resume a game if the avatar is in a dungeon already.)
 
                 if (selectAvatar()) {
-                    Dungeon newDungeon = gsi.makeNewDungeon(usi.getAuthenticatedUser());
-                    aesi.prime(gsi.getAvatar(), newDungeon);
+
                     aesi.playNew();
                 }
                 break;
@@ -89,7 +90,6 @@ public class MenuLoggedIn extends Menu {
                 throw new MenuException("Logged out"); //menuLoggedIn.display();
         }
     }
-
 
 
     /**

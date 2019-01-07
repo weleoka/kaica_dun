@@ -5,6 +5,7 @@ import kaica_dun.entities.*;
 import kaica_dun.util.GameOverException;
 import kaica_dun.util.GameWonException;
 import kaica_dun.util.MenuException;
+import kaica_dun.util.Util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.SessionFactory;
@@ -37,7 +38,10 @@ public class ActionEngineServiceImpl implements ActionEngineService {
     UserInterface ui;
 
     @Autowired
-    AvatarInterface ai;
+    UserServiceImpl usi;
+
+    @Autowired
+    AvatarInterface avatarInterface;
 
     @Autowired
     DungeonInterface di;
@@ -55,7 +59,7 @@ public class ActionEngineServiceImpl implements ActionEngineService {
     ActionMenuRoom amr;
 
     @Autowired
-    MenuLoggedIn mli;
+    MenuLoggedIn menuLoggedIn;
 
     @Autowired
     EntityManager entityManager;
@@ -98,15 +102,18 @@ public class ActionEngineServiceImpl implements ActionEngineService {
     /**
      * Drops the avatar into the first room of a dungeon.
      */
-    public void playNew() {
+    public void playNew() throws MenuException {
+        Dungeon newDungeon = gsi.makeNewDungeon(usi.getAuthenticatedUser());
+        prime(gsi.getAvatar(), newDungeon);
+
         Room firstRoom = gsi.findFirstRoomInDungeon(dungeon);
 
         log.debug("Dropping avatar into room (id: {}) -> good luck!.", firstRoom.getId());
         avatar.setCurrRoom(firstRoom);
-        ai.save(avatar);
+        avatarInterface.save(avatar);
 
         this.dungeon = null;
-        //UiString.printGameIntro();
+        UiString.printGameIntro();
 
         play();
     }
@@ -117,7 +124,7 @@ public class ActionEngineServiceImpl implements ActionEngineService {
      * todo: implement some feedback for this..
      *
      */
-    public void resume() {
+    public void resume() throws MenuException {
 
         try {
             Room room = avatar.getCurrRoom();
@@ -135,8 +142,10 @@ public class ActionEngineServiceImpl implements ActionEngineService {
      * Currently it is a random re-generation, as original parameters were not saved.
      * todo: implement original values for all rooms etc for real re-start.
      */
-    public void restart() {
+    public void restart() throws MenuException {
         log.debug("Restarted the game. (Done by calling playNew().");
+
+        //MenuLoggedIn.startGame();
         playNew();
     }
 
@@ -151,7 +160,7 @@ public class ActionEngineServiceImpl implements ActionEngineService {
      * todo: move the string reports out to UiStrings.
      */
     @Override
-    public void play() {
+    public void play() throws MenuException {
         log.debug("Starting game loop.");
 
         mainGameLoop:
@@ -172,12 +181,17 @@ public class ActionEngineServiceImpl implements ActionEngineService {
             } catch (GameOverException e) {
                 log.debug("Game over. Breaking mainGameLoop.");
                 System.out.println("Your avatar has died in battle...");
-                break mainGameLoop;
+                avatar.setCurrHealth(avatar.getMaxHealth());
+                avatar.setCurrRoom(null);
+                avatarInterface.save(avatar);
+                Util.sleeper(2400);
+                throw new MenuException("Quit in-game menu due to game over.");
 
             } catch (GameWonException e) {
                 log.debug("Your avatar has prevailed, and you have won the game! Breaking mainGameLoop.");
                 System.out.println("You have won the game and completed the dungeon!");
-                break mainGameLoop;
+                Util.sleeper(2400);
+                throw new MenuException("Quit in-game menu due to win.");
             }
         }
     }

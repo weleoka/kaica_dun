@@ -119,9 +119,9 @@ public class Avatar extends Fighter {
         this.name = "No name";
         this.description = "No description";
         this.type = "No type";
-        this.currHealth = 90;
+        this.currHealth = 300;
         this.maxHealth = currHealth;
-        this.damage = 1;
+        this.damage = 12;
         this.armor = 2;
         this.inventory = new Inventory(this);
     }

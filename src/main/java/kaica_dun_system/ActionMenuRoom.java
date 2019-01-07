@@ -5,7 +5,6 @@ import kaica_dun.dao.AvatarInterface;
 import kaica_dun.dao.RoomInterface;
 import kaica_dun.entities.Direction;
 import kaica_dun.entities.Monster;
-import kaica_dun.entities.Room;
 import kaica_dun.util.GameOverException;
 import kaica_dun.util.GameWonException;
 import kaica_dun.util.MenuException;
@@ -101,7 +100,12 @@ public class ActionMenuRoom extends ActionMenu {
                 break;
 
             case 3:
-                selectMoveOption();
+                if (!monsters.isEmpty()) {
+                    System.out.println("Can't move because there are enemies in the room!! Kill them first.");
+                    Util.sleeper(2200);
+                } else {
+                    selectMoveOption();
+                }
                 break;
 
             case 9:
@@ -236,7 +240,7 @@ public class ActionMenuRoom extends ActionMenu {
         Util.sleeper(1400);
     }
 
-    void selectBattleOption() throws GameOverException  {
+    void selectBattleOption() throws GameOverException, GameWonException {
         String str = UiString.battleMenuHeader + battleOutput + UiString.makeSelectionPrompt;
         System.out.println(str);
 
@@ -273,18 +277,19 @@ public class ActionMenuRoom extends ActionMenu {
         int sel = getUserInput(moveOptions.keySet(), str);
         Direction direction = moveOptions.get(sel);
         //log.debug("Movement selection made {}, resulting in direction: {}", sel, direction.toString());
-        Room newRoom = msi.moveAvatar(aesi.getAvatar(), direction);
+        msi.moveAvatar(aesi.getAvatar(), direction);
         System.out.printf("\nMoved Avatar to the next room to the %s", direction.toString());
         //log.debug("Moved avatar to new room: '{}'", newRoom.getId());
+        avatarInterface.save(aesi.getAvatar());
         clearOptions();
     }
 
     private void clearOptions() {
         this.battleOptions.clear();
-        this.monsters.clear();
+        //this.monsters.clear();
 
         this.moveOptions.clear();
-        this.directions.clear();
+        //this.directions.clear();
 
         this.lookAtOptions.clear();
         //this.describables.clear();

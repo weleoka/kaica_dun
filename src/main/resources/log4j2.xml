@@ -43,8 +43,11 @@
         <Logger name="org.jboss.logging" level="warn"/>
 
 
+        <Logger name="org.jboss.logging" level="warn"/>
 
-        <Root level="debug">
+
+
+        <Root level="warn">
 
             <!-- Which appenders to use -->
             <!--<AppenderRef ref="File" />-->

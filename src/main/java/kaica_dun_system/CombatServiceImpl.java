@@ -5,6 +5,7 @@ import kaica_dun.dao.RoomInterface;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Monster;
 import kaica_dun.util.GameOverException;
+import kaica_dun.util.GameWonException;
 import kaica_dun.util.Util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,12 +52,13 @@ public class CombatServiceImpl {
      * @param avatar         the avatar fighting the monsters
      * @param monsters       a list of monsters to fight
      */
-    public void autoCombat(Avatar avatar, List<Monster> monsters) throws GameOverException {
+    public void autoCombat(Avatar avatar, List<Monster> monsters) throws GameOverException, GameWonException {
 
         while (!monsters.isEmpty()) {
 
             if (avatar.getCurrHealth() <= 0) { //break loop if avatar is dead.
                 throw new GameOverException(String.format("%s has fallen in battle.", avatar.getName()));
+
             }
             combatRound(avatar, monsters);
         }
@@ -72,7 +74,7 @@ public class CombatServiceImpl {
      * @param monsters
      * @return
      */
-    public void combatRound(Avatar a, List<Monster> monsters) {
+    public void combatRound(Avatar a, List<Monster> monsters) throws GameWonException {
         for (Monster m : monsters) {
             int monsterDealsDamage = m.hit(a);
             System.out.println(m.getName() + " hits " + a.getName() + " for " + monsterDealsDamage + " damage");
@@ -87,6 +89,10 @@ public class CombatServiceImpl {
             System.out.println(activeMonster.getName() + " dies");
             a.getCurrRoom().getMonsters().remove(activeMonster);
             monsters.remove(activeMonster); // remove from the array.
+
+            if (activeMonster.getType() == "Dragon") {
+                throw new GameWonException(String.format("Congratulations! You have slain the Dragon Smug."));
+            }
         }
         Util.sleeper(800);
     }

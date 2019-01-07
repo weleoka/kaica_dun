@@ -8,6 +8,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.util.Objects;
 
 @Entity
 @DiscriminatorValue("MO")
@@ -107,5 +108,19 @@ public class Monster extends Fighter implements Describable {
         String str = String.format("Name: %s, type: %s, HP: %s, MaxHP: %s, damage: %s, armor: %s",
                 getName(), getType(), getCurrHealth(), getMaxHealth(), getDamage(), getArmor());
         return str;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Monster)) return false;
+        Monster monster = (Monster) o;
+        return room.equals(monster.room);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(room);
     }
 }

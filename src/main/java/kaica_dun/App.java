@@ -1,9 +1,6 @@
 package kaica_dun;
 
 import kaica_dun.dao.AvatarInterface;
-import kaica_dun.entities.Avatar;
-import kaica_dun.entities.Dungeon;
-import kaica_dun.entities.RoomType;
 import kaica_dun.resources.TestDb;
 import kaica_dun.util.QuitException;
 import kaica_dun_system.*;
@@ -22,7 +19,7 @@ import org.springframework.context.annotation.Profile;
 
 import static java.lang.System.out;
 
-
+//import org.hsqldb.jdbcDriver;
 //@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class,HibernateJpaAutoConfiguration.class})
 //@EntityScan({"kaica_dun.entities", "kaica_dun_system"})
 @Import({TestDb.class})//, DataSourceCfg.class, EntityManagerFactoriesCfg.class, TransactionManagersCfg.class})
@@ -81,7 +78,7 @@ public class App implements CommandLineRunner {
         try {
             out.printf(UiString.logo);
 
- /*           StringBuilder str = new StringBuilder();
+  /*          StringBuilder str = new StringBuilder();
             for (RoomType type : RoomType.values()) {
                 str.append(String.format("'%s', ", type.name()));
             }
@@ -142,7 +139,7 @@ public class App implements CommandLineRunner {
 
             } catch (QuitException e) {
                 log.debug(e);
-                e.printStackTrace();
+                System.out.println("Quit application.");
 
                 break;
             }

@@ -48,6 +48,7 @@ public class MenuInGame extends Menu {
                 break;
 
             case 2: // Restart the same dungeon
+
                 aesi.restart();
                 break;
 
