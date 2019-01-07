@@ -8,7 +8,6 @@ public interface ActionEngineService {
     // Prime the game world and get it ready
     void prime(Avatar avatar, Dungeon dungeon);
 
-    void playNew();
 
     // Start playing
     void play();

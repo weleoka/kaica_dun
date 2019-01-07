@@ -4,9 +4,7 @@ import kaica_dun.util.MenuException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import static java.lang.System.out;
 
 
 /**
@@ -38,29 +36,38 @@ public class MenuInGame extends Menu {
             aesi.playNew(); // Jump straight in the game.
         }
 
-        Set<Integer> hset = new HashSet<>(Arrays.asList(1, 2, 3 ,9));
-        selection = getUserInput(hset, UiString.inGameMenu);
+        inputLoop:
+        while (true) {
+            out.println(UiString.inGameMenu);
 
-        switch (selection) {
+            if (userInput.hasNextInt()) {
+                selection = userInput.nextInt();
 
-            case 1: // Resume playing the game
-                aesi.resume();
-                break;
+                switch (selection) {
 
-            case 2: // Restart the same dungeon
-                aesi.restart();
-                break;
+                    case 1: // Resume playing the game
+                        aesi.resume();
+                        continue;
 
-            case 3: // Quits with saving
-                //closeGameActions();
-                break;
+                    case 2: // Restart the same dungeon
+                        aesi.restart();
+                        continue;
 
-            case 9: // Quits no saving.
-                //closeGameActions();
-                break;
+                    case 3: // Quits with saving
+                        //closeGameActions();
+                        break inputLoop;
+
+                    case 9: // Quits no saving.
+                        //closeGameActions();
+                        break inputLoop;
+                }
+
+            } else {
+                out.println(UiString.menuSelectionFailed);
+            }
+            userInput.reset(); // flush the in buffer
         }
-
         // Break out to the top menu.
-        throw new MenuException("Quit the current game"); //menuLoggedIn.display();
+        throw new MenuException("Quit the game"); //menuLoggedIn.display();
     }
 }

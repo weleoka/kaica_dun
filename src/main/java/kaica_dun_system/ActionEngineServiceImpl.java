@@ -7,12 +7,13 @@ import kaica_dun.util.GameWonException;
 import kaica_dun.util.MenuException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Scanner;
+
+import static java.lang.System.in;
 
 
 /**
@@ -28,10 +29,6 @@ public class ActionEngineServiceImpl implements ActionEngineService {
 
     Avatar avatar;
     Dungeon dungeon;
-
-    List<Monster> monsters;
-    List<Direction> directions;
-    //Room room;
 
     @Autowired
     UserInterface ui;
@@ -57,18 +54,6 @@ public class ActionEngineServiceImpl implements ActionEngineService {
     @Autowired
     MenuLoggedIn mli;
 
-    @Autowired
-    EntityManager entityManager;
-
-    @Autowired
-    MonsterInterface monsterInterface;
-
-
-    @Autowired
-    RoomInterfaceCustom roomInterfaceCustom;
-
-    @Autowired
-    SessionFactory sessionFactory;
 
 
     /**
@@ -86,12 +71,12 @@ public class ActionEngineServiceImpl implements ActionEngineService {
         log.debug("Priming Action Engine environment...");
         log.debug("User: {}, Avatar: '{}', Dungeon: {}", dungeon.getUser().getName(), avatar.getName(), dungeon.getDungeonId());
 
-        log.debug("Setting the Avatar pointer to the dungeon.");
-        avatar.setCurrDungeon(dungeon);
-
         this.avatar = avatar;
         this.dungeon = dungeon;
 
+        log.debug("Setting the Avatar pointer to the dungeon.");
+        avatar.setCurrDungeon(dungeon);
+        ai.save(avatar);
         log.debug("Committing avatar with dungeon pointers to db");
     }
 
@@ -102,10 +87,10 @@ public class ActionEngineServiceImpl implements ActionEngineService {
         Room firstRoom = gsi.findFirstRoomInDungeon(dungeon);
 
         log.debug("Dropping avatar into room (id: {}) -> good luck!.", firstRoom.getId());
-        avatar.setCurrRoom(firstRoom);
-        //ai.save(avatar);
+        this.avatar.setCurrRoom(firstRoom);
+        ai.save(avatar);
 
-        //UiString.printGameIntro();
+        UiString.printGameIntro();
 
         play();
     }
@@ -147,17 +132,12 @@ public class ActionEngineServiceImpl implements ActionEngineService {
      * The method for initialising game loop and handling
      * exception bubbling thrown in nested loops.
      *
-     * todo: move the string reports out to UiStrings.
      */
-    @Override
     public void play() {
         log.debug("Starting game loop.");
 
         mainGameLoop:
         while(true) {
-            //this.room = avatar.getCurrRoom();
-            this.monsters = getMonstersCurrentRoom();
-            this.directions = getDirectionsCurrentRoom();
 
             try {
                 System.out.println(buildStateInfo());
@@ -165,20 +145,22 @@ public class ActionEngineServiceImpl implements ActionEngineService {
 
             } catch (MenuException e) {
                 log.debug("Quit the game. Breaking mainGameLoop.");
-                System.out.println("Quit the current game.");
+                System.out.println(e);
                 break mainGameLoop;
 
             } catch (GameOverException e) {
                 log.debug("Game over. Breaking mainGameLoop.");
-                System.out.println("Your avatar has died in battle...");
+                System.out.println(e);
                 break mainGameLoop;
 
             } catch (GameWonException e) {
-                log.debug("Your avatar has prevailed, and you have won the game! Breaking mainGameLoop.");
-                System.out.println("You have won the game and completed the dungeon!");
+                log.debug("The avatar has prevailed and won the game! Breaking mainGameLoop.");
+                System.out.println(e);
                 break mainGameLoop;
             }
+
         }
+        mli.display(); // Return to MenuLoggedIn
     }
 
 
@@ -187,71 +169,40 @@ public class ActionEngineServiceImpl implements ActionEngineService {
 
     /**
      * Method to collect and output to user interesting information.
-     *
-     * todo: move the strings to UiStrings for consistency and language support.
-     * todo: split the method up.
      */
     private String buildStateInfo() {
         StringBuilder str;
         String monstersInTheRoom;
-        String exitsFromTheRoom;
-        //String describablesInTheRoom;
+        String exitsFromTheroom;
+        String itemsInTheRoom;
 
-        // Building monsters and foes
+        Room room = avatar.getCurrRoom();
+
         str = new StringBuilder();
-
-        if (monsters.size() > 0 ) {
-            str.append(String.format("There are %s dangers in the room:", monsters.size()));
-
-            for (int i = 1; i < monsters.size() + 1; i++) {
-                Monster monster = monsters.get(i - 1);
-                str.append(String.format("\n%s with health %s.", monster.getType(), monster.getCurrHealth()));
-            }
-            monstersInTheRoom = str.toString();
-
-            } else {
-                monstersInTheRoom = UiString.noMonstersVisible;
+        List<Monster> monsters = room.getMonsters();
+        str.append(String.format("There are %s monsters in the room.", monsters.size()));
+        for (int i = 1; i < monsters.size() + 1; i++) {
+            Monster monster = monsters.get(i - 1);
+            str.append(String.format("\nThe %s has %sHP.", monster.getType(), monster.getCurrHealth()));
         }
+        monstersInTheRoom = str.toString();
 
 
-        // Building directions and directions
         str = new StringBuilder();
+        List<Direction> exits = room.getExits();
+        str.append(String.format("There are %s exits from the room: ", exits.size() - 1));
 
-        if (directions.size() > 0 ) {
-            str.append(String.format("There are %s passages leading from the chamber: ", directions.size()));
-
-            for (Direction direction : directions) {
-                str.append(String.format("%s, ", direction.getName()));
-            }
-            exitsFromTheRoom = str.toString();
-
-        } else {
-            exitsFromTheRoom = UiString.noExitsFromTheRoom;
+        for (Direction direction: exits) {
+            str.append(String.format("%s,", direction.getDirectionNumber(), direction.name()));
         }
+        exitsFromTheroom = str.toString();
 
 
-        // Building describables
-/*        str = new StringBuilder();
-
-        if (describables.size() > 0) {
-            str.append(String.format("There are %s thisng to look at in the room.", describables.size()));
-
-            for (Describable describable : describables) {
-                str.append(String.format("%s, ", describable.getDescription()));
-            }
-            describablesInTheRoom = str.toString();
-        } else {
-            describablesInTheRoom = UiString.noDescribablesVisible;
-        }*/
-
-
-        // Combine it all to make sense.
         str = new StringBuilder();
         str.append(
-                String.format("\n%s health: %s", avatar.getName(), avatar.getCurrHealth()) +
+                String.format("\nAvatar health: %s", avatar.getCurrHealth()) +
                 String.format("\n%s", monstersInTheRoom) +
-                String.format("\n%s", exitsFromTheRoom) +
-                //String.format("\n%s", describablesInTheRoom) +
+                String.format("\n\n%s", exitsFromTheroom) +
                 String.format("\n%s", UiString.randomSound()) +
                 String.format("\n%s", UiString.randomVisual())
         );
@@ -284,28 +235,4 @@ public class ActionEngineServiceImpl implements ActionEngineService {
         return getAvatar().getCurrRoom();
     }
 
-    public List<Monster> getMonstersCurrentRoom() {
-        return getAvatarCurrentRoom().getMonsters();
-    }
-
-    public List<Direction> getDirectionsCurrentRoom() {
-        return getAvatarCurrentRoom().getExits();
-    }
-
-    public List<Monster> getMonsters() {
-        return monsters;
-    }
-
-    public List<Direction> getDirections() {
-        return directions;
-    }
-
-
-
-
-    public void persistChanges() {
-        if (entityManager.isJoinedToTransaction()) {
-            entityManager.getTransaction().commit();
-        }
-    }
 }

@@ -12,6 +12,9 @@ import java.util.Random;
 @Entity
 @DiscriminatorValue("PA")
 @NamedQuery(name="Avatar.findByUserID", query="SELECT a FROM Avatar a WHERE a.user = :userInstance")//query="SELECT u FROM User u WHERE u.userName = :name")
+//@NamedQuery(name="Avatar.findByUserID", query="SELECT f FROM Fighter f WHERE f.'userID'' = :user")
+// todo: Make this into JPQL or NamedQuery not NativeQuery.
+//@NamedNativeQuery(name="Avatar.findByUserID", query="SELECT f FROM Fighter f WHERE f.userId = ?")
 public class Avatar extends Fighter {
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -23,10 +26,7 @@ public class Avatar extends Fighter {
     private Dungeon currDungeon;
 
     //Unidirectional, the Room doesn't "know" there's an avatar in it. TODO think! TEST!
-    @OneToOne(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER
-    )
+    @OneToOne(cascade = CascadeType.ALL)
     private Room currRoom;
 
     //Seems correct to cascade almost everything here, so ALL is a good PH-strategy. TODO remove some of the cascades.

@@ -15,17 +15,13 @@ public enum Direction {
     private final String name;  //String representation of direction
     private final int directionNumber; //number representing the direction for simplified algebra
 
-    Direction(String name, int directionNumber) {
-        this.name = name;
+    Direction(String namn, int directionNumber) {
+        this.name = namn;
         this.directionNumber = directionNumber;
     }
 
     public int getDirectionNumber() {
         return directionNumber;
-    }
-
-    public String getName() {
-        return name;
     }
 
     //Override to print this enum as a full string

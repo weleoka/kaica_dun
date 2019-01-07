@@ -1,9 +1,10 @@
 package kaica_dun_system;
 
-import kaica_dun.dao.MonsterInterface;
+import kaica_dun.dao.AvatarInterface;
 import kaica_dun.dao.RoomInterface;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Monster;
+import kaica_dun.entities.Room;
 import kaica_dun.util.GameOverException;
 import kaica_dun.util.Util;
 import org.apache.logging.log4j.LogManager;
@@ -29,65 +30,78 @@ public class CombatServiceImpl {
     private static final Logger log = LogManager.getLogger();
 
     @Autowired
-    MonsterInterface monsterInterface;
+    private AvatarInterface avatarInterface;
 
     @Autowired
-    RoomInterface roomInterface;
+    private RoomInterface roomInterface;
+
+    /**
+     * Fight all the monsters in a given Room.
+     *
+     * @param avatar     the Avatar fighting
+     * @return      return true if avatar wins, false if avatar is defeated
+     */
+    public boolean roomAutoCombat(Avatar avatar) throws GameOverException {
+        boolean avatarWins = true;
+        Room room = avatar.getCurrRoom();
+        autoCombat(avatar, room);
+        //If room is not empty after combat, then the Avatar has lost.
+        if (!room.getMonsters().isEmpty()) {
+            avatarWins = false; //TODO use this to display message, set pointers and exit dungeon.
+            throw new GameOverException("Your Avatar has fallen in battle.");
+        }
+
+        avatarInterface.save(avatar);
+
+        return avatarWins;
+    }
 
     /**
      * Will exit when the monster list is empty or when avatar health drops to less than one.
      *
-     * Because the list passed in is mutated it can be a good idea to create a new list and
-     * pass that back out from the method again. Like the following:
-     *
-     *     List returnList = new ArrayList();
-     *     returnList.addAll(someList);
-     *     returnList.add(someObject);
-     *     return Collections.unmodifiableList(returnList);
-     *
-     * todo: Health should be evaluated after each hit, but the Avatar hitting Monster after Avatar is
-     *  dead shouldn't matter much.
-     *
-     * @param avatar         the avatar fighting the monsters
-     * @param monsters       a list of monsters to fight
+     * @param a         the avatar fighting the monsters
+     * @param room      the room where the fighting is taking place
      */
-    public void autoCombat(Avatar avatar, List<Monster> monsters) throws GameOverException {
+    private void autoCombat(Avatar a, Room room) {
+        List<Monster> monsters = room.getMonsters();
+        //one round of combat per loop through the while-loop
+        //TODO make not-ugly logic.
+        while (a.getCurrHealth() > 0) {
 
-        while (!monsters.isEmpty()) {
-
-            if (avatar.getCurrHealth() <= 0) { //break loop if avatar is dead.
-                throw new GameOverException(String.format("%s has fallen in battle.", avatar.getName()));
+            //break loop if all monsters are dead
+            if (monsters.isEmpty()) {
+                System.out.println("The corpses of your enemies litter the floor of the room. Silence falls.");
+                break;
             }
-            combatRound(avatar, monsters);
-        }
 
-        System.out.println("The corpses of your enemies litter the floor of the room. Silence falls.");
+            /*TODO Health should be evaluated after each hit, but the Avatar hitting Monster after Avatar is
+             * dead shouldn't matter much.
+             */
+            combatRound(a, room);
+        }
     }
 
-
-    /**
-     * A round of combat.
-     *
-     * @param a
-     * @param monsters
-     * @return
-     */
-    public void combatRound(Avatar a, List<Monster> monsters) {
+    private void combatRound(Avatar a, Room room) {
+        List<Monster> monsters = room.getMonsters();
         for (Monster m : monsters) {
             int monsterDealsDamage = m.hit(a);
             System.out.println(m.getName() + " hits " + a.getName() + " for " + monsterDealsDamage + " damage");
             Util.sleeper(800);
         }
-
-        Monster activeMonster = monsters.get(0);
-        int avatarDealsDamage = a.hit(activeMonster);
-        System.out.println(a.getName() + " hits " + activeMonster.getName() + " for " + avatarDealsDamage + " damage");
-
-        if ((activeMonster.deathCheck())) {
-            System.out.println(activeMonster.getName() + " dies");
-            a.getCurrRoom().getMonsters().remove(activeMonster); // Remove from base array. <-- Does nothing.
-            monsters.remove(activeMonster); // remove from the array.
+        int avatarDealsDamage = a.hit(monsters.get(0));
+        System.out.println(a.getName() + " hits " + monsters.get(0).getName() + " for " + avatarDealsDamage + " damage");
+        if (deathCheck(monsters.get(0))) {
+            room.removeMonster(monsters.get(0));
         }
         Util.sleeper(800);
+    }
+
+    private boolean deathCheck(Monster m) {
+        boolean isDead = false;
+        if (m.getCurrHealth() <= 0) {
+            System.out.println(m.getName() + " dies");
+            isDead = true;
+        }
+        return isDead;
     }
 }
