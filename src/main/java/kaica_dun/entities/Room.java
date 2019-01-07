@@ -26,6 +26,8 @@ import java.util.Objects;
 @NamedQuery(name="Room.findFirstRoomInDungeon", query="SELECT MIN(r.id) FROM Room r WHERE r.dungeon LIKE :dungeonId GROUP BY r.dungeon")
 @NamedQuery(name="Room.findLastRoomInDungeon", query="SELECT MAX(r.id) FROM Room r WHERE r.dungeon LIKE :dungeonId GROUP BY r.dungeon")
 @NamedQuery(name="Room.findRoomsInDungeonByEnum", query="SELECT r.id FROM Room r WHERE r.roomType LIKE :roomType AND r.dungeon LIKE :dungeonId GROUP BY r.dungeon")
+@NamedQuery(name="Room.findAliveMonstersInRoom", query="SELECT f.id FROM Fighter f WHERE f.room LIKE :roomId AND f.currHealth > 0")
+
 public class Room {
 
     // Field variable declarations and Hibernate annotation scheme
@@ -137,6 +139,7 @@ public class Room {
         this.id = roomId;
     }
 
+
     public Dungeon getDungeon() {
         return dungeon;
     }
@@ -144,6 +147,7 @@ public class Room {
     public void setDungeon(Dungeon dungeon) {
         this.dungeon = dungeon;
     }
+
 
     public int getRoomIndex() {
         return roomIndex;
@@ -153,6 +157,7 @@ public class Room {
         this.roomIndex = roomIndex;
     }
 
+
     public List<Monster> getMonsters() {
         return monsters;
     }
@@ -160,6 +165,7 @@ public class Room {
     public void setMonsters(List<Monster> monsters) {
         this.monsters = monsters;
     }
+
 
     public List<Direction> getExits() {
         return exits;
@@ -169,6 +175,7 @@ public class Room {
         this.exits = exits;
     }
 
+
     public Direction getIncomingDoor() {
         return incomingDoor;
     }
@@ -176,6 +183,7 @@ public class Room {
     public void setIncomingDoor(Direction incomingDoor) {
         this.incomingDoor = incomingDoor;
     }
+
 
     @Override
     public boolean equals(Object o) {

@@ -8,8 +8,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import static java.lang.System.out;
-
 
 /**
  * The menu for entering and leaving a game.

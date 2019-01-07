@@ -153,7 +153,7 @@ public abstract class Fighter implements Describable {
 
     // ********************** Common Methods ********************** //
 
-    @Override
+ /*   @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -173,5 +173,22 @@ public abstract class Fighter implements Describable {
         return Objects.hash(id, name, description, type, currHealth, maxHealth, damage, armor);
     }
 
+*/
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) {
+            return true;
+        }
+        if(!(obj instanceof Monster)) {
+            return false;
+        }
+
+        return this.id == ((Fighter) obj).id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.id);
+    }
 
 }

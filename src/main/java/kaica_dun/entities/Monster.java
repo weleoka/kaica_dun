@@ -1,6 +1,8 @@
 package kaica_dun.entities;
 
 import kaica_dun.interfaces.Describable;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -10,6 +12,8 @@ import javax.persistence.ManyToOne;
 @Entity
 @DiscriminatorValue("MO")
 public class Monster extends Fighter implements Describable {
+
+    private static final Logger log = LogManager.getLogger();
 
     @ManyToOne
     @JoinColumn(name = "roomID", nullable = true, updatable = false)
@@ -62,6 +66,41 @@ public class Monster extends Fighter implements Describable {
 
         return dealtDamage;
     }
+
+    /**
+     * Convenience method for checking if the monster is dead.
+     * @return
+     */
+    public boolean deathCheck() {
+        boolean isDead = false;
+        if (getCurrHealth() <= 0) {
+            isDead = true;
+        }
+        return isDead;
+    }
+
+    /**
+     * Method to set monster health to 0.
+     *
+     * @return
+     */
+    public void setToDead() {
+        log.debug("I AM SET TO DEAD: {}", id);
+        this.currHealth = 0;
+    }
+
+    /**
+     * Check if the monster is alive.
+     *
+     * @return
+     */
+    public boolean isAlive() {
+        if (currHealth >= 1) {
+            return true;
+        }
+        return false;
+    }
+
 
     @Override
     public String toString() {

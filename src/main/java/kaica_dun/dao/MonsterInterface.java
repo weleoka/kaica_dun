@@ -6,5 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MonsterInterface extends CrudRepository<Monster, Long> {
+
+    void removeMonsterById(Long id);
 }
 

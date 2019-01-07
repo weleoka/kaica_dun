@@ -1,12 +1,10 @@
 package kaica_dun_system;
 
-import kaica_dun.dao.AvatarInterface;
+import kaica_dun.dao.MonsterInterface;
 import kaica_dun.dao.RoomInterface;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Monster;
-import kaica_dun.entities.Room;
 import kaica_dun.util.GameOverException;
-import kaica_dun.util.GameWonException;
 import kaica_dun.util.Util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -32,6 +28,11 @@ public class CombatServiceImpl {
     // Fields declared
     private static final Logger log = LogManager.getLogger();
 
+    @Autowired
+    MonsterInterface monsterInterface;
+
+    @Autowired
+    RoomInterface roomInterface;
 
     /**
      * Will exit when the monster list is empty or when avatar health drops to less than one.
@@ -50,8 +51,7 @@ public class CombatServiceImpl {
      * @param avatar         the avatar fighting the monsters
      * @param monsters       a list of monsters to fight
      */
-    public List autoCombat(Avatar avatar, List<Monster> monsters) throws GameOverException {
-        List newList = new ArrayList();
+    public void autoCombat(Avatar avatar, List<Monster> monsters) throws GameOverException {
 
         while (!monsters.isEmpty()) {
 
@@ -62,8 +62,6 @@ public class CombatServiceImpl {
         }
 
         System.out.println("The corpses of your enemies litter the floor of the room. Silence falls.");
-
-        return newList; // superfluous because there will never be another way out than death or no monsters.
     }
 
 
@@ -74,35 +72,22 @@ public class CombatServiceImpl {
      * @param monsters
      * @return
      */
-    private void combatRound(Avatar a, List<Monster> monsters) {
-
+    public void combatRound(Avatar a, List<Monster> monsters) {
         for (Monster m : monsters) {
             int monsterDealsDamage = m.hit(a);
             System.out.println(m.getName() + " hits " + a.getName() + " for " + monsterDealsDamage + " damage");
             Util.sleeper(800);
         }
 
-        int avatarDealsDamage = a.hit(monsters.get(0));
-        System.out.println(a.getName() + " hits " + monsters.get(0).getName() + " for " + avatarDealsDamage + " damage");
+        Monster activeMonster = monsters.get(0);
+        int avatarDealsDamage = a.hit(activeMonster);
+        System.out.println(a.getName() + " hits " + activeMonster.getName() + " for " + avatarDealsDamage + " damage");
 
-        if (deathCheck(monsters.get(0))) {
-            monsters.remove(0);
+        if ((activeMonster.deathCheck())) {
+            System.out.println(activeMonster.getName() + " dies");
+            a.getCurrRoom().getMonsters().remove(activeMonster); // Remove from base array. <-- Does nothing.
+            monsters.remove(activeMonster); // remove from the array.
         }
         Util.sleeper(800);
-    }
-
-
-    /**
-     * Convenience method for checking if a monster is dead.
-     * @param m
-     * @return
-     */
-    private boolean deathCheck(Monster m) {
-        boolean isDead = false;
-        if (m.getCurrHealth() <= 0) {
-            System.out.println(m.getName() + " dies");
-            isDead = true;
-        }
-        return isDead;
     }
 }

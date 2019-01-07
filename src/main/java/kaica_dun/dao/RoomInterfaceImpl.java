@@ -77,4 +77,21 @@ public class RoomInterfaceImpl implements RoomInterfaceCustom {
 
         return result;
     }
+
+
+
+    /**
+     *
+     * @param room
+     * @return
+     */
+    @Transactional
+    public List<Long> findAliveMonstersInRoom(Room room) {
+        log.debug("Searching for alive monsters in room in Dungeon: {}", room.getId());
+        TypedQuery<Long> query = this.entityManager.createNamedQuery("Room.findAliveMonstersInRoom", Long.class);
+        query.setParameter("roomId", room);
+        List<Long> results = query.getResultList();
+
+        return results;
+    }
 }

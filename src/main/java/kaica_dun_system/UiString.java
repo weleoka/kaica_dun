@@ -84,6 +84,11 @@ public class UiString
 
     // Dungeon feedback
     public static String noMonstersVisible = "\nThere appears to be no dangerous creatures around.";
+    public static String noDescribablesVisible = "\nThere are no items to look at in the room.";
+    public static String noExitsFromTheRoom = "\n There's no way out of here!";
+
+
+
 
 
 

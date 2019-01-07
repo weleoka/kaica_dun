@@ -1,6 +1,5 @@
 package kaica_dun_system;
 
-import kaica_dun.util.KaicaException;
 import kaica_dun.util.MenuException;
 import kaica_dun.util.QuitException;
 import kaica_dun.util.Util;

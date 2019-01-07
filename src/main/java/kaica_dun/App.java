@@ -111,9 +111,6 @@ public class App implements CommandLineRunner {
 
             //Avatar avatar = ai.findById(1L);
 
-
-
-
             displayMenu();  // Usual app behaviour
 
 
