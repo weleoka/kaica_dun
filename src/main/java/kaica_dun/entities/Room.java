@@ -25,7 +25,8 @@ import java.util.Objects;
 @Table(name = "Room")
 @NamedQuery(name="Room.findFirstRoomInDungeon", query="SELECT MIN(r.id) FROM Room r WHERE r.dungeon LIKE :dungeonId GROUP BY r.dungeon")
 @NamedQuery(name="Room.findLastRoomInDungeon", query="SELECT MAX(r.id) FROM Room r WHERE r.dungeon LIKE :dungeonId GROUP BY r.dungeon")
-@NamedQuery(name="Room.findRoomsInDungeonByEnum", query="SELECT r.id FROM Room r WHERE r.roomType LIKE :roomType AND r.dungeon LIKE :dungeonId GROUP BY r.dungeon")
+//@NamedQuery(name="Room.findRoomsInDungeonByEnum", query="SELECT r.id FROM Room r WHERE r.roomType LIKE :roomType AND r.dungeon LIKE :dungeonId GROUP BY r.dungeon")
+@NamedQuery(name="Room.findRoomsInDungeonByEnum", query="SELECT r.id FROM Room r WHERE r.roomType LIKE :roomType AND r.dungeon LIKE :dungeonId")
 @NamedQuery(name="Room.findAliveMonstersInRoom", query="SELECT f.id FROM Fighter f WHERE f.room LIKE :roomId AND f.currHealth > 0")
 
 public class Room {
@@ -64,7 +65,7 @@ public class Room {
 
 
     @OneToMany( //TODO CascadeType.ALL, rework to minimum
-            //fetch = FetchType.EAGER, // Workaround. Should really use Set and not List.
+            fetch = FetchType.LAZY, // Workaround. Should really use Set and not List.
             mappedBy = "room",
             cascade = CascadeType.ALL,
             orphanRemoval = true

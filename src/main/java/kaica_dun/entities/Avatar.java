@@ -25,7 +25,7 @@ public class Avatar extends Fighter {
     //Unidirectional, the Room doesn't "know" there's an avatar in it. TODO think! TEST!
     @OneToOne(
             cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER
+            fetch = FetchType.LAZY
     )
     private Room currRoom;
 

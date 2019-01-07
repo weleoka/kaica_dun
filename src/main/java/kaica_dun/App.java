@@ -81,10 +81,11 @@ public class App implements CommandLineRunner {
         try {
             out.printf(UiString.logo);
 
-            StringBuilder str = new StringBuilder();
+ /*           StringBuilder str = new StringBuilder();
             for (RoomType type : RoomType.values()) {
                 str.append(String.format("'%s', ", type.name()));
             }
+
             log.debug("Check of valid room types: {}.", str.toString());
 
             log.info("Current users in DB: {}", usi.findAll());
@@ -100,6 +101,7 @@ public class App implements CommandLineRunner {
             User createdUser = usi.findUserById(userId);
             Avatar avatar = gsi.createStaticAvatar(createdUser);
             Dungeon dungeon = gsi.makeNewDungeon(createdUser);
+
             aesi.prime(avatar, dungeon); // testing
             mig.display(true); // testing
 
@@ -110,7 +112,7 @@ public class App implements CommandLineRunner {
             //usi.printUserList();
 
             //Avatar avatar = ai.findById(1L);
-
+*/
             displayMenu();  // Usual app behaviour
 
 
@@ -147,29 +149,6 @@ public class App implements CommandLineRunner {
         }
         quit();
     }
-
-// Trying to load full Bean list from application context
-// Better to do this by reading log output as security measures prevent access to context.
-/*    List<Object> beanList = getInstantiatedSigletons(this.applicationContext);
-        log.debug(beanList);
-
-    public static List<Object> getInstantiatedSigletons(ApplicationContext ctx) {
-        List<Object> singletons = new ArrayList<Object>();
-
-        String[] all = ctx.getBeanDefinitionNames();
-
-        ConfigurableListableBeanFactory clbf = ((AbstractApplicationContext) ctx).getBeanFactory();
-        for (String name : all) {
-            Object s = clbf.getSingleton(name);
-            if (s != null)
-                singletons.add(s);
-        }
-
-        return singletons;
-
-    }*/
-
-
 }
 
 

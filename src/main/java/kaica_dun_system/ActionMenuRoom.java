@@ -1,6 +1,8 @@
 package kaica_dun_system;
 
 
+import kaica_dun.dao.AvatarInterface;
+import kaica_dun.dao.RoomInterface;
 import kaica_dun.entities.Direction;
 import kaica_dun.entities.Monster;
 import kaica_dun.entities.Room;
@@ -42,6 +44,12 @@ public class ActionMenuRoom extends ActionMenu {
 
     @Autowired
     MenuInGame mig;
+
+    @Autowired
+    AvatarInterface avatarInterface;
+
+    @Autowired
+    RoomInterface roomInterface;
 
 
     private String mainOutput;
@@ -237,7 +245,9 @@ public class ActionMenuRoom extends ActionMenu {
         Util.sleeper(1200);
         List<Monster> monsters = new ArrayList<>(battleOptions.values());
         csi.autoCombat(aesi.getAvatar(), monsters);
-        battleOptions = new HashMap<>();
+
+        monsters.clear();
+        battleOptions.clear();
         // END auto-battle
 
 
@@ -253,8 +263,8 @@ public class ActionMenuRoom extends ActionMenu {
         //aesi.getAvatarCurrentRoom().setMonsters(monstersModified);
 
 
-        //roomInterface.save(aesi.room);      // Save the updated list of monsters.
-        //avatarInterface.save(aesi.avatar); // Save the HP to database.
+        //roomInterface.save(aesi.getAvatarCurrentRoom());    // Save the updated list of monsters.
+        avatarInterface.save(aesi.getAvatar());             // Save the HP to database.
     }
 
 
@@ -266,6 +276,20 @@ public class ActionMenuRoom extends ActionMenu {
         Room newRoom = msi.moveAvatar(aesi.getAvatar(), direction);
         System.out.printf("\nMoved Avatar to the next room to the %s", direction.toString());
         //log.debug("Moved avatar to new room: '{}'", newRoom.getId());
+        clearOptions();
+    }
+
+    private void clearOptions() {
+        this.battleOptions.clear();
+        this.monsters.clear();
+
+        this.moveOptions.clear();
+        this.directions.clear();
+
+        this.lookAtOptions.clear();
+        //this.describables.clear();
+
+        this.mainOptions.clear();
 
     }
 }

@@ -85,7 +85,7 @@ public class CombatServiceImpl {
 
         if ((activeMonster.deathCheck())) {
             System.out.println(activeMonster.getName() + " dies");
-            a.getCurrRoom().getMonsters().remove(activeMonster); // Remove from base array. <-- Does nothing.
+            a.getCurrRoom().getMonsters().remove(activeMonster);
             monsters.remove(activeMonster); // remove from the array.
         }
         Util.sleeper(800);

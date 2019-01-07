@@ -96,15 +96,16 @@ public class ActionEngineServiceImpl implements ActionEngineService {
     }
 
     /**
-     * Drops the avatar inte the first room of a dungeon.
+     * Drops the avatar into the first room of a dungeon.
      */
     public void playNew() {
         Room firstRoom = gsi.findFirstRoomInDungeon(dungeon);
 
         log.debug("Dropping avatar into room (id: {}) -> good luck!.", firstRoom.getId());
         avatar.setCurrRoom(firstRoom);
-        //ai.save(avatar);
+        ai.save(avatar);
 
+        this.dungeon = null;
         //UiString.printGameIntro();
 
         play();
@@ -280,6 +281,14 @@ public class ActionEngineServiceImpl implements ActionEngineService {
         this.dungeon = dungeon;
     }
 
+    public List<Monster> getMonsters() {
+        return monsters;
+    }
+
+    public List<Direction> getDirections() {
+        return directions;
+    }
+
     public Room getAvatarCurrentRoom() {
         return getAvatar().getCurrRoom();
     }
@@ -291,15 +300,6 @@ public class ActionEngineServiceImpl implements ActionEngineService {
     public List<Direction> getDirectionsCurrentRoom() {
         return getAvatarCurrentRoom().getExits();
     }
-
-    public List<Monster> getMonsters() {
-        return monsters;
-    }
-
-    public List<Direction> getDirections() {
-        return directions;
-    }
-
 
 
 
