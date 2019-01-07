@@ -1,10 +1,11 @@
 package kaica_dun;
 
+import kaica_dun.dao.AvatarInterface;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Dungeon;
 import kaica_dun.entities.RoomType;
 import kaica_dun.resources.TestDb;
-import kaica_dun.util.MenuException;
+import kaica_dun.util.QuitException;
 import kaica_dun_system.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,6 +60,9 @@ public class App implements CommandLineRunner {
     ActionEngineServiceImpl aesi;
 
     @Autowired
+    AvatarInterface ai;
+
+    @Autowired
     MenuInGame mig;
 
     @Autowired
@@ -92,47 +96,60 @@ public class App implements CommandLineRunner {
             log.info("Person created in DB : {}", userId2);
 
 
-            // AVATAR Creation
+            // Game Creation for testing
             User createdUser = usi.findUserById(userId);
-
             Avatar avatar = gsi.createStaticAvatar(createdUser);
+            Dungeon dungeon = gsi.makeNewDungeon(createdUser);
+            aesi.prime(avatar, dungeon); // testing
+            mig.display(true); // testing
 
-            Dungeon dungeon = gsi.setDungeon(createdUser);
-
-            // Trying to artificially create a game
-            log.debug("ID of latest dungeon is {}", dungeon.getDungeonId());
-
-
+            //testdb.main();  // testing
             //Avatar avatar = avatarInterface.save(new Avatar("Rolphius", "A wiry old warrior.", createdUser));
             //log.info("Avatar created in DB : {}", avatar.getName());
-
             //log.info("Avatars belonging to user: '{}' are: {}", createdUser.getName(), gsi.fetchAvatarByUser(createdUser));
             //usi.printUserList();
 
             //Avatar avatar = ai.findById(1L);
 
 
-            aesi.prime(avatar, dungeon);
-            mig.display(true);
 
-            try {
-                menuMain.display();
-            } catch (MenuException e) { // Standard way of exiting application menus.
-                log.debug(e);
-                e.printStackTrace();
-            }
 
-            testdb.main();
+            displayMenu();  // Usual app behaviour
+
+
 
         } catch (Exception e) {
             log.warn(e);
             e.printStackTrace();
         }
-        sessionFactory.close(); // This is important for Hibernate to drop tables if create-drop is set.
 
+    }
+
+    private void quit() {
+        out.println(UiString.goodbyeString);
+        sessionFactory.close(); // This is important for Hibernate to drop tables if create-drop is set.
         System.exit(0);
     }
 
+    /**
+     * The main menu loop that only stops if a QuitException is thrown.
+     */
+    private void displayMenu() {
+
+        while(true) {
+
+            try {
+                menuMain.display();
+
+            } catch (QuitException e) {
+                log.debug(e);
+                e.printStackTrace();
+
+                break;
+            }
+        }
+        quit();
+    }
 
 // Trying to load full Bean list from application context
 // Better to do this by reading log output as security measures prevent access to context.

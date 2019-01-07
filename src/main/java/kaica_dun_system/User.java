@@ -92,8 +92,8 @@ public class User {
         if (dungeon == null) {
             throw new IllegalArgumentException("Can't add a null Dungeon.");
         }
-        this.getDungeons().add(dungeon);
         dungeon.setUser(this);
+        this.dungeons.add(dungeon);
     }
 
 

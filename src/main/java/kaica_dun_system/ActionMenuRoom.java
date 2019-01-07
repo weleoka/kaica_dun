@@ -1,6 +1,8 @@
 package kaica_dun_system;
 
 
+import kaica_dun.dao.AvatarInterface;
+import kaica_dun.dao.RoomInterface;
 import kaica_dun.entities.Direction;
 import kaica_dun.entities.Monster;
 import kaica_dun.entities.Room;
@@ -16,7 +18,7 @@ import java.util.List;
 
 /**
  * The actions in a room concerning looking at things
- * and attacking monsters. finally also selecting movement options,
+ * and attacking monsters. Finally also selecting movement options,
  * But you can't leave a room until all the monsters are dead, dead, dead!
  *
  * This menu also brings you to the Avatar menu.
@@ -42,6 +44,14 @@ public class ActionMenuRoom extends ActionMenu {
     @Autowired
     MenuInGame mig;
 
+    @Autowired
+    private AvatarInterface avatarInterface;
+
+    @Autowired
+    private RoomInterface roomInterface;
+
+
+
     private String mainOutput;
     private HashMap<Integer, String> mainOptions;
 
@@ -53,8 +63,6 @@ public class ActionMenuRoom extends ActionMenu {
 
     private String moveOutput;
     private HashMap<Integer, Direction> moveOptions;
-
-    private Room room;
 
     ActionMenuRoom() {}
 
@@ -112,8 +120,6 @@ public class ActionMenuRoom extends ActionMenu {
         StringBuilder output = new StringBuilder();
         HashMap<Integer, String> options = new HashMap<>();
 
-        room = aesi.getAvatarCurrentRoom();
-
         lookAtOptions = buildLookAtOptions();
         battleOptions = buildBattleOptions();
         moveOptions = buildMoveOptions();
@@ -159,7 +165,7 @@ public class ActionMenuRoom extends ActionMenu {
             output +=  String.format("[%s] - Item: %s.", i, item.getDescription();
         }*/
 
-        List<Monster> monsters = room.getMonsters();
+        List<Monster> monsters = aesi.room.getMonsters();
 
         //log.debug("There are {} monsters in the room (id: {}).", monsters.size(), room.getId());
 
@@ -188,7 +194,7 @@ public class ActionMenuRoom extends ActionMenu {
         StringBuilder output = new StringBuilder();
         HashMap<Integer, Monster> options = new HashMap<>();
 
-        List<Monster> monsters = room.getMonsters(); // SELECT Fighter FROM Fighter f where f.RoomId = :currRoom
+        List<Monster> monsters = aesi.room.getMonsters(); // SELECT Fighter FROM Fighter f where f.RoomId = :currRoom
 
         for (int i = 1; i < monsters.size() + 1; i++) {
             Monster monster = monsters.get(i - 1);
@@ -218,7 +224,7 @@ public class ActionMenuRoom extends ActionMenu {
         StringBuilder output = new StringBuilder();
         HashMap<Integer, Direction> options = new HashMap<>();
 
-        List<Direction> exits = room.getExits();
+        List<Direction> exits = aesi.room.getExits();
 
         //log.debug("There are {} exits from the room (id: {})", exits.size(), room.getId());
 
@@ -260,13 +266,12 @@ public class ActionMenuRoom extends ActionMenu {
         //Monster monster = battleOptions.get(sel);
         //System.out.printf("\nYou are attacking: %s", monster.toString());
 
-        System.out.println("Fighting individual monsters disabled. Commencing auto- battle...");
+        System.out.println("(Fighting individual monsters disabled. Commencing auto- battle...)");
         Util.sleeper(1200);
-        csi.roomAutoCombat(aesi.getAvatar());
-        System.out.println(aesi.getAvatar().getCurrRoom().getMonsters().size());
-        for( Monster m : aesi.getAvatar().getCurrRoom().getMonsters()) {
-            System.out.println(m.getName());
-        }
+        List<Monster> monsters = csi.autoCombat(aesi.getAvatar(), aesi.room.getMonsters());
+        aesi.room.setMonsters(monsters);
+        roomInterface.save(aesi.room);      // Save the updated list of monsters.
+        avatarInterface.save(aesi.avatar); // Save the HP to database.
     }
 
 

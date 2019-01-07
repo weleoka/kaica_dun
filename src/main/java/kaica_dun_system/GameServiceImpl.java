@@ -84,16 +84,6 @@ public class GameServiceImpl implements GameService {
 
 
     /**
-     * Get a new generated dungeon
-     *
-     * @return
-     */
-    public Dungeon getNewDungeon(User user) {
-        return setDungeon(user);
-    }
-
-
-    /**
      * Create a dungeon for a user.
      *
      * todo: it still needs input about the avatar. In fact a dungeon should be owned
@@ -102,17 +92,15 @@ public class GameServiceImpl implements GameService {
      * @param user
      * @return
      */
-    public Dungeon setDungeon(User user) {
+    public Dungeon makeNewDungeon(User user) {
         log.debug("Creating static dungeon for user: {}", user.getName());
         makeStaticDungeon msd = new makeStaticDungeon(user);
         dungeon = msd.buildDungeon();
-
-        log.debug("Adding dungeon to {}s list of dungeons.", user.getName());
-        user.addDungeon(dungeon);
-
-        userInterface.save(user);
         dungeonInterface.save(dungeon);
-        this.dungeon = dungeon;
+
+        //log.debug("Adding dungeon to {}s list of dungeons.", user.getName());
+        //user.addDungeon(dungeon);
+        //userInterface.save(user); // Dont think it's needed. Nothing changed with user.
 
         return dungeon;
     }
@@ -207,8 +195,9 @@ public class GameServiceImpl implements GameService {
      */
     public Avatar createStaticAvatar(User user) {
         Avatar avatar =  makeAvatar.make(user);
-        avatarInterface.save(avatar);
+        avatar = avatarInterface.save(avatar);
         userInterface.save(user);
+        log.debug("Saved a new avatar with id: {}", avatar.getId());
         return avatar;
     }
 

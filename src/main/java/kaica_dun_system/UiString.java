@@ -69,18 +69,21 @@ public class UiString
 
 
 
+
     // Dungeon Randomness
-    public static String randomSound1 = "\n- drip, drip, drip - there's an leaking old copper pipe.";
+    public static String randomSound1 = "\n- drip, drip, drip - there's a copper pipe leaking in the roof.";
     public static String randomSound2 = "\n- thump, thump, thump - strange sounds come echoing down the passage.";
-    public static String randomSound3 = "\n- wheeze, cough, cough - somebody is sleeping wrapped up in old furs in the corner.";
+    public static String randomSound3 = "\n- wheeze, cough, cough - somebody is sleeping, wrapped up in old rags, in the corner.";
 
 
     public static String randomVisual1 = "\n... a spider runs across your feet.";
-    public static String randomVisual2 = "\n... there's a twinkle of light reflecting of a puddle on the floor.";
-    public static String randomVisual3 = "\n... something looking like dragon scales litter the floor.";
+    public static String randomVisual2 = "\n... there's a twinkle of light reflecting in a puddle of water on the floor.";
+    public static String randomVisual3 = "\n... something that looks like dragon scales litter the floor.";
 
 
 
+    // Dungeon feedback
+    public static String noMonstersVisible = "\nThere appears to be no dangerous creatures around.";
 
 
 

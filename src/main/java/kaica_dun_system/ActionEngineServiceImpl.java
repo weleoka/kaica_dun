@@ -10,10 +10,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.Scanner;
-
-import static java.lang.System.in;
+import java.util.Optional;
 
 
 /**
@@ -29,6 +28,7 @@ public class ActionEngineServiceImpl implements ActionEngineService {
 
     Avatar avatar;
     Dungeon dungeon;
+    Room room;
 
     @Autowired
     UserInterface ui;
@@ -54,6 +54,12 @@ public class ActionEngineServiceImpl implements ActionEngineService {
     @Autowired
     MenuLoggedIn mli;
 
+    @Autowired
+    EntityManager em;
+
+
+
+
 
 
     /**
@@ -76,7 +82,7 @@ public class ActionEngineServiceImpl implements ActionEngineService {
 
         log.debug("Setting the Avatar pointer to the dungeon.");
         avatar.setCurrDungeon(dungeon);
-        ai.save(avatar);
+
         log.debug("Committing avatar with dungeon pointers to db");
     }
 
@@ -87,10 +93,10 @@ public class ActionEngineServiceImpl implements ActionEngineService {
         Room firstRoom = gsi.findFirstRoomInDungeon(dungeon);
 
         log.debug("Dropping avatar into room (id: {}) -> good luck!.", firstRoom.getId());
-        this.avatar.setCurrRoom(firstRoom);
+        avatar.setCurrRoom(firstRoom);
         ai.save(avatar);
 
-        UiString.printGameIntro();
+        //UiString.printGameIntro();
 
         play();
     }
@@ -132,12 +138,20 @@ public class ActionEngineServiceImpl implements ActionEngineService {
      * The method for initialising game loop and handling
      * exception bubbling thrown in nested loops.
      *
+     * todo: move the string reports out to UiStrings.
      */
+    @Override
     public void play() {
         log.debug("Starting game loop.");
 
         mainGameLoop:
         while(true) {
+            this.room = avatar.getCurrRoom();
+
+            if (em.isJoinedToTransaction()) {
+                em.refresh(this.room);
+                em.flush(); // Not sure but testing anyhow.
+            }
 
             try {
                 System.out.println(buildStateInfo());
@@ -145,22 +159,21 @@ public class ActionEngineServiceImpl implements ActionEngineService {
 
             } catch (MenuException e) {
                 log.debug("Quit the game. Breaking mainGameLoop.");
-                System.out.println(e);
+                System.out.println("Quit the current game.");
                 break mainGameLoop;
 
             } catch (GameOverException e) {
                 log.debug("Game over. Breaking mainGameLoop.");
-                System.out.println(e);
+                System.out.println("Your avatar has died in battle...");
                 break mainGameLoop;
 
             } catch (GameWonException e) {
                 log.debug("The avatar has prevailed and won the game! Breaking mainGameLoop.");
-                System.out.println(e);
+                System.out.println("You have won the game and completed the dungeon!");
                 break mainGameLoop;
             }
 
         }
-        mli.display(); // Return to MenuLoggedIn
     }
 
 
@@ -169,40 +182,49 @@ public class ActionEngineServiceImpl implements ActionEngineService {
 
     /**
      * Method to collect and output to user interesting information.
+     *
+     * todo: move the strings to UiStrings for consistency and language support.
+     * todo: split the method up.
      */
     private String buildStateInfo() {
         StringBuilder str;
         String monstersInTheRoom;
-        String exitsFromTheroom;
+        String exitsFromTheRoom;
         String itemsInTheRoom;
 
-        Room room = avatar.getCurrRoom();
 
+        // Building monsters and foes
         str = new StringBuilder();
         List<Monster> monsters = room.getMonsters();
-        str.append(String.format("There are %s monsters in the room.", monsters.size()));
-        for (int i = 1; i < monsters.size() + 1; i++) {
-            Monster monster = monsters.get(i - 1);
-            str.append(String.format("\nThe %s has %sHP.", monster.getType(), monster.getCurrHealth()));
+
+        if (monsters.size() > 0 ) {
+            str.append(String.format("There are %s dangers in the room:", monsters.size()));
+            for (int i = 1; i < monsters.size() + 1; i++) {
+                Monster monster = monsters.get(i - 1);
+                str.append(String.format("\n%s with health %s.", monster.getType(), monster.getCurrHealth()));
+            }
+            monstersInTheRoom = str.toString();
+        } else {
+            monstersInTheRoom = UiString.noMonstersVisible;
         }
-        monstersInTheRoom = str.toString();
 
 
+        // Building directions and exits
         str = new StringBuilder();
         List<Direction> exits = room.getExits();
-        str.append(String.format("There are %s exits from the room: ", exits.size() - 1));
-
+        str.append(String.format("There are %s passages leading from the chamber: ", exits.size()));
         for (Direction direction: exits) {
-            str.append(String.format("%s,", direction.getDirectionNumber(), direction.name()));
+            str.append(String.format("%s, ", direction.getName()));
         }
-        exitsFromTheroom = str.toString();
+        exitsFromTheRoom = str.toString();
 
 
+        // Combine it all to make sense.
         str = new StringBuilder();
         str.append(
-                String.format("\nAvatar health: %s", avatar.getCurrHealth()) +
+                String.format("\n%s health: %s", avatar.getName(), avatar.getCurrHealth()) +
                 String.format("\n%s", monstersInTheRoom) +
-                String.format("\n\n%s", exitsFromTheroom) +
+                String.format("\n%s", exitsFromTheRoom) +
                 String.format("\n%s", UiString.randomSound()) +
                 String.format("\n%s", UiString.randomVisual())
         );
