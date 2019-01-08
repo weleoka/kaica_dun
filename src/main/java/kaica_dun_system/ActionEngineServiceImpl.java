@@ -19,7 +19,14 @@ import java.util.List;
 /**
  * A class which handles the main entry, setup and leaving of a dungeon game.
  *
+ * The main points of interest for this service is:
+ * - Monsters
+ * - Directions
+ * ... - Items?
+ *
  * This class will maintain a log of progress
+ *
+ * @author Kai Weeks
  *
  */
 @Service
@@ -27,12 +34,8 @@ public class ActionEngineServiceImpl implements ActionEngineService {
 
     private static final Logger log = LogManager.getLogger();
 
-    Avatar avatar;
-    Dungeon dungeon;
-
-    List<Monster> monsters;
-    List<Direction> directions;
-    //Room room;
+    private List<Monster> monsters;
+    private List<Direction> directions;
 
     @Autowired
     UserInterface ui;
@@ -76,64 +79,33 @@ public class ActionEngineServiceImpl implements ActionEngineService {
 
 
     /**
-     * Prime the game world and get it ready.
-     *
-     * This could be the constructor as well but with Autowired it's better to use method injection in this case.
-     *
-     * It sets values for avatar and dungeon. Also the important aspect of identifying the
-     * first room in a dungeon is done here.
-     *
-     * @param avatar
-     * @param dungeon
-     */
-    public void prime(Avatar avatar, Dungeon dungeon) {
-        log.debug("Priming Action Engine environment...");
-        log.debug("User: {}, Avatar: '{}', Dungeon: {}", dungeon.getUser().getName(), avatar.getName(), dungeon.getDungeonId());
-
-        log.debug("Setting the Avatar pointer to the dungeon.");
-        avatar.setCurrDungeon(dungeon);
-
-        this.avatar = avatar;
-        this.dungeon = dungeon;
-
-        log.debug("Committing avatar with dungeon pointers to db");
-    }
-
-    /**
-     * Drops the avatar into the first room of a dungeon.
+     * Creates a new dungeon and calles the operations to activate it.
      */
     public void playNew() throws MenuException {
-        Dungeon newDungeon = gsi.makeNewDungeon(usi.getAuthenticatedUser());
-        prime(gsi.getAvatar(), newDungeon);
-
-        Room firstRoom = gsi.findFirstRoomInDungeon(dungeon);
-
-        log.debug("Dropping avatar into room (id: {}) -> good luck!.", firstRoom.getId());
-        avatar.setCurrRoom(firstRoom);
-        avatarInterface.save(avatar);
-
-        this.dungeon = null;
-        UiString.printGameIntro();
-
+        gsi.setDungeon(gsi.makeStaticDungeon());
+        gsi.resetAvatar();
+        gsi.startDungeon(); // todo: move out to Movement class
+        printDebugInfo("New game: ");
+        //UiString.printLoadingIntro();
+        //UiString.printGameIntro();
         play();
     }
 
+
     /**
      * Resume a game that has been paused.
-     *
-     * todo: implement some feedback for this..
-     *
      */
     public void resume() throws MenuException {
 
         try {
-            Room room = avatar.getCurrRoom();
+            Room room = gsi.getAvatar().getCurrRoom();
 
         } catch (NullPointerException e) {
-            log.warn("Trying to resume a game that does not exist. No Current room is set for Avatar.");
-            playNew();
+            log.warn("No Current room is set for Avatar. Can't resume game.");
+            throw new MenuException("Quit the current game");
         }
-        log.debug("Resuming game.");
+        printDebugInfo("Resume game: ");
+        UiString.printLoadingIntro();
         play();
     }
 
@@ -143,13 +115,13 @@ public class ActionEngineServiceImpl implements ActionEngineService {
      * todo: implement original values for all rooms etc for real re-start.
      */
     public void restart() throws MenuException {
-        log.debug("Restarted the game. (Done by calling playNew().");
-
-        //MenuLoggedIn.startGame();
-        playNew();
+        printDebugInfo("Restart game: ");
+        gsi.resetAvatar();
+        gsi.startDungeon();
+        UiString.printLoadingIntro();
+        UiString.printGameIntro();
+        play();
     }
-
-
 
 
 
@@ -181,9 +153,7 @@ public class ActionEngineServiceImpl implements ActionEngineService {
             } catch (GameOverException e) {
                 log.debug("Game over. Breaking mainGameLoop.");
                 System.out.println("Your avatar has died in battle...");
-                avatar.setCurrHealth(avatar.getMaxHealth());
-                avatar.setCurrRoom(null);
-                avatarInterface.save(avatar);
+                gsi.resetAvatar();
                 Util.sleeper(2400);
                 throw new MenuException("Quit in-game menu due to game over.");
 
@@ -263,7 +233,7 @@ public class ActionEngineServiceImpl implements ActionEngineService {
         // Combine it all to make sense.
         str = new StringBuilder();
         str.append(
-                String.format("\n%s health: %s", avatar.getName(), avatar.getCurrHealth()) +
+                String.format("\n%s health: %s", gsi.getAvatar().getName(), gsi.getAvatar().getCurrHealth()) +
                 String.format("\n%s", monstersInTheRoom) +
                 String.format("\n%s", exitsFromTheRoom) +
                 //String.format("\n%s", describablesInTheRoom) +
@@ -279,22 +249,6 @@ public class ActionEngineServiceImpl implements ActionEngineService {
 
     // ********************** Accessor Methods ********************** //
 
-    public Avatar getAvatar() {
-        return avatar;
-    }
-
-    private void setAvatar(Avatar avatar) {
-        this.avatar = avatar;
-    }
-
-    public Dungeon getDungeon() {
-        return dungeon;
-    }
-
-    private void setDungeon(Dungeon dungeon) {
-        this.dungeon = dungeon;
-    }
-
     public List<Monster> getMonsters() {
         return monsters;
     }
@@ -303,23 +257,24 @@ public class ActionEngineServiceImpl implements ActionEngineService {
         return directions;
     }
 
-    public Room getAvatarCurrentRoom() {
-        return getAvatar().getCurrRoom();
-    }
 
     public List<Monster> getMonstersCurrentRoom() {
-        return getAvatarCurrentRoom().getMonsters();
+        return gsi.getAvatarCurrentRoom().getMonsters();
     }
 
     public List<Direction> getDirectionsCurrentRoom() {
-        return getAvatarCurrentRoom().getExits();
+        return gsi.getAvatarCurrentRoom().getExits();
     }
 
 
 
-    public void persistChanges() {
-        if (entityManager.isJoinedToTransaction()) {
-            entityManager.getTransaction().commit();
-        }
+
+    public void printDebugInfo(String extra) {
+        log.debug("{} (User: {}, Avatar: '{}', Dungeon: {})",
+                extra,
+                //gsi.getDungeon().getUser().getName(),
+                usi.getAuthenticatedUser().getName(),
+                gsi.getAvatar().getName(),
+                gsi.getDungeon().getDungeonId());
     }
 }

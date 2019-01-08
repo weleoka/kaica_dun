@@ -2,6 +2,7 @@ package kaica_dun_system;
 
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Dungeon;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.util.LinkedList;
@@ -20,6 +21,7 @@ public class User {
     private Long id;
 
     @Basic
+    @NaturalId
     @Column(name = "username")
     private String userName;
 
@@ -41,7 +43,7 @@ public class User {
 
 
     // Default empty constructor
-    public User() {}
+    User() {}
 
 
 

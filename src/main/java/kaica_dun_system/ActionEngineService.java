@@ -6,9 +6,6 @@ import kaica_dun.util.MenuException;
 
 public interface ActionEngineService {
 
-    // Prime the game world and get it ready
-    void prime(Avatar avatar, Dungeon dungeon);
-
     void playNew() throws MenuException;
 
     // Start playing

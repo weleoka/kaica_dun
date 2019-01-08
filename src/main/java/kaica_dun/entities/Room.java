@@ -75,7 +75,7 @@ public class Room {
 
 
     // Default empty constructor
-    public Room() {}
+    private Room() {}
 
     /**
      * The standard construtor for a room in the dungeon existing on a 2D-matrix. Empty room positions are null valued.

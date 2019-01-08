@@ -21,7 +21,7 @@ public class Weapon extends Item {
     private Avatar wielder;
 
     // Default empty constructor
-    protected Weapon(){}
+    Weapon() {}
 
     public Weapon(String itemName, String description, int lowDamage, int damageRange) {
         super(itemName, description);

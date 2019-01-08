@@ -38,7 +38,7 @@ public class Item implements Describable {
 
 
     // Default empty constructor
-    public Item(){}
+    Item() {}
 
     public Item(String itemName, String description) {
         this.itemName = itemName;

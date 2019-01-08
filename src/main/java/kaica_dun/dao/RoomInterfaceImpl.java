@@ -29,7 +29,7 @@ public class RoomInterfaceImpl implements RoomInterfaceCustom {
     @Transactional
     public Long findFirstRoomInDungeon(Dungeon dungeon) {
         log.debug("Searching for first room in Dungeon: {}", dungeon.getDungeonId());
-        TypedQuery<Long> query = this.entityManager.createNamedQuery("Room.findFirstRoomInDungeon", Long.class);
+        TypedQuery<Long> query = this.entityManager.createNamedQuery("Room.fetchDungeonFirstRoom", Long.class);
         query.setParameter("dungeonId", dungeon);
         //List<Long> results = query.getResultList();
         Long result = query.getSingleResult();

@@ -8,7 +8,7 @@ import java.util.List;
 public interface GameService {
 
 
-    Dungeon setDungeon(User user);
+    Dungeon makeStaticDungeon();
 
 
     // ********************** Persistence Methods ********************** //

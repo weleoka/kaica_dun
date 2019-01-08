@@ -45,8 +45,7 @@ public class Avatar extends Fighter {
     @Transient
     private Random rand = new Random();
 
-    public Avatar() {
-    }
+    private Avatar() {}
 
     // Creating a new Avatar from user input with defaults.
     public Avatar(String name, String description, User user) {

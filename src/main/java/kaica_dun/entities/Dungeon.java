@@ -20,7 +20,7 @@ public class Dungeon {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "userID", updatable = false, nullable = false)
+    @JoinColumn(name = "userID", updatable = true, nullable = true)
     private User user;
 
     @Basic
@@ -40,20 +40,18 @@ public class Dungeon {
 
 
     // Default empty constructor
-    protected Dungeon() {}
+    Dungeon() {}
 
 
 
     /**
      * Full Constructor.
      *
-     * @param user          the user who owns the dungeon
      * @param roomRows      number of rows in the dungeon matrix
      * @param roomColumns   number of columns in the dungeon matrix
      * @param rooms         a list of all rooms in the dungeon, with null-values for empty spaces in the room-matrix
      */
-    public Dungeon(User user, int roomRows, int roomColumns, List<Room> rooms){
-        this.user = user;
+    public Dungeon(int roomRows, int roomColumns, List<Room> rooms){
         this.roomRows = roomRows;
         this.roomColumns = roomColumns;
         this.rooms = rooms;
@@ -153,6 +151,15 @@ public class Dungeon {
             System.out.printf(i + ": " + rooms.get(i) + "\n");
         }
     }
+
+
+
+
+
+
+
+
+
 
 
     // ********************** Common Methods ********************** //

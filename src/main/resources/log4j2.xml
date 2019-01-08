@@ -47,7 +47,7 @@
 
 
 
-        <Root level="warn">
+        <Root level="debug">
 
             <!-- Which appenders to use -->
             <!--<AppenderRef ref="File" />-->

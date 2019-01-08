@@ -81,7 +81,7 @@ public class tmpDungeonMaker {
         //make a Dungeon using the saved parameters
         //TODO Think about this, the Dungeon exists in an invalid state here until the Dungeon references of its Rooms
         // are updated.
-        Dungeon newDungeon = new Dungeon(user, roomRows, roomColumns, rooms);
+        Dungeon newDungeon = new Dungeon(roomRows, roomColumns, rooms);
 
         //update the dungeon reference in the rooms of the new dungeon
         for (Room r : newDungeon.getRooms()) {
