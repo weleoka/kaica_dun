@@ -11,24 +11,15 @@ import java.util.List;
 import java.util.Random;
 
 public final class makeStaticDungeon {
-    private User user;
     private Random rand = new Random();
     private MonsterFactory mf = new MonsterFactory();
-    private int roomRows = 5;
-    private int roomColumns = 5;
+    private static int roomRows = 5;
+    private static int roomColumns = 5;
 
     private static final Logger log = LogManager.getLogger();
 
-    /**
-     * Create a new dungeon with static structure for testing, belonging to a user, that we can then save to the db.
-     *
-     * @param user        the User that the Dungeon belongs to
-     */
-    public makeStaticDungeon(User user){
-        this.user = user;
-    }
 
-    public Dungeon buildDungeon() {
+    public static Dungeon buildDungeon() {
         List<Room> rooms = new ArrayList<Room>();
         //loop for room-list creation, initialised to null.
         for (int i = 0; i < (roomRows * roomColumns); i++) {
@@ -99,7 +90,7 @@ public final class makeStaticDungeon {
 
         //User user, int roomRows, int roomColumns, List<Room> rooms
         log.debug("Starting/building dungeon instance...");
-        Dungeon dungeon = new Dungeon(this.getUser(), roomRows, roomColumns, rooms);
+        Dungeon dungeon = new Dungeon(roomRows, roomColumns, rooms);
 
         //Referential integrity, make sure the rooms point at the dungeon
         for (Room r : dungeon.getRooms()) {
@@ -111,8 +102,6 @@ public final class makeStaticDungeon {
         return dungeon;
     }
 
-    public User getUser() { return this.user; }
-
     private List<Monster> randomMonsterList() {
         List<Monster> randomMonsters = new LinkedList<Monster>();
 
@@ -123,14 +112,14 @@ public final class makeStaticDungeon {
         return randomMonsters;
     }
 
-    private List<Monster> makeSmug() {
+    private static List<Monster> makeSmug() {
         List<Monster> smug = new LinkedList<Monster>();
         smug.add(MonsterFactory.makeDragonBoss());
         return smug;
     }
 
 
-    private void updateMonsters(Room r) {
+    private static void updateMonsters(Room r) {
         for (Monster m : r.getMonsters()) {
             log.debug("updateMonsters: '{}' to the room '{}'.", m.getDescription(), r.getRoomIndex());
             m.setRoom(r);

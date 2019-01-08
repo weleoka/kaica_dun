@@ -24,12 +24,7 @@ public class MenuInGame extends Menu {
     ActionEngineServiceImpl aesi;
 
     /**
-     * Menu displayed to a user when it is authenticated.
-     * <p>
-     * Items:
-     * 1. Resume previous game
-     * (2. Change Subscription)
-     * 9. Return to Main Menu
+     * Menu for display in game with actions such as restart, quit, save etc.
      */
     public void display(boolean directPlay) throws MenuException { // todo: change to private after testing.
         int selection;
@@ -62,6 +57,6 @@ public class MenuInGame extends Menu {
         }
 
         // Break out to the top menu.
-        throw new MenuException("Quit the current game"); //menuLoggedIn.display();
+        throw new MenuException("Quit the current game");
     }
 }

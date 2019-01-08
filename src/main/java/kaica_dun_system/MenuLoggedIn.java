@@ -30,8 +30,6 @@ public class MenuLoggedIn extends Menu {
     UserInterface userInterface;
 
 
-    MenuLoggedIn() {}
-
     /**
      * Menu displayed to a user when it is authenticated.
      * <p>
@@ -46,26 +44,7 @@ public class MenuLoggedIn extends Menu {
         if (!usi.isAuthenticatedUser()) {
             out.println(UiString.userNotAuthenticated);
             Util.sleeper(900);
-            return;         // TODO: uncomment after testing to bounce non-auth users out of here!
-            //menuMain.display();
-
-
-  /*          // START Debug stuff.
-            boolean DEBUG = true;
-            if (DEBUG) {
-                log.debug("No authenticated user currently set. Warning DEBUG enabled!!");
-                log.debug("Setting a default anthenticated user...");
-                Util.sleeper(900);
-                User user = null;
-
-                Optional optional = userInterface.findById(1L);
-                if (optional.isPresent()) {
-                    user = (User) optional.get();
-                }
-                usi.loginUser(user, "123");
-            } // END of debug stuff.
-*/
-
+            return;   // Kick non-auth users out.
         }
 
         Set<Integer> hset = new HashSet<>(Arrays.asList(1, 2, 9));
@@ -76,8 +55,11 @@ public class MenuLoggedIn extends Menu {
             case 1: // Start a new game (or resume a game if the avatar is in a dungeon already.)
 
                 if (selectAvatar()) {
-
-                    aesi.playNew();
+                    if (gsi.getAvatarCurrentRoom() != null) {
+                        aesi.resume();
+                    } else {
+                        aesi.playNew();
+                    }
                 }
                 break;
 
@@ -87,7 +69,7 @@ public class MenuLoggedIn extends Menu {
 
             case 9:
                 this.logoutUser();
-                throw new MenuException("Logged out"); //menuLoggedIn.display();
+                throw new MenuException("Logged out");
         }
     }
 

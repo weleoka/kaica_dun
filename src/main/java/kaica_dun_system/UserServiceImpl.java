@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = false)
     public User findUserByName(String userName) { // Change to package private after testing.
         log.debug("Searching for user '{}' by name.", userName);
-        User user = new User();
+        User user;
 
         try {
             List<User> users = userInterfaceCustom.findByName(userName);
@@ -143,7 +143,7 @@ public class UserServiceImpl implements UserService {
 
 
     /**
-     * Print the entire user database to stdout.
+     * Fetch all the users in the database.
      *
      * 1) Databases can return different types for COUNT. Long is usually safest.
      * 2) Count('userID') does not count NULL in Column, whereas COUNT(*) would do.
@@ -169,6 +169,10 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+
+    public void updateAuthenticatedUser() {
+        userInterface.save(authenticatedUser);
+    }
 
 
     // ********************** Checking Methods ********************** //
@@ -198,7 +202,7 @@ public class UserServiceImpl implements UserService {
      */
     public boolean isAuthenticatedUser() {
 
-        if (this.authenticatedUser == null) {
+        if (authenticatedUser == null) {
 
             return false;
         }
@@ -206,27 +210,32 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
+
     /**
      * return the ID of the selected user
      *
      * @return userID           true if user is set and thus logged in
      */
     public Long getAuthenticatedUserId() {
-        return this.authenticatedUser.getId();
+        return authenticatedUser.getId();
     }
+
 
     /**
      *
      * @return User
      */
     public User getAuthenticatedUser() {
-        return this.authenticatedUser;
+        return authenticatedUser;
     }
 
 
+    public void setAuthenticatedUser(User user) {
+        this.authenticatedUser = user;
+        log.warn("REMEBER to disable access to this setAuthenticatedUser() for production.");
+    }
 
 
-    // ********************** Operation Methods ********************** //
     /**
      * setAuthenticated
      *
@@ -250,17 +259,22 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
+
     /**
      * set authenticatedUser to null.
      */
     public void logoutUser() {
-        this.authenticatedUser = null;
+        authenticatedUser = null;
     }
 
 
 
 
     // ********************** Development helper Methods ********************** //
+
+    /**
+     * Output the entire users list to stdout.
+     */
     public void printUserList() {
         List<User> userList = (List<User>) userInterface.findAll();
         System.out.println("- - userlist - -");

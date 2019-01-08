@@ -28,6 +28,9 @@ import java.util.List;
  *
  * todo: consider only building menu options after selecting a main Action menu choice so speed up loop.
  * todo: decide at exactly what interval/loop sequence to refresh the loops.
+ *
+ * @author Kai Weeks
+ *
  */
 @Component
 public class ActionMenuRoom extends ActionMenu {
@@ -43,9 +46,6 @@ public class ActionMenuRoom extends ActionMenu {
 
     @Autowired
     MenuInGame mig;
-
-    @Autowired
-    AvatarInterface avatarInterface;
 
     @Autowired
     RoomInterface roomInterface;
@@ -106,6 +106,7 @@ public class ActionMenuRoom extends ActionMenu {
                 } else {
                     selectMoveOption();
                 }
+                selectMoveOption(); // Ignore the monsters in the room. Development.
                 break;
 
             case 9:
@@ -248,10 +249,11 @@ public class ActionMenuRoom extends ActionMenu {
         System.out.println("(Fighting individual monsters disabled. Commencing auto- battle...)");
         Util.sleeper(1200);
         List<Monster> monsters = new ArrayList<>(battleOptions.values());
-        csi.autoCombat(aesi.getAvatar(), monsters);
+        csi.autoCombat(gsi.getAvatar(), monsters);
 
         monsters.clear();
         battleOptions.clear();
+
         // END auto-battle
 
 
@@ -268,7 +270,7 @@ public class ActionMenuRoom extends ActionMenu {
 
 
         //roomInterface.save(aesi.getAvatarCurrentRoom());    // Save the updated list of monsters.
-        avatarInterface.save(aesi.getAvatar());             // Save the HP to database.
+        gsi.updateAvatar(); // Save the HP to database.
     }
 
 
@@ -277,10 +279,10 @@ public class ActionMenuRoom extends ActionMenu {
         int sel = getUserInput(moveOptions.keySet(), str);
         Direction direction = moveOptions.get(sel);
         //log.debug("Movement selection made {}, resulting in direction: {}", sel, direction.toString());
-        msi.moveAvatar(aesi.getAvatar(), direction);
+        msi.moveAvatar(gsi.getAvatar(), direction);
         System.out.printf("\nMoved Avatar to the next room to the %s", direction.toString());
         //log.debug("Moved avatar to new room: '{}'", newRoom.getId());
-        avatarInterface.save(aesi.getAvatar());
+        gsi.updateAvatar();
         clearOptions();
     }
 

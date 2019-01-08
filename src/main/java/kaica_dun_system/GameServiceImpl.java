@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -23,27 +24,25 @@ import java.util.Optional;
 /**
  * Class providing useful functions for working with different objects relevant to the game.
  *
- * If there is functionality for generating user output and game world sugar define them
- * in the class called UiString.
+ * The main points of interest for this service is:
+ * - Avatar
+ * - Dungeon
+ *
+ * If there is functionality for generating user output and game world sugar
+ * keep that in the class called UiString.
+ *
+ * @author Kai Weeks
+ *
  */
 @Service
 @EnableTransactionManagement
 public class GameServiceImpl implements GameService {
-
-    // Singleton
-    private static GameServiceImpl ourInstance = new GameServiceImpl();
-    public static GameServiceImpl getInstance() {
-        return ourInstance;
-    }
-    private GameServiceImpl() {}
 
     // Fields declared
     private static final Logger log = LogManager.getLogger();
     private Avatar avatar;
     private Dungeon dungeon;
 
-    @Autowired
-    private UserInterface userInterface;
 
     @Autowired
     private AvatarInterface avatarInterface;
@@ -66,21 +65,27 @@ public class GameServiceImpl implements GameService {
 
 
 
-    // ********************** Dungeon Methods ********************** //
+    // ********************** Game Methods ********************** //
 
     /**
-     * getCurrent generated dungeon.
-     *
-     * So the idea would always be to get dungeon by id. That way it is possible to get a saved game.
-     *
-     * todo: implement fetching dungeon from database.
-     *  Need also to think about how currentRoom for avatar in that particular dungeon is saved.
-     *
-     * @return
+     * Start playing a dungeon.
      */
-    public Dungeon getDungeon() {
-        return this.dungeon;
+    public void startDungeon() {
+        Room firstRoom = fetchDungeonFirstRoom();
+        avatar.setCurrDungeon(dungeon);
+        avatar.setCurrRoom(firstRoom);
+        log.debug("Dropping avatar into room (id: {}) -> good luck!.", firstRoom.getId());
     }
+
+
+
+
+
+
+
+
+
+    // ********************** Dungeon Methods ********************** //
 
 
     /**
@@ -89,18 +94,13 @@ public class GameServiceImpl implements GameService {
      * todo: it still needs input about the avatar. In fact a dungeon should be owned
      *   by an avatar and not the user really.
      *
-     * @param user
      * @return
      */
-    public Dungeon makeNewDungeon(User user) {
-        log.debug("Creating static dungeon for user: {}", user.getName());
-        makeStaticDungeon msd = new makeStaticDungeon(user);
-        dungeon = msd.buildDungeon();
+    @Transactional
+    public Dungeon makeStaticDungeon() {
+        log.debug("Creating static dungeon");
+        dungeon = makeStaticDungeon.buildDungeon();
         dungeonInterface.save(dungeon);
-
-        //log.debug("Adding dungeon to {}s list of dungeons.", user.getName());
-        //user.addDungeon(dungeon);
-        //userInterface.save(user); // Dont think it's needed. Nothing changed with user.
 
         return dungeon;
     }
@@ -112,10 +112,11 @@ public class GameServiceImpl implements GameService {
      * todo: ensure that a dungeon only contains one single entry for certain enum types
      *  and modify the method for fetch single result.
      *
-     * @param dungeon
+     * @param
      * @return
      */
-    public Room findFirstRoomInDungeon(Dungeon dungeon) {
+    @Transactional
+    public Room fetchDungeonFirstRoom() {
         List<Long> results = ric.findRoomsInDungeonByEnum(dungeon, RoomType.FIRST01);
         Long firstRoomId = results.get(0);
 
@@ -131,14 +132,17 @@ public class GameServiceImpl implements GameService {
     }
 
 
-    // ********************** Avatar Methods ********************** //
+
+
+
+    // ********************** Accessor methods ********************** //
 
     /**
      * get current selected avatar.
      * @return
      */
     public Avatar getAvatar() {
-        return this.avatar;
+        return avatar;
     }
 
     /**
@@ -151,10 +155,32 @@ public class GameServiceImpl implements GameService {
     }
 
 
+    /**
+     * getCurrent generated dungeon.
+     *
+     * So the idea would always be to get dungeon by id. That way it is possible to get a saved game.
+     *
+     * todo: implement fetching dungeon from database.
+     *  Need also to think about how currentRoom for avatar in that particular dungeon is saved.
+     *
+     * @return
+     */
+    public Dungeon getDungeon() {
+        return dungeon;
+    }
+
+    /**
+     * Set the current dungeon in the service class.
+     * @param dungeon
+     */
+    public void setDungeon(Dungeon dungeon) {
+        this.dungeon = dungeon;
+    }
 
 
 
-    // ********************** Persistence Methods ********************** //
+
+    // ********************** Avatar methods ********************** //
 
     /**
      * Uses native SQL.
@@ -193,13 +219,14 @@ public class GameServiceImpl implements GameService {
      * @param user a User instance
      * @return boolean if success
      */
+    @Transactional
     public Avatar createStaticAvatar(User user) {
         Avatar avatar =  makeAvatar.make(user);
         avatar = avatarInterface.save(avatar);
-        userInterface.save(user);
         log.debug("Saved a new avatar with id: {}", avatar.getId());
         return avatar;
     }
+
 
     /**
      *
@@ -207,18 +234,48 @@ public class GameServiceImpl implements GameService {
      * @param user a User instance
      * @return boolean if success
      */
+    @Transactional
     public boolean createNewAvatar(String[] arr, User user) {
         Avatar avatar = new Avatar(arr[0], arr[1], user);
-
         avatarInterface.save(avatar);
         return true;
     }
 
 
+    /**
+     * Reset the health and current room of the avatar.
+     */
+    @Transactional
+    public void resetAvatar() {
+        avatar.setCurrHealth(avatar.getMaxHealth());
+        avatar.setCurrRoom(null);
+        avatarInterface.save(avatar);
+    }
+
+
+    /**
+     * Save any changes changes to the avatar.
+     * @return
+     */
+    @Transactional
+    public void updateAvatar() {
+        avatarInterface.save(avatar);
+    }
+
+
+    /**
+     * Get the current room which an avatar is in.
+     *
+     * @return
+     */
+    public Room getAvatarCurrentRoom() {
+        return getAvatar().getCurrRoom();
+    }
 
 
 
-    // ********************** Model logic access ********************** //
+
+    // ********************** Helper methods ********************** //
 
     /**
      * Find all the avatars belonging to a certain user.

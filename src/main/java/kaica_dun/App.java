@@ -1,6 +1,9 @@
 package kaica_dun;
 
 import kaica_dun.dao.AvatarInterface;
+import kaica_dun.entities.Avatar;
+import kaica_dun.entities.Dungeon;
+import kaica_dun.entities.RoomType;
 import kaica_dun.resources.TestDb;
 import kaica_dun.util.QuitException;
 import kaica_dun_system.*;
@@ -78,29 +81,27 @@ public class App implements CommandLineRunner {
         try {
             out.printf(UiString.logo);
 
-  /*          StringBuilder str = new StringBuilder();
+            StringBuilder str = new StringBuilder();
             for (RoomType type : RoomType.values()) {
                 str.append(String.format("'%s', ", type.name()));
             }
-
             log.debug("Check of valid room types: {}.", str.toString());
-
             log.info("Current users in DB: {}", usi.findAll());
-
             Long userId = usi.createUser(new User("user1", "123"));
             log.info("Person created in DB : {}", userId);
-
             Long userId2 = usi.createUser(new User("user2", "123"));
             log.info("Person created in DB : {}", userId2);
 
 
             // Game Creation for testing
+            // The Game service needs a user and a selected avatar.
             User createdUser = usi.findUserById(userId);
-            Avatar avatar = gsi.createStaticAvatar(createdUser);
-            Dungeon dungeon = gsi.makeNewDungeon(createdUser);
+            usi.setAuthenticatedUser(createdUser);
 
-            aesi.prime(avatar, dungeon); // testing
-            mig.display(true); // testing
+            Avatar avatar = gsi.createStaticAvatar(createdUser);
+            gsi.setAvatar(avatar);
+
+            mig.display(true); // Jump straight in the game.
 
             //testdb.main();  // testing
             //Avatar avatar = avatarInterface.save(new Avatar("Rolphius", "A wiry old warrior.", createdUser));
@@ -109,8 +110,8 @@ public class App implements CommandLineRunner {
             //usi.printUserList();
 
             //Avatar avatar = ai.findById(1L);
-*/
-            displayMenu();  // Usual app behaviour
+
+            //displayMenu();  // Usual app behaviour
 
 
 

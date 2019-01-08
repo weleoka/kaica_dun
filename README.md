@@ -12,6 +12,33 @@ It also uses a transaction management implementation included in the Spring fram
 
 To compile the program for the HSQL database it is necessary to manually switch out the dataSourceBeans.
 
+
+### Service classes
+The service classes have the following responsibilities, as well as for certain processes.
+
+#### GameService
+- Avatars 
+- Dungeons
+
+#### MovementService
+- Avatars
+- Rooms
+
+#### CombatService
+- Avatars
+- Monsters
+
+#### ActionEngineService 
+- Monsters
+- Directions
+
+
+#### UserService 
+- Users and the authentication.
+
+
+
+
 ### Setup for development - manual
 These steps are one way of getting the repository ready for development.
 

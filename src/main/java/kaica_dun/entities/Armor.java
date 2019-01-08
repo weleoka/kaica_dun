@@ -15,7 +15,7 @@ public class Armor extends Item {
     private Avatar wearer;
 
     // Default empty constructor
-    public Armor(){}
+    Armor() {}
 
     /**
      * Full constructor.

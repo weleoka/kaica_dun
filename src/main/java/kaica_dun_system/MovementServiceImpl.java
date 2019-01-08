@@ -11,20 +11,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+/**
+ * Class that deals with assigning a new value for current room to avatar depending on the choices made by player
+ *
+ */
 @Service
 @EnableTransactionManagement
 public class MovementServiceImpl {
 
-    // Singleton
-    private static MovementServiceImpl ourInstance = new MovementServiceImpl();
-    public static MovementServiceImpl getInstance() {
-        return ourInstance;
-    }
-    private MovementServiceImpl() {}
-
     // Fields declared
     private static final Logger log = LogManager.getLogger();
     private Avatar avatar;
+    private Room room;
 
     @Autowired
     private AvatarInterface avatarInterface;

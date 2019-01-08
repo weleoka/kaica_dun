@@ -1,6 +1,12 @@
 package kaica_dun.util;
 
-public class Util {
+/**
+ * Helper methods not belonging to any particular class.
+ *
+ */
+public final class Util {
+
+    private Util() {}
 
     public static boolean IsEmptyString(String s) {
         if (s == null || s.trim().isEmpty())

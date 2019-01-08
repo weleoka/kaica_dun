@@ -146,6 +146,10 @@ public class UiString
         pressAKey();
     }
 
+    public static void printLoadingIntro() {
+        System.out.println("Loading game...");
+        Util.sleeper(1800);
+    }
 
     public static void pressAKey() {
         System.out.println("\n\n[press enter to continue]");
