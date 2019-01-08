@@ -5,15 +5,15 @@ import kaica_dun.entities.*;
 import kaica_dun.util.GameOverException;
 import kaica_dun.util.GameWonException;
 import kaica_dun.util.MenuException;
+import kaica_dun.util.Util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.Scanner;
-
-import static java.lang.System.in;
 
 
 /**
@@ -30,11 +30,18 @@ public class ActionEngineServiceImpl implements ActionEngineService {
     Avatar avatar;
     Dungeon dungeon;
 
+    List<Monster> monsters;
+    List<Direction> directions;
+    //Room room;
+
     @Autowired
     UserInterface ui;
 
     @Autowired
-    AvatarInterface ai;
+    UserServiceImpl usi;
+
+    @Autowired
+    AvatarInterface avatarInterface;
 
     @Autowired
     DungeonInterface di;
@@ -52,8 +59,20 @@ public class ActionEngineServiceImpl implements ActionEngineService {
     ActionMenuRoom amr;
 
     @Autowired
-    MenuLoggedIn mli;
+    MenuLoggedIn menuLoggedIn;
 
+    @Autowired
+    EntityManager entityManager;
+
+    @Autowired
+    MonsterInterface monsterInterface;
+
+
+    @Autowired
+    RoomInterfaceCustom roomInterfaceCustom;
+
+    @Autowired
+    SessionFactory sessionFactory;
 
 
     /**
@@ -71,25 +90,29 @@ public class ActionEngineServiceImpl implements ActionEngineService {
         log.debug("Priming Action Engine environment...");
         log.debug("User: {}, Avatar: '{}', Dungeon: {}", dungeon.getUser().getName(), avatar.getName(), dungeon.getDungeonId());
 
+        log.debug("Setting the Avatar pointer to the dungeon.");
+        avatar.setCurrDungeon(dungeon);
+
         this.avatar = avatar;
         this.dungeon = dungeon;
 
-        log.debug("Setting the Avatar pointer to the dungeon.");
-        avatar.setCurrDungeon(dungeon);
-        ai.save(avatar);
         log.debug("Committing avatar with dungeon pointers to db");
     }
 
     /**
-     * Drops the avatar inte the first room of a dungeon.
+     * Drops the avatar into the first room of a dungeon.
      */
-    public void playNew() {
+    public void playNew() throws MenuException {
+        Dungeon newDungeon = gsi.makeNewDungeon(usi.getAuthenticatedUser());
+        prime(gsi.getAvatar(), newDungeon);
+
         Room firstRoom = gsi.findFirstRoomInDungeon(dungeon);
 
         log.debug("Dropping avatar into room (id: {}) -> good luck!.", firstRoom.getId());
-        this.avatar.setCurrRoom(firstRoom);
-        ai.save(avatar);
+        avatar.setCurrRoom(firstRoom);
+        avatarInterface.save(avatar);
 
+        this.dungeon = null;
         UiString.printGameIntro();
 
         play();
@@ -101,7 +124,7 @@ public class ActionEngineServiceImpl implements ActionEngineService {
      * todo: implement some feedback for this..
      *
      */
-    public void resume() {
+    public void resume() throws MenuException {
 
         try {
             Room room = avatar.getCurrRoom();
@@ -119,8 +142,10 @@ public class ActionEngineServiceImpl implements ActionEngineService {
      * Currently it is a random re-generation, as original parameters were not saved.
      * todo: implement original values for all rooms etc for real re-start.
      */
-    public void restart() {
+    public void restart() throws MenuException {
         log.debug("Restarted the game. (Done by calling playNew().");
+
+        //MenuLoggedIn.startGame();
         playNew();
     }
 
@@ -132,12 +157,17 @@ public class ActionEngineServiceImpl implements ActionEngineService {
      * The method for initialising game loop and handling
      * exception bubbling thrown in nested loops.
      *
+     * todo: move the string reports out to UiStrings.
      */
-    public void play() {
+    @Override
+    public void play() throws MenuException {
         log.debug("Starting game loop.");
 
         mainGameLoop:
         while(true) {
+            //this.room = avatar.getCurrRoom();
+            this.monsters = getMonstersCurrentRoom();
+            this.directions = getDirectionsCurrentRoom();
 
             try {
                 System.out.println(buildStateInfo());
@@ -145,22 +175,25 @@ public class ActionEngineServiceImpl implements ActionEngineService {
 
             } catch (MenuException e) {
                 log.debug("Quit the game. Breaking mainGameLoop.");
-                System.out.println(e);
+                System.out.println("Quit the current game.");
                 break mainGameLoop;
 
             } catch (GameOverException e) {
                 log.debug("Game over. Breaking mainGameLoop.");
-                System.out.println(e);
-                break mainGameLoop;
+                System.out.println("Your avatar has died in battle...");
+                avatar.setCurrHealth(avatar.getMaxHealth());
+                avatar.setCurrRoom(null);
+                avatarInterface.save(avatar);
+                Util.sleeper(2400);
+                throw new MenuException("Quit in-game menu due to game over.");
 
             } catch (GameWonException e) {
-                log.debug("The avatar has prevailed and won the game! Breaking mainGameLoop.");
-                System.out.println(e);
-                break mainGameLoop;
+                log.debug("Your avatar has prevailed, and you have won the game! Breaking mainGameLoop.");
+                System.out.println("You have won the game and completed the dungeon!");
+                Util.sleeper(2400);
+                throw new MenuException("Quit in-game menu due to win.");
             }
-
         }
-        mli.display(); // Return to MenuLoggedIn
     }
 
 
@@ -169,40 +202,71 @@ public class ActionEngineServiceImpl implements ActionEngineService {
 
     /**
      * Method to collect and output to user interesting information.
+     *
+     * todo: move the strings to UiStrings for consistency and language support.
+     * todo: split the method up.
      */
     private String buildStateInfo() {
         StringBuilder str;
         String monstersInTheRoom;
-        String exitsFromTheroom;
-        String itemsInTheRoom;
+        String exitsFromTheRoom;
+        //String describablesInTheRoom;
 
-        Room room = avatar.getCurrRoom();
-
+        // Building monsters and foes
         str = new StringBuilder();
-        List<Monster> monsters = room.getMonsters();
-        str.append(String.format("There are %s monsters in the room.", monsters.size()));
-        for (int i = 1; i < monsters.size() + 1; i++) {
-            Monster monster = monsters.get(i - 1);
-            str.append(String.format("\nThe %s has %sHP.", monster.getType(), monster.getCurrHealth()));
+
+        if (monsters.size() > 0 ) {
+            str.append(String.format("There are %s dangers in the room:", monsters.size()));
+
+            for (int i = 1; i < monsters.size() + 1; i++) {
+                Monster monster = monsters.get(i - 1);
+                str.append(String.format("\n%s with health %s.", monster.getType(), monster.getCurrHealth()));
+            }
+            monstersInTheRoom = str.toString();
+
+            } else {
+                monstersInTheRoom = UiString.noMonstersVisible;
         }
-        monstersInTheRoom = str.toString();
 
 
+        // Building directions and directions
         str = new StringBuilder();
-        List<Direction> exits = room.getExits();
-        str.append(String.format("There are %s exits from the room: ", exits.size() - 1));
 
-        for (Direction direction: exits) {
-            str.append(String.format("%s,", direction.getDirectionNumber(), direction.name()));
+        if (directions.size() > 0 ) {
+            str.append(String.format("There are %s passages leading from the chamber: ", directions.size()));
+
+            for (Direction direction : directions) {
+                str.append(String.format("%s, ", direction.getName()));
+            }
+            exitsFromTheRoom = str.toString();
+
+        } else {
+            exitsFromTheRoom = UiString.noExitsFromTheRoom;
         }
-        exitsFromTheroom = str.toString();
 
 
+        // Building describables
+/*        str = new StringBuilder();
+
+        if (describables.size() > 0) {
+            str.append(String.format("There are %s thisng to look at in the room.", describables.size()));
+
+            for (Describable describable : describables) {
+                str.append(String.format("%s, ", describable.getDescription()));
+            }
+            describablesInTheRoom = str.toString();
+        } else {
+            describablesInTheRoom = UiString.noDescribablesVisible;
+        }*/
+
+
+        // Combine it all to make sense.
         str = new StringBuilder();
         str.append(
-                String.format("\nAvatar health: %s", avatar.getCurrHealth()) +
+                String.format("\n%s health: %s", avatar.getName(), avatar.getCurrHealth()) +
                 String.format("\n%s", monstersInTheRoom) +
-                String.format("\n\n%s", exitsFromTheroom) +
+                String.format("\n%s", exitsFromTheRoom) +
+                //String.format("\n%s", describablesInTheRoom) +
                 String.format("\n%s", UiString.randomSound()) +
                 String.format("\n%s", UiString.randomVisual())
         );
@@ -231,8 +295,31 @@ public class ActionEngineServiceImpl implements ActionEngineService {
         this.dungeon = dungeon;
     }
 
+    public List<Monster> getMonsters() {
+        return monsters;
+    }
+
+    public List<Direction> getDirections() {
+        return directions;
+    }
+
     public Room getAvatarCurrentRoom() {
         return getAvatar().getCurrRoom();
     }
 
+    public List<Monster> getMonstersCurrentRoom() {
+        return getAvatarCurrentRoom().getMonsters();
+    }
+
+    public List<Direction> getDirectionsCurrentRoom() {
+        return getAvatarCurrentRoom().getExits();
+    }
+
+
+
+    public void persistChanges() {
+        if (entityManager.isJoinedToTransaction()) {
+            entityManager.getTransaction().commit();
+        }
+    }
 }

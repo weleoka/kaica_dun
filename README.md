@@ -5,6 +5,100 @@ This is a dungeon adventure game for the java VM. It uses Java Persistance API v
 
 
 
+# Documentation
+This application uses a persistance system based on the JPA specifications called Hibernate.
+
+It also uses a transaction management implementation included in the Spring framework.
+
+To compile the program for the HSQL database it is necessary to manually switch out the dataSourceBeans.
+
+### Setup for development - manual
+These steps are one way of getting the repository ready for development.
+
+1) git clone the repository
+
+2) Use gradle to fetch the dependencies into the local project folder. The gradle task for copying the dependencies is `cpDeps`. The task is run: `./gradlew cpDeps` results dependencies available for development in lib/ folder. IDE loading will more efficiently keep local copies of repositories to be available for multiple projects.
+
+3) Configure your IDE to load dependencies *.jar files from `lib` is done by `file->Project Structure->Libraries->[plus-sign]` and then adding the directory `lib`. Consider deleting all other references to other libraries/locations for the project (if there are any).
+
+4) Modify the src/resources/hibernate.cfg.xml to use mariaDB or mySQL and set your credentials and url parameters.
+
+To build and run the project with gradle using the gradle wrapper `./gradlew build` and then `./gradlew run` to run the application.
+
+If `./gradlew run` does not work then try the `./gradlew installDist` or `./gradlew distZip` and tun the resulting file in the `/bin` folder.
+
+
+
+### Setup for development - automatic with IJ idea
+This is probably the usual method for work on this project
+
+1) git clone the repository
+
+2) Open the project in IJ idea.
+
+3) Stand by while dependencies are satisfied. These will not be stored in the project folder usually, but are instead downloaded to gradle cache for access by all java projects.
+
+4) Modify the src/resources/hibernate.cfg.xml to use mariaDB or mySQL db, and to set your credentials, utl, port etc.
+
+Building and running will likely be within the realms of the IDE in these instances.
+
+
+
+# Structure and design
+
+### Dependencies
+* hibernate-core
+* mysql-connector-java
+* log4j2
+* Spring boot 5.2
+* HSQLDB for file based, no-server, SQL database for easy distribution of hte game.
+
+### UML diagram
+This is the logical model for the the application object oriented design (not necessarily 100% up to date).
+![ . . . ](model_uml_app.png)
+
+### Logical Database Design
+The primary keys of tables are created by the database server. This means that the annotation `@GeneratedValue(strategy = GenerationType.IDENTITY)` is used. There are significant drawback to this method as it can be substantially slower due to Hibernate not knowing which is the next PK value before the INSERT is made.
+
+#### Entities mappings
+```xml
+<mapping class="kaica_dun_system.User"/>
+
+<mapping class="kaica_dun.entities.Dungeon"/>
+<mapping class="kaica_dun.entities.Room"/>
+<mapping class="kaica_dun.entities.Direction"/>
+<mapping class="kaica_dun.entities.ItemConsumable"/>
+<mapping class="kaica_dun.entities.Item"/>
+<mapping class="kaica_dun.entities.Armor"/>
+<mapping class="kaica_dun.entities.Weapon"/>
+<mapping class="kaica_dun.entities.Fighter"/>
+<mapping class="kaica_dun.entities.Avatar"/>
+<mapping class="kaica_dun.entities.Monster"/>
+<mapping class="kaica_dun.entities.Inventory"/>
+```
+        
+#### Logical Diagram
+This is a diagram of the logical database model (not necessarily 100% up to date) resulting from forward engineering database tables using Hibernate and JPA.
+Other aspects to the projects logical design are the method for autoincrementing the Primary Key values wich in this case follows the SEQUENCE method where Java will dictate the sequencing.  [Auto-incrementing and Java Persistence API](https://thoughts-on-java.org/jpa-generate-primary-keys/)
+![ . . . ](model_db_logical.png)
+
+
+
+### Application logging
+Log can be written to stdout, but also to file `log/app.log`. Settings concerning application logging are specified in `resources/log4j2.xml`.
+
+
+### Project directory structure
+The [directory structure](https://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html) for tthis project follows the default structure of Maven and Gradle.
+
+### Style guide
+This project attempts to adhere to the following [style guide](https://github.com/weleoka/myJavaStyleGuide).  
+An exception to the style guide is made with the constant LOGGER wich is allowed to be lowercase.
+
+
+# End, links, notes etc.
+The following are notes for developers and discussion on certain topics hopefully relevant to the project and learning Java in general!
+
 ## Joblist & QnA
 todo: What is @ManyToOne(fetch = FetchType.LAZY)?
 
@@ -35,94 +129,3 @@ A: Not a great deal of difference. Classroot is easiest.
 
 Q: What is the difference between the XML (hibernate.cfg.xml or persistance.xml) file using persistence-unit tags or sessionFactory tags?
 A: This is part of the difference between JPA and Hibernate.
-
-
-# Documentation
-This application uses a persistance system based on the JPA specifications called Hibernate.
-
-
-
-### Setup for development - manual
-These steps are one way of getting the repository ready for development.
-
-1) git clone the repository
-
-2) Use gradle to fetch the dependencies into the local project folder. The gradle task for copying the dependencies is `cpDeps`. The task is run: `./gradlew cpDeps` results dependencies available for development in lib/ folder. IDE loading will more efficiently keep local copies of repositories to be available for multiple projects.
-
-3) Configure your IDE to load dependencies *.jar files from `lib` is done by `file->Project Structure->Libraries->[plus-sign]` and then adding the directory `lib`. Consider deleting all other references to other libraries/locations for the project (if there are any).
-
-4) Modify the src/resources/hibernate.cfg.xml to use mariaDB or mySQL and set your credentials and url parameters.
-
-To build and run the project with gradle using the gradle wrapper `./gradlew build` and then `./gradlew run` to run the application.
-
-### Setup for development - automatic with IJ idea
-This is probably the usual method for work on this project
-
-1) git clone the repository
-
-2) Open the project in IJ idea.
-
-3) Stand by while dependencies are satisfied. These will not be stored in the project folder usually, but are instead downloaded to gradle cache for access by all java projects.
-
-4) Modify the src/resources/hibernate.cfg.xml to use mariaDB or mySQL db, and to set your credentials, utl, port etc.
-
-Building and running will likely be within the realms of the IDE in these instances.
-
-
-
-# Structure and design
-
-### Dependencies
-* hibernate-core
-* mysql-connector-java
-* log4j2
-
-### UML diagram
-This is the logical model for the the application object oriented design (not necessarily 100% up to date).
-![ . . . ](model_uml_app.png)
-
-### Logical Database Design
-The primary keys of tables are created by the database server. This means that the annotation `@GeneratedValue(strategy = GenerationType.IDENTITY)` is used. There are significant drawback to this method as it can be substantially slower due to Hibernate not knowing which is the next PK value before the INSERT is made.
-
-#### Entities mappings
-```xml
-<mapping class="kaica_dun.entities.Avatar"/>
-<mapping class="kaica_dun.entities.Direction"/>
-<mapping class="kaica_dun.entities.Dungeon"/>
-<mapping class="kaica_dun.entities.Fighter"/>
-<mapping class="kaica_dun.entities.Item"/>
-<mapping class="kaica_dun.entities.ItemConsumable"/>
-<mapping class="kaica_dun.entities.ItemEquippable"/>
-<mapping class="kaica_dun.entities.Monster"/>
-<mapping class="kaica_dun.entities.Room"/>
-
-<mapping class="kaica_dun_system.User"/>
-```
-        
-#### Logical Diagram
-This is a diagram of the logical database model (not necessarily 100% up to date) resulting from forward engineering database tables using Hibernate and JPA.
-Other aspects to the projects logical design are the method for autoincrementing the Primary Key values wich in this case follows the SEQUENCE method where Java will dictate the sequencing.  [Auto-incrementing and Java Persistence API](https://thoughts-on-java.org/jpa-generate-primary-keys/)
-![ . . . ](model_db_logical.png)
-
-
-
-###
-### Application logging
-Log can be written to stdout, but also to file `log/app.log`. Settings concerning application logging are specified in `resources/log4j2.xml`.
-
-
-### Project directory structure
-The [directory structure](https://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html) for tthis project follows the default structure of Maven and Gradle.
-
-### Style guide
-This project attempts to adhere to the following [style guide](https://github.com/weleoka/myJavaStyleGuide).  
-An exception to the style guide is made with the constant LOGGER wich is allowed to be lowercase.
-
-# End, links, notes etc.
-*Log4j 2*
-log4j 2 with hibernate. log4j v1.2 is the better candidate, but I think the problems have been resolved.
-https://logging.apache.org/log4j/2.x/manual/configuration.html
-https://howtodoinjava.com/log4j2/
-https://stackify.com/java-logging-best-practices/
-https://thoughts-on-java.org/hibernate-logging-guide/
-

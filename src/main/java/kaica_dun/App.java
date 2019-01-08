@@ -1,10 +1,8 @@
 package kaica_dun;
 
-import kaica_dun.entities.Avatar;
-import kaica_dun.entities.Dungeon;
-import kaica_dun.entities.RoomType;
+import kaica_dun.dao.AvatarInterface;
 import kaica_dun.resources.TestDb;
-import kaica_dun.util.MenuException;
+import kaica_dun.util.QuitException;
 import kaica_dun_system.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,7 +19,7 @@ import org.springframework.context.annotation.Profile;
 
 import static java.lang.System.out;
 
-
+//import org.hsqldb.jdbcDriver;
 //@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class,HibernateJpaAutoConfiguration.class})
 //@EntityScan({"kaica_dun.entities", "kaica_dun_system"})
 @Import({TestDb.class})//, DataSourceCfg.class, EntityManagerFactoriesCfg.class, TransactionManagersCfg.class})
@@ -59,6 +57,9 @@ public class App implements CommandLineRunner {
     ActionEngineServiceImpl aesi;
 
     @Autowired
+    AvatarInterface ai;
+
+    @Autowired
     MenuInGame mig;
 
     @Autowired
@@ -77,10 +78,11 @@ public class App implements CommandLineRunner {
         try {
             out.printf(UiString.logo);
 
-            StringBuilder str = new StringBuilder();
+  /*          StringBuilder str = new StringBuilder();
             for (RoomType type : RoomType.values()) {
                 str.append(String.format("'%s', ", type.name()));
             }
+
             log.debug("Check of valid room types: {}.", str.toString());
 
             log.info("Current users in DB: {}", usi.findAll());
@@ -92,70 +94,58 @@ public class App implements CommandLineRunner {
             log.info("Person created in DB : {}", userId2);
 
 
-            // AVATAR Creation
+            // Game Creation for testing
             User createdUser = usi.findUserById(userId);
-
             Avatar avatar = gsi.createStaticAvatar(createdUser);
+            Dungeon dungeon = gsi.makeNewDungeon(createdUser);
 
-            Dungeon dungeon = gsi.setDungeon(createdUser);
+            aesi.prime(avatar, dungeon); // testing
+            mig.display(true); // testing
 
-            // Trying to artificially create a game
-            log.debug("ID of latest dungeon is {}", dungeon.getDungeonId());
-
-
+            //testdb.main();  // testing
             //Avatar avatar = avatarInterface.save(new Avatar("Rolphius", "A wiry old warrior.", createdUser));
             //log.info("Avatar created in DB : {}", avatar.getName());
-
             //log.info("Avatars belonging to user: '{}' are: {}", createdUser.getName(), gsi.fetchAvatarByUser(createdUser));
             //usi.printUserList();
 
             //Avatar avatar = ai.findById(1L);
+*/
+            displayMenu();  // Usual app behaviour
 
 
-            aesi.prime(avatar, dungeon);
-            mig.display(true);
-
-            try {
-                menuMain.display();
-            } catch (MenuException e) { // Standard way of exiting application menus.
-                log.debug(e);
-                e.printStackTrace();
-            }
-
-            testdb.main();
 
         } catch (Exception e) {
             log.warn(e);
             e.printStackTrace();
         }
-        sessionFactory.close(); // This is important for Hibernate to drop tables if create-drop is set.
 
+    }
+
+    private void quit() {
+        out.println(UiString.goodbyeString);
+        sessionFactory.close(); // This is important for Hibernate to drop tables if create-drop is set.
         System.exit(0);
     }
 
+    /**
+     * The main menu loop that only stops if a QuitException is thrown.
+     */
+    private void displayMenu() {
 
-// Trying to load full Bean list from application context
-// Better to do this by reading log output as security measures prevent access to context.
-/*    List<Object> beanList = getInstantiatedSigletons(this.applicationContext);
-        log.debug(beanList);
+        while(true) {
 
-    public static List<Object> getInstantiatedSigletons(ApplicationContext ctx) {
-        List<Object> singletons = new ArrayList<Object>();
+            try {
+                menuMain.display();
 
-        String[] all = ctx.getBeanDefinitionNames();
+            } catch (QuitException e) {
+                log.debug(e);
+                System.out.println("Quit application.");
 
-        ConfigurableListableBeanFactory clbf = ((AbstractApplicationContext) ctx).getBeanFactory();
-        for (String name : all) {
-            Object s = clbf.getSingleton(name);
-            if (s != null)
-                singletons.add(s);
+                break;
+            }
         }
-
-        return singletons;
-
-    }*/
-
-
+        quit();
+    }
 }
 
 

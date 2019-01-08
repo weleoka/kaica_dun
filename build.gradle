@@ -37,7 +37,9 @@ dependencies {
     compile group: 'org.hibernate', name: 'hibernate-core', version: '5.4.0.Final'
     
     
-
+    
+    
+    // - - - Everything Spring
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.1.1.RELEASE'
 
@@ -60,24 +62,18 @@ dependencies {
     //compile group: 'org.springframework.boot', name: 'spring-boot-devtools', version: '2.1.1.RELEASE'
 
 
-
-
-    // https://mvnrepository.com/artifact/com.github.marcus-nl.btm/btm
-    // Also available at: https://mvnrepository.com/artifact/org.codehaus.btm/btm
-    // The second option has many more users but last uploaded 2013 instead of 2016
-    //compile group: 'com.github.marcus-nl.btm', name: 'btm', version: '3.0.0-mk1'
     
-    // https://mvnrepository.com/artifact/org.testng/testng
-    // Added to test database transactions. Removable later.
-    //testCompile group: 'org.testng', name: 'testng', version: '6.14.3'
+    
 
 
-    // Databases and connections. Can probably remove the mySQl and MariaDb dependencies for release.
-
+    
+    
+    // - - - Databases and connections. Can probably remove the mySQl and MariaDb dependencies for release.
+    // Depending on the database you may have to change the driver, connection url and hibernate dialect in application.properties.
     // https://mvnrepository.com/artifact/org.hsqldb/hsqldb
-    testCompile group: 'org.hsqldb', name: 'hsqldb', version: '2.4.1'
+    //compile group: 'org.hsqldb', name: 'hsqldb', version: '2.4.1'
 
-    // If using mySQL change the hibernate.cfg.xml to use the driver and connection url.
+    
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.13'
 
@@ -85,8 +81,13 @@ dependencies {
     // https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client
     compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.3.0'
 
+   
     
-    // For logging hiberante an older version of log4j could be required.
+    
+    
+    
+    
+    // - - - Logging (See also exclude group for not using Springs built in logger)
     // https://mvnrepository.com/artifact/log4j/log4j
     // compile group: 'log4j', name: 'log4j', version: '1.2.17'
 
@@ -95,6 +96,27 @@ dependencies {
 
 
 
+    
+
+    
+    
+    // - - - Testing frameworks
+    // Use JUnit test framework
+    // testImplementation 'junit:junit:4.12'
+
+    // https://mvnrepository.com/artifact/junit/junit
+    // testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    // https://mvnrepository.com/artifact/org.testng/testng
+    // Added to test database transactions. Removable later.
+    //testCompile group: 'org.testng', name: 'testng', version: '6.14.3'
+
+
+
+
+
+
+    // - - - Other dependencies.
     // This dependency is found on compile classpath of this component and consumers.
     // Kai: Disabled now as don't need the Google things here.
     // implementation 'com.google.guava:guava:26.0-jre'
@@ -102,15 +124,12 @@ dependencies {
     // https://mvnrepository.com/artifact/org.hibernate/hibernate-gradle-plugin
     // Kai: not sure what this does so disabling for now.
     //compile group: 'org.hibernate', name: 'hibernate-gradle-plugin', version: '5.4.0.Final'
+
+    // https://mvnrepository.com/artifact/com.github.marcus-nl.btm/btm
+    // Also available at: https://mvnrepository.com/artifact/org.codehaus.btm/btm
+    // The second option has many more users but last uploaded 2013 instead of 2016
+    //compile group: 'com.github.marcus-nl.btm', name: 'btm', version: '3.0.0-mk1'
     
-    // Use JUnit test framework
-    // Kai: disabled here as testing is not implemented now.
-    // testImplementation 'junit:junit:4.12'
-
-    // https://mvnrepository.com/artifact/junit/junit
-    // Disabled here as testing is not implemented now.
-    // testCompile group: 'junit', name: 'junit', version: '4.12'
-
 }
 
 // Kai: Added task to allow copying dependency files to the project directory for development.
@@ -121,6 +140,13 @@ task cpDeps(type: Copy) {
     from configurations.compile
     into 'lib'
 }
+
+
+
+application {
+    mainClassName = "kaica_dun.App"
+}
+
 
 // Define the main class for the application
 mainClassName = 'kaica_dun.App'

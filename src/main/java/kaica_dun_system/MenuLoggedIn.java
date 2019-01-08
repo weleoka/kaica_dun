@@ -2,13 +2,15 @@ package kaica_dun_system;
 
 import kaica_dun.dao.UserInterface;
 import kaica_dun.entities.Avatar;
-import kaica_dun.entities.Dungeon;
+import kaica_dun.util.MenuException;
 import kaica_dun.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 import static java.lang.System.out;
 
@@ -38,14 +40,17 @@ public class MenuLoggedIn extends Menu {
      * (2. Change Subscription)
      * 9. Return to Main Menu
      */
-    void display() {
+    void display() throws MenuException {
         int selection;
 
         if (!usi.isAuthenticatedUser()) {
             out.println(UiString.userNotAuthenticated);
             Util.sleeper(900);
+            return;         // TODO: uncomment after testing to bounce non-auth users out of here!
+            //menuMain.display();
 
 
+  /*          // START Debug stuff.
             boolean DEBUG = true;
             if (DEBUG) {
                 log.debug("No authenticated user currently set. Warning DEBUG enabled!!");
@@ -58,44 +63,33 @@ public class MenuLoggedIn extends Menu {
                     user = (User) optional.get();
                 }
                 usi.loginUser(user, "123");
-            }
+            } // END of debug stuff.
+*/
 
-            //return;         // TODO: uncomment after testing to bounce non-auth users out of here!
-            //menuMain.display();
         }
 
-        inputLoop:
-        while (true) {
-            out.println(UiString.loggedInMenu);
+        Set<Integer> hset = new HashSet<>(Arrays.asList(1, 2, 9));
+        selection = getUserInput(hset, UiString.loggedInMenu);
 
-            if (userInput.hasNextInt()) {
-                selection = userInput.nextInt();
+        switch (selection) {
 
-                switch (selection) {
+            case 1: // Start a new game (or resume a game if the avatar is in a dungeon already.)
 
-                    case 1: // Start a new game (or resume a game if the avatar is in a dungeon already.)
-                        if (selectAvatar()) {
-                            Dungeon newDungeon = gsi.getNewDungeon(usi.getAuthenticatedUser());
-                            aesi.prime(gsi.getAvatar(), newDungeon);
-                            aesi.playNew();
-                        }
-                        continue;
+                if (selectAvatar()) {
 
-                    case 2: // Create new Avatar
-                        createAvatar();
-                        continue;
-
-                    case 9:
-                        this.logoutUser();
-                        break inputLoop;
+                    aesi.playNew();
                 }
-            } else {
-                out.println(UiString.menuSelectionFailed);
-            }
-            userInput.reset(); // flush the in buffer
+                break;
+
+            case 2: // Create new Avatar
+                createAvatar();
+                break;
+
+            case 9:
+                this.logoutUser();
+                throw new MenuException("Logged out"); //menuLoggedIn.display();
         }
     }
-
 
 
     /**
@@ -109,9 +103,8 @@ public class MenuLoggedIn extends Menu {
         if (gsi.createNewAvatar(arr, usi.getAuthenticatedUser())) {
             out.println(UiString.newAvatarCreated);
         }
-
-        this.display(); // Return to Logged in menu prompt.
     }
+
 
     /**
      * A selecting an existing Avatar to play as.
@@ -200,7 +193,6 @@ public class MenuLoggedIn extends Menu {
         usi.logoutUser();
         out.println(UiString.logoutSuccessfull);
         Util.sleeper(700);
-        //menuMain.display();
     }
 
 }
