@@ -53,18 +53,18 @@ public class ActionMenuRoom extends ActionMenu {
 
 
     private String mainOutput;
-    private HashMap<Integer, String> mainOptions;
+    private HashMap<Integer, String> mainOptions = new HashMap<>();
 
     private String lookAtOutput;
-    private HashMap<Integer, Monster> lookAtOptions; // Currently only look at Monsters.
+    private HashMap<Integer, Monster> lookAtOptions = new HashMap<>(); // Currently only look at Monsters.
     //private HashMap<Describable> describables;
 
     private String battleOutput;
-    private HashMap<Integer, Monster> battleOptions;
+    private HashMap<Integer, Monster> battleOptions = new HashMap<>();
     private List<Monster> monsters;
 
     private String moveOutput;
-    private HashMap<Integer, Direction> moveOptions;
+    private HashMap<Integer, Direction> moveOptions = new HashMap<>();
     private List<Direction> directions;
 
     ActionMenuRoom() {}
@@ -76,6 +76,8 @@ public class ActionMenuRoom extends ActionMenu {
      */
     void display() throws MenuException, GameOverException, GameWonException {
         int selection;
+
+        this.clearOptions();
 
         this.monsters = aesi.getMonsters();
         this.directions = aesi.getDirections();
@@ -101,12 +103,12 @@ public class ActionMenuRoom extends ActionMenu {
                 break;
 
             case 3:
-                if (!monsters.isEmpty()) {  // todo: move out to movementService to check.
+/*                if (!monsters.isEmpty()) {  // todo: move out to movementService to check.
                     System.out.println("Can't move because there are enemies in the room!! Kill them first.");
-                    Util.sleeper(400);
+                    Util.sleeper(1800);
                 } else {
                     selectMoveOption();
-                }
+                }*/
                 selectMoveOption(); // Ignore the monsters in the room. Development.
                 break;
 
@@ -132,7 +134,6 @@ public class ActionMenuRoom extends ActionMenu {
      */
     private void buildMainOptions() {
         StringBuilder output = new StringBuilder();
-        mainOptions = new HashMap<>();
 
         if (lookAtOptions.size() > 0) {
             output.append(String.format("\n[1] - Look at things"));
@@ -190,7 +191,7 @@ public class ActionMenuRoom extends ActionMenu {
         StringBuilder output = new StringBuilder();
         battleOptions = new HashMap<>();
 
-        log.debug("There are {} monsters in the room (id: {})", monsters.size());
+        log.debug("There are {} monsters in the room (index: {})", monsters.size(), gsi.getAvatarCurrentRoom().getRoomIndex());
 
         for (int i = 0; i < monsters.size(); i++) {
             Monster monster = monsters.get(i);
@@ -287,15 +288,16 @@ public class ActionMenuRoom extends ActionMenu {
     }
 
     private void clearOptions() {
-        this.battleOptions.clear();
+
+        battleOptions.clear();
         //this.monsters.clear();
 
-        this.moveOptions.clear();
+        moveOptions.clear();
         //this.directions.clear();
 
-        this.lookAtOptions.clear();
+        lookAtOptions.clear();
         //this.describables.clear();
 
-        this.mainOptions.clear();
+        mainOptions.clear();
     }
 }
