@@ -27,7 +27,7 @@ public class MenuLoggedIn extends Menu {
     ActionEngineServiceImpl aesi;
 
     @Autowired // Can be removed in development.
-    UserInterface userInterface;
+            UserInterface userInterface;
 
 
     /**

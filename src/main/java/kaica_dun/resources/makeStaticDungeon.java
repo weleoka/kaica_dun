@@ -23,7 +23,7 @@ public final class makeStaticDungeon {
         List<Room> rooms = new ArrayList<Room>();
         //loop for room-list creation, initialised to null.
         for (int i = 0; i < (roomRows * roomColumns); i++) {
-            rooms.add(null);
+            rooms.add(new Room(i , null, null, null));
         }
 
         // int roomIndex, Direction incomingDoor, List<Direction> exits, List<Monster> monsters

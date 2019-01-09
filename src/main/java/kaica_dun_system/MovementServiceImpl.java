@@ -70,11 +70,8 @@ public class MovementServiceImpl {
                 break;
             case 2:
                 int southIndex = avatar.getCurrDungeon().getSouthIndex(currRoomIndex);
-                System.out.println(southIndex);
                 Room southRoom = dungeon.getRooms().get(southIndex);
-                System.out.println(southRoom);
                 avatar.setCurrRoom(southRoom);
-                System.out.println(avatar.getCurrRoom().toString());
                 break;
             case 3:
                 int westIndex = avatar.getCurrDungeon().getWestIndex(currRoomIndex);

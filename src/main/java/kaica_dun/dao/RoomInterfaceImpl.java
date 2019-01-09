@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.List;
+import java.util.UUID;
 
 public class RoomInterfaceImpl implements RoomInterfaceCustom {
 
@@ -27,12 +28,12 @@ public class RoomInterfaceImpl implements RoomInterfaceCustom {
      */
     //@Override
     @Transactional
-    public Long findFirstRoomInDungeon(Dungeon dungeon) {
+    public UUID findFirstRoomInDungeon(Dungeon dungeon) {
         log.debug("Searching for first room in Dungeon: {}", dungeon.getDungeonId());
-        TypedQuery<Long> query = this.entityManager.createNamedQuery("Room.fetchDungeonFirstRoom", Long.class);
+        TypedQuery<UUID> query = this.entityManager.createNamedQuery("Room.fetchDungeonFirstRoom", UUID.class);
         query.setParameter("dungeonId", dungeon);
         //List<Long> results = query.getResultList();
-        Long result = query.getSingleResult();
+        UUID result = query.getSingleResult();
 
         return result;
     }
@@ -50,10 +51,10 @@ public class RoomInterfaceImpl implements RoomInterfaceCustom {
     @Transactional
     public List findRoomsInDungeonByEnum(Dungeon dungeon, RoomType roomType) {
         log.debug("Searching for first room in Dungeon: {}", dungeon.getDungeonId());
-        TypedQuery<Long> query = this.entityManager.createNamedQuery("Room.findRoomsInDungeonByEnum", Long.class);
+        TypedQuery<UUID> query = this.entityManager.createNamedQuery("Room.findRoomsInDungeonByEnum", UUID.class);
         query.setParameter("dungeonId", dungeon);
         query.setParameter("roomType", roomType);
-        List<Long> results = query.getResultList();
+        List<UUID> results = query.getResultList();
         //Long result = query.getSingleResult();
 
         return results;
@@ -69,11 +70,11 @@ public class RoomInterfaceImpl implements RoomInterfaceCustom {
      */
     //@Override
     @Transactional
-    public Long findLastRoomInDungeon(Dungeon dungeon) {
+    public UUID findLastRoomInDungeon(Dungeon dungeon) {
         log.debug("Searching for last room in Dungeon: {}", dungeon.getDungeonId());
-        TypedQuery<Long> query = this.entityManager.createNamedQuery("Room.findLastRoomInDungeon", Long.class);
+        TypedQuery<UUID> query = this.entityManager.createNamedQuery("Room.findLastRoomInDungeon", UUID.class);
         query.setParameter("dungeonId", dungeon);
-        Long result = query.getSingleResult();
+        UUID result = query.getSingleResult();
 
         return result;
     }
@@ -86,11 +87,11 @@ public class RoomInterfaceImpl implements RoomInterfaceCustom {
      * @return
      */
     @Transactional
-    public List<Long> findAliveMonstersInRoom(Room room) {
+    public List<UUID> findAliveMonstersInRoom(Room room) {
         log.debug("Searching for alive monsters in room in Dungeon: {}", room.getId());
-        TypedQuery<Long> query = this.entityManager.createNamedQuery("Room.findAliveMonstersInRoom", Long.class);
+        TypedQuery<UUID> query = this.entityManager.createNamedQuery("Room.findAliveMonstersInRoom", UUID.class);
         query.setParameter("roomId", room);
-        List<Long> results = query.getResultList();
+        List<UUID> results = query.getResultList();
 
         return results;
     }

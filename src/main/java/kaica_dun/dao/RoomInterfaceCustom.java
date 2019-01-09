@@ -6,14 +6,15 @@ import kaica_dun.entities.RoomType;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public interface RoomInterfaceCustom {
-    Long findFirstRoomInDungeon(Dungeon dungeon);
+    UUID findFirstRoomInDungeon(Dungeon dungeon);
 
-    List<Long> findRoomsInDungeonByEnum(Dungeon dungeon, RoomType roomType);
+    List<UUID> findRoomsInDungeonByEnum(Dungeon dungeon, RoomType roomType);
 
-    Long findLastRoomInDungeon(Dungeon dungeon);
+    UUID findLastRoomInDungeon(Dungeon dungeon);
 
-    List<Long> findAliveMonstersInRoom(Room room);
+    List<UUID> findAliveMonstersInRoom(Room room);
 }

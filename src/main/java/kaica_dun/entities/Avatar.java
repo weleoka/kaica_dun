@@ -235,6 +235,21 @@ public class Avatar extends Fighter {
     // ********************** Common Methods ********************** //
 
     @Override
+    public boolean equals(Object obj) {
+        if(this == obj) {
+            return true;
+        }
+        if(!(obj instanceof Avatar)) {
+            return false;
+        }
+        Avatar avatar = (Avatar) obj;
+        return id != null && id.equals(avatar.id);
+    }
+
+    @Override
+    public int hashCode() { return 15; }
+
+    @Override
     public String toString() {
         // User user, String name, String description, String type, int currHealth, int maxHealth, int damage, int armor, Item equippedWeapon
         String string = String.format(
@@ -250,8 +265,4 @@ public class Avatar extends Fighter {
 
         return string;
     }
-
-
-
-
 }

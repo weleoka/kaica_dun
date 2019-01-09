@@ -1,11 +1,15 @@
 package kaica_dun.entities;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 
 /**
@@ -33,9 +37,14 @@ public class Room {
 
     // Field variable declarations and Hibernate annotation scheme
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Type(type="uuid-char")             //Will not match UUIDs i MySQL otherwise
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
     @Column(name = "roomID", updatable = false, nullable = false)
-    private Long id;
+    private UUID id;
 
     //Mapping to the dungeon entity that holds the rooms.
     //TODO Fetchtype? Eager or Lazy? More research.
@@ -49,7 +58,7 @@ public class Room {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "room_type")
-    private RoomType roomType = RoomType.STD01;;
+    private RoomType roomType = RoomType.STD01;
 
     @Transient
     private Direction incomingDoor;
@@ -71,11 +80,12 @@ public class Room {
             orphanRemoval = true
     )
     @LazyCollection(LazyCollectionOption.FALSE) // Workaround. Should really use Set and not List.
+    @NotFound(action = NotFoundAction.IGNORE)
     private List<Monster> monsters;
 
 
     // Default empty constructor
-    private Room() {}
+    protected Room() {}
 
     /**
      * The standard construtor for a room in the dungeon existing on a 2D-matrix. Empty room positions are null valued.
@@ -111,32 +121,22 @@ public class Room {
         this.incomingDoor = incomingDoor;
         this.exits = exits;
         this.monsters = monsters;
-        this.roomType = RoomType.STD01;
+        if (exits != null) {
+            this.roomType = RoomType.STD01;
+        } else {
+            this.roomType = RoomType.NULL;
+        }
+
     }
-
-    /**
-     * After randomness some rooms may get a special difficulty, status, message etc etc.
-     * and this method sets that. See enum RoomType for details of available types.
-     *
-     * Manual setting of first and last rooms use this method as well.
-     *
-     * @param rt            an instance of RoomType enum.
-     */
-    public void setRoomType(RoomType rt) {
-        this.roomType = rt;
-    }
-
-
-
 
 
     // ********************** Accessor Methods ********************** //
 
-    public Long getId() {
+    public UUID getId() {
         return this.id;
     }
 
-    public void setId(Long roomId) {
+    public void setId(UUID roomId) {
         this.id = roomId;
     }
 
@@ -157,6 +157,20 @@ public class Room {
     public void setRoomIndex(int roomIndex) {
         this.roomIndex = roomIndex;
     }
+
+    /**
+     * After randomness some rooms may get a special difficulty, status, message etc etc.
+     * and this method sets that. See enum RoomType for details of available types.
+     *
+     * Manual setting of first and last rooms use this method as well.
+     *
+     * @param rt            an instance of RoomType enum.
+     */
+    public void setRoomType(RoomType rt) {
+        this.roomType = rt;
+    }
+
+    public RoomType getRoomType() { return roomType; }
 
 
     public List<Monster> getMonsters() {
@@ -187,17 +201,19 @@ public class Room {
 
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Room that = (Room) o;
-        return id.equals(that.id);
+    public boolean equals(Object obj) {
+        if(this == obj) {
+            return true;
+        }
+        if(!(obj instanceof Room)) {
+            return false;
+        }
+        Room room = (Room) obj;
+        return id != null && id.equals(room.id);
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+    public int hashCode() { return 17; }
 
 
     // ********************** Model Methods ********************** //

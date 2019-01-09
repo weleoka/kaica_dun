@@ -1,9 +1,14 @@
 package kaica_dun_system;
 
 import kaica_dun.util.MenuException;
+import kaica_dun.util.QuitException;
 import kaica_dun.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import static java.lang.System.out;
 
@@ -27,50 +32,59 @@ public class MenuMain extends Menu {
      * <p>
      * todo: test the inputLoop breaking and what happens to following switch cases.
      */
-    public void display() throws MenuException {
+    public void display() throws QuitException {
         int selection = 0;
 
-        inputLoop:
-        while (true) {
-            out.println(UiString.mainMenu);
+        Set<Integer> hset = new HashSet<>(Arrays.asList(1, 2, 5 ,9));
+        selection = getUserInput(hset, UiString.mainMenu);
 
-            if (userInput.hasNextInt()) {
-                selection = userInput.nextInt();
+        switch (selection) {
 
-                switch (selection) {
+            case 1:
+                if (loginUser()) {
+                    out.println(UiString.successfullLogin);
+                    displayLoggedInMenu();
+                    break;
 
-                    case 1:
-                        if (loginUser()) {
-                            out.println(UiString.successfullLogin);
-                            menuLoggedIn.display();
-                            continue;
-
-                        } else {
-                            out.println(UiString.unsuccessfullLogin);
-                            continue;
-                        }
-
-                    case 2: // Create a new user.
-                        createUser();
-                        continue;
-                        //break inputLoop;
-
-                    case 5: // Secret case for listing users.
-                        usi.printUserList();
-                        continue;
-
-                    case 9:
-                        quit();
-                        break inputLoop;
+                } else {
+                    out.println(UiString.unsuccessfullLogin);
+                    break;
                 }
 
-            } else {
-                out.println(UiString.menuSelectionFailed);
-            }
-            userInput.reset(); // flush the in buffer
+            case 2: // Create a new user.
+                createUser();
+                break;
+
+            case 5: // Secret case for listing users.
+                usi.printUserList();
+                break;
+
+            case 9:
+                throw new QuitException("Quit application");
+
         }
     }
 
+
+    /**
+     * Displays the logged in menu in a loop that
+     * is stopped if an exception is thrown.
+     */
+    private void displayLoggedInMenu() {
+
+        while(true) {
+
+            try {
+                menuLoggedIn.display();
+
+            } catch (MenuException e) {
+                log.debug(e);
+                e.printStackTrace();
+                break;
+            }
+        }
+
+    }
 
 
     // - - - Prompts for user input - - -
@@ -107,20 +121,17 @@ public class MenuMain extends Menu {
             out.println(UiString.userNameFound);
 
             if (usi.loginUser(user, creds[1])) {
-
                 return true;
 
             } else {
                 out.println(UiString.userNameToPasswordMismatch); // todo: change to userNameToPwdMismatch
                 Util.sleeper(700);
-
                 return false;
             }
 
         } else {
             out.println(UiString.userNameNotFound);
             Util.sleeper(700);
-
             return false;
         }
 
@@ -164,9 +175,8 @@ public class MenuMain extends Menu {
     /**
      * End the application.
      */
-    private void quit() throws MenuException {
-        out.println(UiString.goodbyeString);
-        throw new MenuException("Quit application");
+    private void quit() throws QuitException {
+
         //System.exit(0);
         // Returns to caller
     }

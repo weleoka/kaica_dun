@@ -66,6 +66,7 @@ public class UiString
             "\n intently you can hear strange sounds and whispers of old echoes! " +
             "\n\n Indeed you quickly come to realise that you are not alone in this place!" +
             "\n\n Best to get moving right now, and find what we came down here for as quick as possible! Good luck!";
+    public static String noExitsFromTheRoom = "The room is a dead end.";
 
 
 
@@ -81,8 +82,8 @@ public class UiString
 
 
 
-
-
+    //Monster display
+    public static String noMonstersVisible = "There are no monsters in the room.";
 
 
 

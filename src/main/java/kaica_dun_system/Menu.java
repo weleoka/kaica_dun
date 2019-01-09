@@ -5,8 +5,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Scanner;
+import java.util.Set;
 
 import static java.lang.System.in;
+import static java.lang.System.out;
 
 /**
  * Abstract class for main menu actions
@@ -27,6 +29,39 @@ abstract class Menu {
     @Autowired
     public GameServiceImpl gsi;// = GameServiceImpl.getInstance();
     static final Scanner userInput = new Scanner(in);
-}
 
+
+    /**
+     * Get the users input. Between iterations print the message output to user
+     * Only values as integers specified in the validOptions will be accepted.
+     *
+     * @param validOptions
+     * @param output
+     * @return
+     */
+    public int getUserInput (Set<Integer> validOptions, String output) {
+        int selection;
+
+        inputLoop:
+        while (true) {
+            out.println(output);
+
+            if (userInput.hasNextInt()) {
+
+                selection = userInput.nextInt();
+
+                if (validOptions.contains(selection)) {
+
+                    break inputLoop;
+
+                } else {
+                    out.println(UiString.menuSelectionFailed);
+                }
+            }
+            userInput.reset(); // flush the in buffer
+        }
+
+        return selection;
+    }
+}
 

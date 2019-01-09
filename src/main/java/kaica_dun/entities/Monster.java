@@ -103,24 +103,29 @@ public class Monster extends Fighter implements Describable {
     }
 
 
+
+    // ********************** Common Methods ********************** //
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) {
+            return true;
+        }
+        if(!(obj instanceof Monster)) {
+            return false;
+        }
+        Monster monster = (Monster) obj;
+        return id != null && id.equals(monster.id);
+    }
+
+    @Override
+    public int hashCode() { return 13; }
+
     @Override
     public String toString() {
         String str = String.format("Name: %s, type: %s, HP: %s, MaxHP: %s, damage: %s, armor: %s",
                 getName(), getType(), getCurrHealth(), getMaxHealth(), getDamage(), getArmor());
         return str;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Monster)) return false;
-        Monster monster = (Monster) o;
-        return room.equals(monster.room);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(room);
     }
 }

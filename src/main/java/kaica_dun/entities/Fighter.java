@@ -3,6 +3,7 @@ package kaica_dun.entities;
 import kaica_dun.interfaces.Describable;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 /**
  * TODO abstract superclass stuff for PlayerAvatar and Monster to implement combat logic.
@@ -173,21 +174,21 @@ public abstract class Fighter implements Describable {
     }
 
 */
-   /* @Override
+    @Override
     public boolean equals(Object obj) {
         if(this == obj) {
             return true;
         }
-        if(!(obj instanceof Monster)) {
+        if(!(obj instanceof Fighter)) {
             return false;
         }
-
-        return this.id == ((Fighter) obj).id;
+        Fighter fighter = (Fighter) obj;
+        return id != null && id.equals(fighter.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id);
-    }*/
+        return 11;
+    }
 
 }

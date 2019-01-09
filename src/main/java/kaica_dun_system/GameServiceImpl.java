@@ -19,6 +19,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 
 /**
@@ -71,7 +72,7 @@ public class GameServiceImpl implements GameService {
      * Start playing a dungeon.
      */
     public void startDungeon() {
-        Room firstRoom = fetchDungeonFirstRoom();
+        Room firstRoom = fetchDungeonFirstRoom(dungeon);
         avatar.setCurrDungeon(dungeon);
         avatar.setCurrRoom(firstRoom);
         log.debug("Dropping avatar into room (id: {}) -> good luck!.", firstRoom.getId());
@@ -117,8 +118,8 @@ public class GameServiceImpl implements GameService {
      */
     @Transactional
     public Room fetchDungeonFirstRoom() {
-        List<Long> results = ric.findRoomsInDungeonByEnum(dungeon, RoomType.FIRST01);
-        Long firstRoomId = results.get(0);
+        List<UUID> results = ric.findRoomsInDungeonByEnum(dungeon, RoomType.FIRST01);
+        UUID firstRoomId = results.get(0);
 
         Room firstRoom = null;
 
@@ -131,7 +132,15 @@ public class GameServiceImpl implements GameService {
         return firstRoom;
     }
 
-
+    public Room fetchDungeonFirstRoom(Dungeon dungeon) {
+        Room room = null;
+        for (Room r : dungeon.getRooms()){
+            if(r.getRoomType() == RoomType.FIRST01) {
+                room = r;
+            }
+        }
+        return room;
+    }
 
 
 

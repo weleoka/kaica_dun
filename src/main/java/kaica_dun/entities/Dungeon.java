@@ -1,13 +1,16 @@
 package kaica_dun.entities;
 
 import kaica_dun_system.User;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "Dungeon")
@@ -15,9 +18,14 @@ public class Dungeon {
 
     // Field variable declarations and Hibernate annotation scheme
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Type(type="uuid-char")
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
     @Column(name = "dungeonID", updatable = false, nullable = false)
-    private Long id;
+    private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "userID", updatable = true, nullable = true)
@@ -40,7 +48,7 @@ public class Dungeon {
 
 
     // Default empty constructor
-    Dungeon() {}
+    protected Dungeon() {}
 
 
 
@@ -86,11 +94,9 @@ public class Dungeon {
         this.roomColumns = roomColumns;
     }
 
-    public Long getDungeonId() {
-        return this.id;
-    }
+    public UUID getDungeonId() { return this.id; }
 
-    public void setDungeonId(Long dungeonId) { this.id = dungeonId; }
+    public void setDungeonId(UUID dungeonId) { this.id = dungeonId; }
 
     public List<Room> getRooms() {
         return this.rooms;
@@ -154,26 +160,22 @@ public class Dungeon {
 
 
 
-
-
-
-
-
-
-
-
     // ********************** Common Methods ********************** //
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Dungeon that = (Dungeon) o;
-        return id.equals(that.id);
+    public boolean equals(Object obj) {
+        if(this == obj) {
+            return true;
+        }
+        if(!(obj instanceof Dungeon)) {
+            return false;
+        }
+        Dungeon dungeon = (Dungeon) obj;
+        return id != null && id.equals(dungeon.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hashCode(id);
     }
 }
