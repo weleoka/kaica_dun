@@ -5,13 +5,13 @@ import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Weapon;
 import kaica_dun_system.User;
 
-public class makeAvatar {
+public class AvatarFactory {
     private User user;
 
     /**
      * Create a new avatar with static fields for testing, belonging to a user, that we can then save to the db.
      */
-    private makeAvatar(){}
+    private AvatarFactory(){}
 
     public static Avatar make(User user) {
 

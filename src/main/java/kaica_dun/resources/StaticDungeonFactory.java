@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-public final class makeStaticDungeon {
+public final class StaticDungeonFactory {
     private Random rand = new Random();
     private MonsterFactory mf = new MonsterFactory();
     private static int roomRows = 5;

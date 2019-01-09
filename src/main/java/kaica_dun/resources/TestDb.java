@@ -190,8 +190,8 @@ public class TestDb {
         // Make static dungeon
         log.info("making Dungeon...");
         Util.sleeper(800);
-        makeStaticDungeon msd = new makeStaticDungeon(newUser);
-        log.info("User who made makeStaticDungeon: '{}'", msd.getUser().getName());
+        StaticDungeonFactory msd = new StaticDungeonFactory(newUser);
+        log.info("User who made StaticDungeonFactory: '{}'", msd.getUser().getName());
         Util.sleeper(800);
 
         Dungeon d = msd.buildDungeon();

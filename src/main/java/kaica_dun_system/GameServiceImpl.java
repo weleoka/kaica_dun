@@ -6,8 +6,8 @@ import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Dungeon;
 import kaica_dun.entities.Room;
 import kaica_dun.entities.RoomType;
-import kaica_dun.resources.makeAvatar;
-import kaica_dun.resources.makeStaticDungeon;
+import kaica_dun.resources.AvatarFactory;
+import kaica_dun.resources.StaticDungeonFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,7 +101,7 @@ public class GameServiceImpl implements GameService {
     @Transactional
     public Dungeon makeStaticDungeon() {
         log.debug("Creating static dungeon");
-        dungeon = makeStaticDungeon.buildDungeon();
+        dungeon = StaticDungeonFactory.buildDungeon();
         dungeonInterface.save(dungeon);
 
         return dungeon;
@@ -231,7 +231,7 @@ public class GameServiceImpl implements GameService {
      */
     @Transactional
     public Avatar createStaticAvatar(User user) {
-        Avatar avatar =  makeAvatar.make(user);
+        Avatar avatar =  AvatarFactory.make(user);
         avatarInterface.save(avatar);
         log.debug("Saved a new avatar with id: {}", avatar.getId());
         return avatar;
