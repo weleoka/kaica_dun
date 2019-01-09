@@ -75,6 +75,7 @@ public class GameServiceImpl implements GameService {
         Room firstRoom = fetchDungeonFirstRoom(dungeon);
         avatar.setCurrDungeon(dungeon);
         avatar.setCurrRoom(firstRoom);
+        avatarInterface.save(avatar);
         log.debug("Dropping avatar into room (id: {}) -> good luck!.", firstRoom.getId());
     }
 
@@ -231,7 +232,7 @@ public class GameServiceImpl implements GameService {
     @Transactional
     public Avatar createStaticAvatar(User user) {
         Avatar avatar =  makeAvatar.make(user);
-        avatar = avatarInterface.save(avatar);
+        avatarInterface.save(avatar);
         log.debug("Saved a new avatar with id: {}", avatar.getId());
         return avatar;
     }

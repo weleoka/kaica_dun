@@ -1,9 +1,12 @@
 package kaica_dun.entities;
 
 import kaica_dun.interfaces.Describable;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * TODO abstract superclass stuff for PlayerAvatar and Monster to implement combat logic.
@@ -16,9 +19,14 @@ import java.util.Objects;
 public abstract class Fighter implements Describable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Type(type="uuid-char")             //Will not match UUIDs i MySQL otherwise
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
     @Column(name = "fighterID", updatable = false, nullable = false)
-    protected Long id;
+    protected UUID id;
 
     @Basic
     @Column(name = "fighter_name")
@@ -77,11 +85,11 @@ public abstract class Fighter implements Describable {
 
     // ********************** Accessor Methods ********************** //
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long fighterId) {
+    public void setId(UUID fighterId) {
         this.id = fighterId;
     }
 

@@ -249,7 +249,7 @@ public class ActionMenuRoom extends ActionMenu {
         System.out.println("(Fighting individual monsters disabled. Commencing auto- battle...)");
         Util.sleeper(1200);
         List<Monster> monsters = new ArrayList<>(battleOptions.values());
-        csi.autoCombat(gsi.getAvatar(), monsters);
+        csi.autoCombat(gsi.getAvatar());
 
         monsters.clear();
         battleOptions.clear();

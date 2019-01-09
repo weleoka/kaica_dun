@@ -1,9 +1,12 @@
 package kaica_dun.entities;
 
 import kaica_dun.interfaces.Describable;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Representing items that can be picked up and worn/used by an Avatar.
@@ -19,9 +22,14 @@ public class Item implements Describable {
 
     // Field variable declarations and Hibernate annotation scheme
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Type(type="uuid-char")             //Will not match UUIDs i MySQL otherwise
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
     @Column(name = "itemID", updatable = false, nullable = false)
-    private Long id;
+    private UUID id;
 
     @Basic
     @Column(name = "item_name")
@@ -38,7 +46,7 @@ public class Item implements Describable {
 
 
     // Default empty constructor
-    Item() {}
+    protected Item() {}
 
     public Item(String itemName, String description) {
         this.itemName = itemName;
@@ -48,11 +56,11 @@ public class Item implements Describable {
 
     // ********************** Accessor Methods ********************** //
 
-    public Long getItemId() {
+    public UUID getItemId() {
         return id;
     }
 
-    public void setItemId(Long itemId) {
+    public void setItemId(UUID itemId) {
         this.id = itemId;
     }
 
