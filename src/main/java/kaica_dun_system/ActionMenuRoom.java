@@ -5,6 +5,7 @@ import kaica_dun.dao.AvatarInterface;
 import kaica_dun.dao.RoomInterface;
 import kaica_dun.entities.Direction;
 import kaica_dun.entities.Monster;
+import kaica_dun.entities.Room;
 import kaica_dun.util.GameOverException;
 import kaica_dun.util.GameWonException;
 import kaica_dun.util.MenuException;
@@ -100,9 +101,9 @@ public class ActionMenuRoom extends ActionMenu {
                 break;
 
             case 3:
-                if (!monsters.isEmpty()) {
+                if (!monsters.isEmpty()) {  // todo: move out to movementService to check.
                     System.out.println("Can't move because there are enemies in the room!! Kill them first.");
-                    Util.sleeper(2200);
+                    Util.sleeper(400);
                 } else {
                     selectMoveOption();
                 }
@@ -189,7 +190,7 @@ public class ActionMenuRoom extends ActionMenu {
         StringBuilder output = new StringBuilder();
         battleOptions = new HashMap<>();
 
-        //log.debug("There are {} monsters in the room (id: {})", monsters.size(), room.getId());
+        log.debug("There are {} monsters in the room (id: {})", monsters.size());
 
         for (int i = 0; i < monsters.size(); i++) {
             Monster monster = monsters.get(i);
@@ -250,10 +251,8 @@ public class ActionMenuRoom extends ActionMenu {
         Util.sleeper(1200);
         List<Monster> monsters = new ArrayList<>(battleOptions.values());
         csi.autoCombat(gsi.getAvatar(), monsters);
-
         monsters.clear();
         battleOptions.clear();
-
         // END auto-battle
 
 
@@ -279,11 +278,10 @@ public class ActionMenuRoom extends ActionMenu {
         int sel = getUserInput(moveOptions.keySet(), str);
         Direction direction = moveOptions.get(sel);
         //log.debug("Movement selection made {}, resulting in direction: {}", sel, direction.toString());
-        msi.moveAvatar(gsi.getAvatar(), direction);
+        Room newRoom = msi.moveAvatar(gsi.getAvatar(), direction);
         System.out.printf("\nMoved Avatar to the next room to the %s", direction.toString());
-        //log.debug("Moved avatar to new room: '{}'", newRoom.getId());
+        log.debug("Moved avatar to room with index '{}'", newRoom.getRoomIndex());
         gsi.updateAvatar();
-        clearOptions();
     }
 
     private void clearOptions() {
@@ -297,6 +295,5 @@ public class ActionMenuRoom extends ActionMenu {
         //this.describables.clear();
 
         this.mainOptions.clear();
-
     }
 }

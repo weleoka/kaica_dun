@@ -46,11 +46,13 @@ public class MovementServiceImpl {
      * @param direction     the direction to move the avatar
      * @return              the room that you moved the avatar to, returns null if the avatar has exited the dungeon
      */
-    public void moveAvatar(Avatar avatar, Direction direction) {
+    public Room moveAvatar(Avatar avatar, Direction direction) {
         Dungeon dungeon = avatar.getCurrDungeon();
         int directionNum = direction.ordinal();
         moveAvatar(avatar, dungeon, directionNum);
         //TODO the user might have exited the dungeon at this point, handle!
+
+        return avatar.getCurrRoom();
     }
 
     private void moveAvatar(Avatar avatar, Dungeon dungeon, int direction) {
