@@ -1,8 +1,12 @@
 package kaica_dun.entities;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * The inventory of an Avatar.
@@ -20,10 +24,14 @@ import java.util.List;
 public class Inventory {
 
     @Id
-    //@GeneratedValue(generator = "avatarInventorySharedPKGenerator") // todo: Fix this SharedPK generator.
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Type(type="uuid-char")             //Will not match UUIDs i MySQL otherwise
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
     @Column(name = "inventoryID")
-    private Long id;
+    private UUID id;
 
     @OneToOne(optional = true) // todo: change to non-optional
     private Avatar owner;
@@ -59,6 +67,10 @@ public class Inventory {
     public List<Item> getItems() { return items; }
 
     public void setItems(List<Item> items) { this.items = items; }
+
+    public UUID getId() { return id; }
+
+    public void setId(UUID id) { this.id = id; }
 
 
 

@@ -4,6 +4,7 @@ import kaica_dun.dao.MonsterInterface;
 import kaica_dun.dao.RoomInterface;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Monster;
+import kaica_dun.entities.Room;
 import kaica_dun.util.GameOverException;
 import kaica_dun.util.GameWonException;
 import kaica_dun.util.Util;
@@ -50,10 +51,10 @@ public class CombatServiceImpl {
      *  dead shouldn't matter much.
      *
      * @param avatar         the avatar fighting the monsters
-     * @param monsters       a list of monsters to fight
      */
-    public void autoCombat(Avatar avatar, List<Monster> monsters) throws GameOverException, GameWonException {
-
+    public void autoCombat(Avatar avatar) throws GameOverException, GameWonException {
+        Room room = avatar.getCurrRoom();
+        List<Monster> monsters = room.getMonsters();
         while (!monsters.isEmpty()) {
 
             if (avatar.getCurrHealth() <= 0) { //break loop if avatar is dead.
@@ -62,7 +63,7 @@ public class CombatServiceImpl {
             }
             combatRound(avatar, monsters);
         }
-
+        roomInterface.save(room);
         System.out.println("The corpses of your enemies litter the floor of the room. Silence falls.");
     }
 

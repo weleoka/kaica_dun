@@ -51,8 +51,12 @@ public class MovementServiceImpl {
         int directionNum = direction.ordinal();
         moveAvatar(avatar, dungeon, directionNum);
         //TODO the user might have exited the dungeon at this point, handle!
+        
+        //Persist the changes
+        avatarInterface.save(avatar);
 
         return avatar.getCurrRoom();
+
     }
 
     private void moveAvatar(Avatar avatar, Dungeon dungeon, int direction) {

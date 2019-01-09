@@ -57,6 +57,9 @@ public class App implements CommandLineRunner {
     private MenuMain menuMain;
 
     @Autowired
+    private MovementServiceImpl msi;
+
+    @Autowired
     ActionEngineServiceImpl aesi;
 
     @Autowired
@@ -100,6 +103,7 @@ public class App implements CommandLineRunner {
 
             Avatar avatar = gsi.createStaticAvatar(createdUser);
             gsi.setAvatar(avatar);
+
 
             mig.display(true); // Jump straight in the game.
 
