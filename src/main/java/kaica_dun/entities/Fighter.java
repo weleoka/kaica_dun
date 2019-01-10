@@ -56,7 +56,7 @@ public abstract class Fighter implements Describable {
     @Column(name = "armor")
     public int armor;
 
-    public Fighter() {}
+    protected Fighter() {}
 
 
     /**
@@ -161,27 +161,7 @@ public abstract class Fighter implements Describable {
 
     // ********************** Common Methods ********************** //
 
- /*   @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Fighter that = (Fighter) o;
-        return id.equals(that.id) &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(description, that.description) &&
-                Objects.equals(type, that.type) &&
-                currHealth == that.currHealth &&
-                maxHealth == that.maxHealth &&
-                damage == that.damage &&
-                armor == that.armor;
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, description, type, currHealth, maxHealth, damage, armor);
-    }
-
-*/
     @Override
     public boolean equals(Object obj) {
         if(this == obj) {
@@ -196,7 +176,7 @@ public abstract class Fighter implements Describable {
 
     @Override
     public int hashCode() {
-        return 11;
+        return Objects.hash(id);
     }
 
 }

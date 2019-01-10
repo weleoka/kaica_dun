@@ -3,6 +3,7 @@ package kaica_dun.entities;
 import kaica_dun_system.User;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -36,7 +37,6 @@ public class Avatar extends Fighter {
 
     @OneToOne(mappedBy = "wearer", optional = true, cascade = CascadeType.ALL)
     private Armor equippedArmor;
-
 
     @OneToOne(cascade = CascadeType.ALL, optional = true)
     @PrimaryKeyJoinColumn
@@ -247,7 +247,9 @@ public class Avatar extends Fighter {
     }
 
     @Override
-    public int hashCode() { return 15; }
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
     @Override
     public String toString() {

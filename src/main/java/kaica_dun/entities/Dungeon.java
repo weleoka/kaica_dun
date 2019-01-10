@@ -176,6 +176,6 @@ public class Dungeon {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hash(id);
     }
 }

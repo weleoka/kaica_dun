@@ -6,6 +6,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -13,7 +14,9 @@ import java.util.UUID;
  *
  * An instance of this class is always associated with only
  * one <tt>Avatar</tt> and depends on that parent objects lifecycle,
- * it is a component. Monsters might also have an inventory in a future version.
+ * it is a component.
+ *
+ * TODO Monsters and Chests might also have an inventory in a future version.
  *
  * Based on the Hibernate reference implementation "CaveatEmptor.JPA"
  *
@@ -33,7 +36,7 @@ public class Inventory {
     @Column(name = "inventoryID")
     private UUID id;
 
-    @OneToOne(optional = true) // todo: change to non-optional
+    @OneToOne(optional = true) // todo: change to non-optional OR remove reference to owner completely.
     private Avatar owner;
 
     @Basic
@@ -98,4 +101,21 @@ public class Inventory {
 
 
     // ********************** Common Methods ********************** //
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) {
+            return true;
+        }
+        if(!(obj instanceof Inventory)) {
+            return false;
+        }
+        Inventory inventory = (Inventory) obj;
+        return id != null && id.equals(inventory.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
