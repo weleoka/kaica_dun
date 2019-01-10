@@ -90,7 +90,6 @@ public class ActionMenuRoom extends ActionMenu {
         buildMainOptions();
 
         String str = UiString.menuHeader4 + mainOutput + UiString.makeSelectionPrompt;
-
         selection = getUserInput(mainOptions.keySet(), str);
 
         switch (selection) {
@@ -253,9 +252,6 @@ public class ActionMenuRoom extends ActionMenu {
         List<Monster> monsters = new ArrayList<>(battleOptions.values());
 
         csi.autoCombat(gsi.getAvatar());
-
-        monsters.clear();
-        battleOptions.clear();
         // END auto-battle
 
 
@@ -288,7 +284,6 @@ public class ActionMenuRoom extends ActionMenu {
         } else {
             log.debug("Moved avatar out of the dungeon");
         }
-
         gsi.updateAvatar();
     }
 

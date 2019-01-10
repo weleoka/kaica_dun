@@ -5,6 +5,7 @@ import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Dungeon;
 import kaica_dun.entities.RoomType;
 import kaica_dun.resources.TestDb;
+import kaica_dun.util.MenuException;
 import kaica_dun.util.QuitException;
 import kaica_dun_system.*;
 import org.apache.logging.log4j.LogManager;
@@ -117,7 +118,10 @@ public class App implements CommandLineRunner {
 
             //displayMenu();  // Usual app behaviour
 
-
+        } catch (MenuException e) {
+            log.debug("This is a good bye message from debug mode.");
+            log.debug("Usually the application will only quit after a KaicaException.QuitException");
+            quit(); // Close session and drop db tables.
 
         } catch (Exception e) {
             log.warn(e);
@@ -144,12 +148,12 @@ public class App implements CommandLineRunner {
 
             } catch (QuitException e) {
                 log.debug(e);
-                System.out.println("Quit application.");
+                System.out.println("Thanks for playing Kaica Dungeon!");
 
                 break;
             }
         }
-        quit();
+        quit();  // Close session and drop db tables.
     }
 }
 

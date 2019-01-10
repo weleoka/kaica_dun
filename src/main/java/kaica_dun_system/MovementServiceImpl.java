@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Class that deals with assigning a new value for current room to avatar depending on the choices made by player
@@ -27,17 +28,31 @@ public class MovementServiceImpl {
     @Autowired
     private AvatarInterface avatarInterface;
 
+
+    /**
+     * Enter the dungeon by an enterance.
+     *
+     * @param avatar
+     * @param dungeon
+     */
     public void enterDungeon(Avatar avatar, Dungeon dungeon) {
         avatar.setCurrRoom(dungeon.getRooms().get(0));  //Enter first room of dungeon, always on index 0
         avatar.setCurrDungeon(dungeon);
         avatarInterface.save(avatar);       //commit to db
     }
 
+
+    /**
+     * Leave the dungeon by an exit.
+     *
+     * @param avatar
+     */
     public void exitDungeon(Avatar avatar) {
         avatar.setCurrRoom(null);           //Exit the room
         avatar.setCurrDungeon(null);        //Exit the dungeon
         avatarInterface.save(avatar);       //commit to db
     }
+
 
     /**
      * Move the avatar to a new Room.
@@ -46,6 +61,7 @@ public class MovementServiceImpl {
      * @param direction     the direction to move the avatar
      * @return              the room that you moved the avatar to, returns null if the avatar has exited the dungeon
      */
+    @Transactional
     public Room moveAvatar(Avatar avatar, Direction direction) {
         Dungeon dungeon = avatar.getCurrDungeon();
         int directionNum = direction.ordinal();
@@ -59,6 +75,14 @@ public class MovementServiceImpl {
 
     }
 
+    /**
+     * Handles the finding of the next room by user input parameter in the chain of rooms
+     * created for the dungeon structure.
+     *
+     * @param avatar
+     * @param dungeon
+     * @param direction
+     */
     private void moveAvatar(Avatar avatar, Dungeon dungeon, int direction) {
         int currRoomIndex = avatar.getCurrRoom().getRoomIndex();
 

@@ -44,6 +44,8 @@ public class GameServiceImpl implements GameService {
     private Avatar avatar;
     private Dungeon dungeon;
 
+    @Autowired
+    private AvatarFactory avatarFactory;
 
     @Autowired
     private AvatarInterface avatarInterface;
@@ -231,7 +233,7 @@ public class GameServiceImpl implements GameService {
      */
     @Transactional
     public Avatar createStaticAvatar(User user) {
-        Avatar avatar =  AvatarFactory.make(user);
+        Avatar avatar =  avatarFactory.makeTestAvatar(user);
         avatarInterface.save(avatar);
         log.debug("Saved a new avatar with id: {}", avatar.getId());
         return avatar;
@@ -246,7 +248,7 @@ public class GameServiceImpl implements GameService {
      */
     @Transactional
     public boolean createNewAvatar(String[] arr, User user) {
-        Avatar avatar = new Avatar(arr[0], arr[1], user);
+        Avatar avatar = avatarFactory.make(arr[0], arr[1], user);
         avatarInterface.save(avatar);
         return true;
     }
