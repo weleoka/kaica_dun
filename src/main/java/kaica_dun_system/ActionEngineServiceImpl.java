@@ -138,8 +138,11 @@ public class ActionEngineServiceImpl implements ActionEngineService {
         mainGameLoop:
         while(true) {
             //this.room = avatar.getCurrRoom();
-            this.monsters = getMonstersCurrentRoom();
-            this.directions = getDirectionsCurrentRoom();
+            //TODO Think about how we want to handle having exited the dungeon.
+            if (getCurrentRoom() != null) {
+                this.monsters = getMonstersCurrentRoom();
+                this.directions = getDirectionsCurrentRoom();
+            } else { break mainGameLoop; }
 
             try {
                 System.out.println(buildStateInfo());
@@ -266,6 +269,9 @@ public class ActionEngineServiceImpl implements ActionEngineService {
         return gsi.getAvatarCurrentRoom().getExits();
     }
 
+    public Room getCurrentRoom() {
+        return gsi.getAvatarCurrentRoom();
+    }
 
 
 
