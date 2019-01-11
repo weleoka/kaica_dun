@@ -1,6 +1,6 @@
 package kaica_dun.resources;
 
-import kaica_dun_system.MenuMain;
+import kaica_dun_system.menus.MenuMain;
 import kaica_dun_system.User;
 import kaica_dun_system.UserServiceImpl;
 import org.apache.logging.log4j.LogManager;

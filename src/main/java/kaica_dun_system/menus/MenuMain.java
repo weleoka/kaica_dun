@@ -1,8 +1,10 @@
-package kaica_dun_system;
+package kaica_dun_system.menus;
 
 import kaica_dun.util.MenuException;
 import kaica_dun.util.QuitException;
 import kaica_dun.util.Util;
+import kaica_dun_system.UiString;
+import kaica_dun_system.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

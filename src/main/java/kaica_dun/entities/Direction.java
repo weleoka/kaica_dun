@@ -10,7 +10,8 @@ public enum Direction {
     E    ("East", 1),
     S    ("South", 2),
     W    ("West", 3),
-    U    ("Up and out", 4);     //TODO not sure we want this
+    U    ("Up and out", 4),
+    STAY ("Stay put", 9);
 
     private final String name;  //String representation of direction
     private final int directionNumber; //number representing the direction for simplified algebra

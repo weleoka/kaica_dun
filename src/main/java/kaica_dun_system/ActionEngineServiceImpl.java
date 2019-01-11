@@ -6,6 +6,8 @@ import kaica_dun.util.GameOverException;
 import kaica_dun.util.GameWonException;
 import kaica_dun.util.MenuException;
 import kaica_dun.util.Util;
+import kaica_dun_system.menus.ActionMenuRoom;
+import kaica_dun_system.menus.MenuLoggedIn;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.SessionFactory;
@@ -140,8 +142,8 @@ public class ActionEngineServiceImpl implements ActionEngineService {
             //this.room = avatar.getCurrRoom();
             //TODO Think about how we want to handle having exited the dungeon.
             if (getCurrentRoom() != null) {
-                this.monsters = getMonstersCurrentRoom();
-                this.directions = getDirectionsCurrentRoom();
+                monsters = getMonstersCurrentRoom();
+                directions = getDirectionsCurrentRoom();
             } else { break mainGameLoop; }
 
             try {
@@ -266,7 +268,7 @@ public class ActionEngineServiceImpl implements ActionEngineService {
     }
 
     public List<Direction> getDirectionsCurrentRoom() {
-        return gsi.getAvatarCurrentRoom().getExits();
+        return gsi.getAvatarCurrentRoom().getDirections();
     }
 
     public Room getCurrentRoom() {

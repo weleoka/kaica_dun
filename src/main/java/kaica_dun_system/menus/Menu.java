@@ -1,5 +1,8 @@
-package kaica_dun_system;
+package kaica_dun_system.menus;
 
+import kaica_dun_system.GameServiceImpl;
+import kaica_dun_system.UiString;
+import kaica_dun_system.UserServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

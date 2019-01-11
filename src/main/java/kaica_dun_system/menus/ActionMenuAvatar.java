@@ -1,4 +1,4 @@
-package kaica_dun_system;
+package kaica_dun_system.menus;
 
 
 import org.springframework.stereotype.Component;

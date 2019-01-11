@@ -1,7 +1,6 @@
-package kaica_dun_system;
+package kaica_dun_system.menus;
 
 
-import kaica_dun.dao.AvatarInterface;
 import kaica_dun.dao.RoomInterface;
 import kaica_dun.entities.Direction;
 import kaica_dun.entities.Monster;
@@ -10,6 +9,10 @@ import kaica_dun.util.GameOverException;
 import kaica_dun.util.GameWonException;
 import kaica_dun.util.MenuException;
 import kaica_dun.util.Util;
+import kaica_dun_system.ActionEngineServiceImpl;
+import kaica_dun_system.CombatServiceImpl;
+import kaica_dun_system.MovementServiceImpl;
+import kaica_dun_system.UiString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -74,7 +77,7 @@ public class ActionMenuRoom extends ActionMenu {
      * Display the main action options after building all the sub-menu items.
      *
      */
-    void display() throws MenuException, GameOverException, GameWonException {
+    public void display() throws MenuException, GameOverException, GameWonException {
         int selection;
 
         this.clearOptions();
@@ -166,7 +169,6 @@ public class ActionMenuRoom extends ActionMenu {
     private void buildLookAtOptions() {
         StringBuilder output = new StringBuilder();
         lookAtOptions = new HashMap<>();
-
         //log.debug("There are {} describables in the room (id: {}).", describables.size(), room.getId());
 
         for (int i = 0; i < monsters.size(); i++) {
@@ -218,7 +220,6 @@ public class ActionMenuRoom extends ActionMenu {
     private void buildMoveOptions() {
         StringBuilder output = new StringBuilder();
         moveOptions = new HashMap<>();
-
         //log.debug("There are {} directions from the room (id: {})", directions.size(), room.getId());
 
         for (Direction direction: directions) {

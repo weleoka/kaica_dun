@@ -1,9 +1,11 @@
-package kaica_dun_system;
+package kaica_dun_system.menus;
 
 import kaica_dun.dao.UserInterface;
 import kaica_dun.entities.Avatar;
 import kaica_dun.util.MenuException;
 import kaica_dun.util.Util;
+import kaica_dun_system.ActionEngineServiceImpl;
+import kaica_dun_system.UiString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,7 +46,8 @@ public class MenuLoggedIn extends Menu {
         if (!usi.isAuthenticatedUser()) {
             out.println(UiString.userNotAuthenticated);
             Util.sleeper(900);
-            return;   // Kick non-auth users out.
+            log.warn("REMEBER to disable access to MenuLoggedIn#display for production.");
+            //return;
         }
 
         Set<Integer> hset = new HashSet<>(Arrays.asList(1, 2, 9));

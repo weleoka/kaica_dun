@@ -72,7 +72,6 @@ public class MovementServiceImpl {
         avatarInterface.save(avatar);
 
         return avatar.getCurrRoom();
-
     }
 
     /**
@@ -112,6 +111,9 @@ public class MovementServiceImpl {
                 exitDungeon(avatar);
                 //User has exited the dungeon
                 //TODO Do some more stuff!
+                break;
+            case 9:
+                // User decides to stay in original room
                 break;
             default:
                 break;

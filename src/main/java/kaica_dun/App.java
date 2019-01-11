@@ -2,12 +2,13 @@ package kaica_dun;
 
 import kaica_dun.dao.AvatarInterface;
 import kaica_dun.entities.Avatar;
-import kaica_dun.entities.Dungeon;
 import kaica_dun.entities.RoomType;
 import kaica_dun.resources.TestDb;
 import kaica_dun.util.MenuException;
 import kaica_dun.util.QuitException;
 import kaica_dun_system.*;
+import kaica_dun_system.menus.MenuInGame;
+import kaica_dun_system.menus.MenuMain;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.SessionFactory;

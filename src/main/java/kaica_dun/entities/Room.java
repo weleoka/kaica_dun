@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 
@@ -70,7 +69,7 @@ public class Room {
             joinColumns = @JoinColumn(name = "roomID")
     )
     @LazyCollection(LazyCollectionOption.FALSE) // workaround. Should really use Set and not List.
-    private List<Direction> exits;
+    private List<Direction> directions;
 
 
     @OneToMany( //TODO CascadeType.ALL, rework to minimum
@@ -93,14 +92,14 @@ public class Room {
      * @param dungeon       the dungeon that the Room belongs to
      * @param roomIndex     the index of the Room in the Dungeon-matrix
      * @param incomingDoor  the direction of the door that leads backwards in the dungeon to the starter room
-     * @param exits         a List with the direction(s) of possible exits
+     * @param directions         a List with the direction(s) of possible directions
      * @param monsters      a List of the monster(s) in the room
      */
-    Room(Dungeon dungeon, int roomIndex, Direction incomingDoor, List<Direction> exits, List<Monster> monsters) {
+    Room(Dungeon dungeon, int roomIndex, Direction incomingDoor, List<Direction> directions, List<Monster> monsters) {
         this.dungeon = dungeon;
         this.roomIndex = roomIndex;
         this.incomingDoor = incomingDoor;
-        this.exits = exits;
+        this.directions = directions;
         this.monsters = monsters;
         this.roomType = RoomType.STD01;
     }
@@ -112,17 +111,18 @@ public class Room {
      *
      * @param roomIndex     the index of the Room in the Dungeon-matrix
      * @param incomingDoor  the direction of the door that leads backwards in the dungeon to the starter room
-     * @param exits         a List with the direction(s) of possible exits
+     * @param directions         a List with the direction(s) of possible directions
      * @param monsters      a List of the monster(s) in the room
      */
-    public Room(int roomIndex, Direction incomingDoor, List<Direction> exits, List<Monster> monsters) {
+    public Room(int roomIndex, Direction incomingDoor, List<Direction> directions, List<Monster> monsters) {
         //this.dungeon = dungeon;
         this.roomIndex = roomIndex;
         this.incomingDoor = incomingDoor;
-        this.exits = exits;
+        this.directions = directions;
         this.monsters = monsters;
-        if (exits != null) {
+        if (directions != null) {
             this.roomType = RoomType.STD01;
+            this.directions.add(Direction.STAY);
         } else {
             this.roomType = RoomType.NULL;
         }
@@ -182,12 +182,12 @@ public class Room {
     }
 
 
-    public List<Direction> getExits() {
-        return exits;
+    public List<Direction> getDirections() {
+        return directions;
     }
 
-    public void setExits(List<Direction> exits) {
-        this.exits = exits;
+    public void setDirections(List<Direction> directions) {
+        this.directions = directions;
     }
 
 

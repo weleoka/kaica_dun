@@ -55,7 +55,7 @@ public class tmpDungeonMaker {
         //Make all the other rooms TODO EVERYTHING! Atm the dungeon is only the entrance room.
         while (numRooms < maxRooms) {
             Room prevRoom = rooms.get(prevRoomIndex);        //Fetch the previous room
-            List<Direction> incoming = prevRoom.getExits();  //Fetch previously created room's exit list
+            List<Direction> incoming = prevRoom.getDirections();  //Fetch previously created room's exit list
             nextRoomIndex = -1;                              //Index of next room to be created, -1 sentinel
             for (Direction d : incoming) {
                 int directionInt = d.getDirectionNumber();
