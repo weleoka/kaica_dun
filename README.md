@@ -1,41 +1,20 @@
 
-# Assignment III - KaicaDungeon
+# Kaica Dungeon - adventure game
 This is a dungeon adventure game for the java VM. It uses Java Persistance API via Hibernate. Current build engine is Gradle and with mavenCentral repositories for dependency sourcing.
 
 
-
-
 # Documentation
-This application uses a persistance system based on the JPA specifications called Hibernate.
-
-It also uses a transaction management implementation included in the Spring framework.
-
-To compile the program for the HSQL database it is necessary to manually switch out the dataSourceBeans.
+This application uses a persistance system based on the JPA specifications called Hibernate. It also uses a transaction management implementation included in the Spring framework. To compile the program as a standalone application see instructions in documentation.
 
 
 ### Service classes
 The service classes have the following responsibilities, as well as for certain processes.
 
-#### GameService
-- Avatars 
-- Dungeons
-
-#### MovementService
-- Avatars
-- Rooms
-
-#### CombatService
-- Avatars
-- Monsters
-
-#### ActionEngineService 
-- Monsters
-- Directions
-
-#### UserService 
-- Users and the authentication.
-
-
+GameService - Avatars & Dungeons
+MovementService - Avatars & Rooms
+CombatService - Avatars & Monsters
+ActionEngineService - Monsters & Directions
+UserService - Users and the authentication
 
 
 ### Setup for development - manual
@@ -48,7 +27,7 @@ These steps are one way of getting the repository ready for development.
 
 To build and run the project with gradle using the gradle wrapper `./gradlew build` and then `./gradlew run` to run the application.
 
-If `./gradlew run` does not work then try the `./gradlew installDist` or `./gradlew distZip` and tun the resulting file in the `/bin` folder.
+If `./gradlew run` does not work then try the `./gradlew installDist` or `./gradlew distZip` and run the resulting file in the `/bin` folder.
 
 
 ### Setup for development - automatic with IJ idea
@@ -60,7 +39,6 @@ This is probably the usual method for work on this project
 4. Modify the `src/resources/hibernate.cfg.xml` to use mariaDB or mySQL db, and to set your credentials, utl, port etc.
 
 Building and running will likely be within the realms of the IDE in these instances.
-
 
 
 ### Compiling for production
@@ -76,7 +54,6 @@ For HSQLDB - standalone game:
 6. Finally set the logging level to warn for all the loggers in `log4j2.xml` and consider changing the appender to file out so you can monitor log/app.log for issues. 
 
 Now it is possible to run the builds using gradle wrapper. I'm not going to tell you how to use gradle here, but running `./gradlew distZip` or `gradlew.bat distZip` in windows should yield results.
-
 
 
 # Structure and design
@@ -116,7 +93,6 @@ The primary keys of tables are created by the database server. This means that t
 This is a diagram of the logical database model (not necessarily 100% up to date) resulting from forward engineering database tables using Hibernate and JPA.
 Other aspects to the projects logical design are the method for autoincrementing the Primary Key values wich in this case follows the SEQUENCE method where Java will dictate the sequencing.  [Auto-incrementing and Java Persistence API](https://thoughts-on-java.org/jpa-generate-primary-keys/)
 ![ . . . ](model_db_logical.png)
-
 
 
 ### Application logging
