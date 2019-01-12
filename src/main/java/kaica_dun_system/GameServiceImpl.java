@@ -86,9 +86,6 @@ public class GameServiceImpl implements GameService {
 
 
 
-
-
-
     // ********************** Dungeon Methods ********************** //
 
 
@@ -109,9 +106,9 @@ public class GameServiceImpl implements GameService {
         return dungeon;
     }
 
-
     /**
      * Search for the room in the dungeon with the correct enum type.
+     * This is the method where LAZY loading is used.
      *
      * todo: ensure that a dungeon only contains one single entry for certain enum types
      *  and modify the method for fetch single result.
@@ -135,6 +132,12 @@ public class GameServiceImpl implements GameService {
         return firstRoom;
     }
 
+    /**
+     * Find the first room if the dungeons rooms are EAGER loaded.
+     *
+     * @param dungeon
+     * @return
+     */
     public Room fetchDungeonFirstRoom(Dungeon dungeon) {
         Room room = null;
         for (Room r : dungeon.getRooms()){
@@ -145,49 +148,6 @@ public class GameServiceImpl implements GameService {
         return room;
     }
 
-
-
-    // ********************** Accessor methods ********************** //
-
-    /**
-     * get current selected avatar.
-     * @return
-     */
-    public Avatar getAvatar() {
-        return avatar;
-    }
-
-    /**
-     * Sets the Game service selected avatar.
-     * @param avatar
-     */
-    public void setAvatar(Avatar avatar) {
-        log.debug("An avatar(id:{}) has been set for username '{}'.", avatar.getId(), avatar.getUser().getName());
-        this.avatar = avatar;
-    }
-
-
-    /**
-     * getCurrent generated dungeon.
-     *
-     * So the idea would always be to get dungeon by id. That way it is possible to get a saved game.
-     *
-     * todo: implement fetching dungeon from database.
-     *  Need also to think about how currentRoom for avatar in that particular dungeon is saved.
-     *
-     * @return
-     */
-    public Dungeon getDungeon() {
-        return dungeon;
-    }
-
-    /**
-     * Set the current dungeon in the service class.
-     * @param dungeon
-     */
-    public void setDungeon(Dungeon dungeon) {
-        this.dungeon = dungeon;
-    }
 
 
 
@@ -283,6 +243,32 @@ public class GameServiceImpl implements GameService {
     public Room getAvatarCurrentRoom() {
         return getAvatar().getCurrRoom();
     }
+
+
+
+
+
+    // ********************** Accessor methods ********************** //
+
+
+    public Avatar getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(Avatar avatar) {
+        log.debug("An avatar(id:{}) has been set for username '{}'.", avatar.getId(), avatar.getUser().getName());
+        this.avatar = avatar;
+    }
+
+
+    public Dungeon getDungeon() {
+        return dungeon;
+    }
+
+    public void setDungeon(Dungeon dungeon) {
+        this.dungeon = dungeon;
+    }
+
 
 
 

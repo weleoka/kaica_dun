@@ -279,13 +279,13 @@ public class ActionMenuRoom extends ActionMenu {
         Direction direction = moveOptions.get(sel);
         //log.debug("Movement selection made {}, resulting in direction: {}", sel, direction.toString());
         Room newRoom = msi.moveAvatar(gsi.getAvatar(), direction);
-        System.out.printf("\nMoved Avatar to the next room to the %s ", direction.toString());
         if (newRoom != null) {
-            log.debug("Moved avatar to room with index '{}'", newRoom.getRoomIndex());
+            System.out.printf("%s %s", UiString.movedAvatarToTheNextRoom, direction.toString());
         } else {
-            log.debug("Moved avatar out of the dungeon");
+            System.out.printf("The direction %s resulted in the Avatar leaving the dungeon.");
+            gsi.setDungeon(null);
         }
-        gsi.updateAvatar();
+
     }
 
     private void clearOptions() {

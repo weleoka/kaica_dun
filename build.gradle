@@ -6,19 +6,38 @@
  * user guide available at https://docs.gradle.org/5.0/userguide/tutorial_java_projects.html
  */
 
+
+
 plugins {
     // Apply the java plugin to add support for Java
     id 'java'
 
     // Apply the application plugin to add support for building an application
     id 'application'
+
+    // unsure does not seem to work anyway.
+    //id: 'io.spring.dependency-management'
+
+    // Collects all the jars on the classpath and builds a single, runnable "über-jar", which makes it more convenient to execute and transport your service.
+    //It searches for the public static void main() method to flag as a runnable class.
+    //It provides a built-in dependency resolver that sets the version number to match Spring Boot dependencies.
+    // https://docs.spring.io/spring-boot/docs/2.1.2.RELEASE/gradle-plugin/reference/html/
+    id 'org.springframework.boot' version '2.1.2.RELEASE'
 }
 
 repositories {
-    // Use jcenter for resolving your dependencies.
+    // 
     // You can declare any Maven/Ivy/file repository here.
+    
+    // Use jcenter for resolving your dependencies. not sure, is it used?
     jcenter()
+
+
     mavenCentral()
+
+    
+    // not sure
+    //gradlePluginPortal()
 }
 
 

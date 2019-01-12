@@ -66,12 +66,18 @@ public class MovementServiceImpl {
         Dungeon dungeon = avatar.getCurrDungeon();
         int directionNum = direction.ordinal();
         moveAvatar(avatar, dungeon, directionNum);
-        //TODO the user might have exited the dungeon at this point, handle!
+        Room newRoom = avatar.getCurrRoom();
 
-        //Persist the changes
-        avatarInterface.save(avatar);
+        if (newRoom != null) {
+            log.debug("Moved avatar to room with index '{}'", newRoom.getRoomIndex());
+            avatarInterface.save(avatar);
 
-        return avatar.getCurrRoom();
+        } else {
+            log.debug("Moved avatar out of the dungeon");
+            exitDungeon(avatar); // Not sure about calling the method with avatar as avatar is already in the class.
+        }
+
+        return newRoom;
     }
 
     /**

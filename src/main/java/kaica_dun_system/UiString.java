@@ -67,6 +67,7 @@ public class UiString
             "\n\n Indeed you quickly come to realise that you are not alone in this place!" +
             "\n\n Best to get moving right now, and find what we came down here for as quick as possible! Good luck!";
     public static String noExitsFromTheRoom = "The room is a dead end.";
+    public static String movedAvatarToTheNextRoom = "\nMoved Avatar to the next room to the";
 
 
 

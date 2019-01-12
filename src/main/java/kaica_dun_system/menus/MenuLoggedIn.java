@@ -98,6 +98,7 @@ public class MenuLoggedIn extends Menu {
         Avatar tmpAvatar = selectAvatarPrompt();
 
         if (tmpAvatar != null) {
+            usi.getAuthenticatedUser().setCurrAvatar(tmpAvatar);
             gsi.setAvatar(tmpAvatar);
 
             return true;
