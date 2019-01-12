@@ -17,7 +17,7 @@ import java.util.Set;
 import static java.lang.System.out;
 
 @Component
-public class MenuLoggedIn extends Menu {
+class MenuLoggedIn extends Menu {
 
     @Autowired
     MenuMain menuMain;

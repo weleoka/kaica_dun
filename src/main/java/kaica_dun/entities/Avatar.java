@@ -54,17 +54,10 @@ public class Avatar extends Fighter {
         this.description = description;
         this.type = "User Avatar";
         this.user = user;               //For use in the dealDamage-method.
-
         // todo: not implemented because creating the inventory cant be done before knowing the AvatarId(FighterId)
         this.inventory = new Inventory(this);
     }
 
-
-    // Creating a new avatar - depreciated?
-/*    public Avatar(User user, String name, String description, String type, int currHealth, int maxHealth, int damage, int armor) {
-        super(name, description, type, currHealth, maxHealth, damage, armor);
-        this.user = user;
-    }*/
 
     /**
      * Full constructor. Needs a Weapon and Armor.
@@ -74,20 +67,27 @@ public class Avatar extends Fighter {
      * @param description
      * @param type
      * @param currHealth
-     * @param maxHealth
      * @param damage
      * @param armor
      * @param equippedWeapon
      * @param equippedArmor
      */
-    public Avatar(String name, String description, User user, String type, int currHealth, int maxHealth, int damage,
+    public Avatar(String name, String description, User user, String type, int currHealth, int damage,
                   int armor, Weapon equippedWeapon, Armor equippedArmor) {
-        super(name, description, type, currHealth, maxHealth, damage, armor);
+        setDefaults();
+        this.name = name;
+        this.description = description;
+        this.type = type;
+        this.currHealth = currHealth;
+        //this.maxHealth = maxHealth; // Currently disabled.
+        this.damage = damage;
+        this.armor = armor;
         this.user = user;
         equippWeapon(equippedWeapon);
         equippArmor(equippedArmor);
         this.inventory = new Inventory(this);
     }
+
 
     /**
      * Barebones constructor. Creates an avatar without a weapon or an armor.
@@ -97,13 +97,19 @@ public class Avatar extends Fighter {
      * @param description
      * @param type
      * @param currHealth
-     * @param maxHealth
+     * //@param maxHealth // disabled right now.
      * @param damage
      * @param armor
      */
-    public Avatar(User user, String name, String description, String type, int currHealth, int maxHealth, int damage,
-                  int armor) {
-        super(name, description, type, currHealth, maxHealth, damage, armor);
+    public Avatar(User user, String name, String description, String type, int currHealth, int damage, int armor) {
+        setDefaults();
+        this.name = name;
+        this.description = description;
+        this.type = type;
+        this.currHealth = currHealth;
+        //this.maxHealth = maxHealth; // Currently disabled.
+        this.damage = damage;
+        this.armor = armor;
         this.user = user;
         this.inventory = new Inventory(this);
     }
@@ -112,7 +118,7 @@ public class Avatar extends Fighter {
     /**
      * Set the defaults for the Avatar from standard avatar.
      *
-     * todo: fetch Avatar defaults from store.
+     * todo: fetch Avatar defaults from data store.
      */
     private void setDefaults() {
         this.name = "No name";

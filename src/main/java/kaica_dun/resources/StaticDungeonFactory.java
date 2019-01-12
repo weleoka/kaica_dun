@@ -1,7 +1,6 @@
 package kaica_dun.resources;
 
 import kaica_dun.entities.*;
-import kaica_dun_system.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

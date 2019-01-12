@@ -3,7 +3,6 @@ package kaica_dun.resources;
 import kaica_dun.entities.Armor;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Weapon;
-import kaica_dun_system.GameServiceImpl;
 import kaica_dun_system.User;
 import kaica_dun_system.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +65,7 @@ public class AvatarFactory {
     public Avatar make(String name, String description, User user) {
         Weapon wep = createDefaultWeapon();
         Armor arm = createDefaultArmor();
-        Avatar avatar = new Avatar(name, description, user, "User Avatar", 9000, 90, 1, 2, wep, arm);
+        Avatar avatar = new Avatar(name, description, user, "User Avatar", 9000, 1, 2, wep, arm);
 
         return avatar;
     }
@@ -83,7 +82,7 @@ public class AvatarFactory {
     public Avatar makeTestAvatar(User user) {
         Weapon wep = createDefaultWeapon();
         Armor arm = createDefaultArmor();
-        Avatar avatar = new Avatar("Billy the Burly", "Oh, yeah!", user, "User Avatar", 9000, 90, 1, 2, wep, arm);
+        Avatar avatar = new Avatar("Billy the Burly", "Oh, yeah!", user, "User Avatar", 9000, 1, 2, wep, arm);
 
         return avatar;
     }

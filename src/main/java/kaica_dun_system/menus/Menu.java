@@ -23,7 +23,7 @@ import static java.lang.System.out;
  * The "Menu"-hierarchy goes down to the actual game-cycle, but after that point the
  * "ActionMenu"-hierarchy takes over for displaying and accepting user choice in the game.
  */
-abstract class Menu {
+public abstract class Menu {
     public static final Logger log = LogManager.getLogger();
 
     @Autowired

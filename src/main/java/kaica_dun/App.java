@@ -1,6 +1,6 @@
 package kaica_dun;
 
-import kaica_dun.dao.AvatarInterface;
+import kaica_dun.config.KaicaDunCfg;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.RoomType;
 import kaica_dun.resources.TestDb;
@@ -39,12 +39,15 @@ import static java.lang.System.out;
 @EnableAutoConfiguration
 
 
-// lazyInit means the bans are loaded as used. Gained 1 second boot time. todo: learn the @Lazy annotation.
+// lazyInit means the beans are loaded as used. Gained 1 second boot time.
+// todo: learn the @Lazy annotation.
 @ComponentScan(basePackages = {"kaica_dun_system", "kaica_dun"}, lazyInit=true)
-
 public class App implements CommandLineRunner {
     // This logger has a name so that it can retrieved for use from anywhere in the application.
     private static final Logger log = LogManager.getLogger("MAIN");
+
+    @Autowired
+    KaicaDunCfg kcfg;
 
     @Autowired
     private UserServiceImpl usi;
@@ -62,12 +65,6 @@ public class App implements CommandLineRunner {
     private MovementServiceImpl msi;
 
     @Autowired
-    ActionEngineServiceImpl aesi;
-
-    @Autowired
-    AvatarInterface ai;
-
-    @Autowired
     MenuInGame mig;
 
     @Autowired
@@ -80,62 +77,59 @@ public class App implements CommandLineRunner {
     }
 
 
+    /**
+     * Main entry point for a spring boot application.
+     *
+     * @param strings
+     */
     public void run(String... strings) {
+        out.printf(UiString.logo);
 
+        if (kcfg.debug) {
+            try {
+                StringBuilder str = new StringBuilder();
+                for (RoomType type : RoomType.values()) {
+                    str.append(String.format("'%s', ", type.name()));
+                }
+                log.debug("Check of valid room types: {}.", str.toString());
+                log.info("Current users in DB: {}", usi.findAll());
+                Long userId = usi.createUser(new User("user1", "123"));
+                log.info("Person created in DB : {}", userId);
+                Long userId2 = usi.createUser(new User("user2", "123"));
+                log.info("Person created in DB : {}", userId2);
 
-        try {
-            out.printf(UiString.logo);
+                // Game Creation for testing
+                // The Game service needs a user and a selected avatar.
+                User createdUser = usi.findUserById(userId);
+                usi.setAuthenticatedUser(createdUser);
 
-            StringBuilder str = new StringBuilder();
-            for (RoomType type : RoomType.values()) {
-                str.append(String.format("'%s', ", type.name()));
+                Avatar avatar = gsi.createStaticAvatar(createdUser);
+                gsi.setAvatar(avatar);
+
+                mig.display(true); // Jump straight in the game.
+
+                //testdb.main();  // testing
+                //Avatar avatar = avatarInterface.save(new Avatar("Rolphius", "A wiry old warrior.", createdUser));
+                //log.info("Avatar created in DB : {}", avatar.getName());
+                //log.info("Avatars belonging to user: '{}' are: {}", createdUser.getName(), gsi.fetchAvatarByUser(createdUser));
+                //usi.printUserList();
+
+                //Avatar avatar = ai.findById(1L);
+
+            } catch (MenuException e) {
+                log.debug("This is a good bye message from debug mode.");
+                log.debug("Usually the application will only quit after a KaicaException.QuitException");
+                quit(); // Close session and drop db tables.
+
+            } catch (Exception e) {
+                log.warn(e);
+                e.printStackTrace();
+                quit();
             }
-            log.debug("Check of valid room types: {}.", str.toString());
-            log.info("Current users in DB: {}", usi.findAll());
-            Long userId = usi.createUser(new User("user1", "123"));
-            log.info("Person created in DB : {}", userId);
-            Long userId2 = usi.createUser(new User("user2", "123"));
-            log.info("Person created in DB : {}", userId2);
-
-
-            // Game Creation for testing
-            // The Game service needs a user and a selected avatar.
-            User createdUser = usi.findUserById(userId);
-            usi.setAuthenticatedUser(createdUser);
-
-            Avatar avatar = gsi.createStaticAvatar(createdUser);
-            gsi.setAvatar(avatar);
-
-
-            mig.display(true); // Jump straight in the game.
-
-            //testdb.main();  // testing
-            //Avatar avatar = avatarInterface.save(new Avatar("Rolphius", "A wiry old warrior.", createdUser));
-            //log.info("Avatar created in DB : {}", avatar.getName());
-            //log.info("Avatars belonging to user: '{}' are: {}", createdUser.getName(), gsi.fetchAvatarByUser(createdUser));
-            //usi.printUserList();
-
-            //Avatar avatar = ai.findById(1L);
-
-            //displayMenu();  // Usual app behaviour
-
-        } catch (MenuException e) {
-            log.debug("This is a good bye message from debug mode.");
-            log.debug("Usually the application will only quit after a KaicaException.QuitException");
-            quit(); // Close session and drop db tables.
-
-        } catch (Exception e) {
-            log.warn(e);
-            e.printStackTrace();
         }
-
+        displayMenu();  // Usual app behaviour
     }
 
-    private void quit() {
-        out.println(UiString.goodbyeString);
-        sessionFactory.close(); // This is important for Hibernate to drop tables if create-drop is set.
-        System.exit(0);
-    }
 
     /**
      * The main menu loop that only stops if a QuitException is thrown.
@@ -150,11 +144,25 @@ public class App implements CommandLineRunner {
             } catch (QuitException e) {
                 log.debug(e);
                 System.out.println("Thanks for playing Kaica Dungeon!");
+                break;
 
+            } catch (Exception e) {
+                log.warn(e);
+                e.printStackTrace();
                 break;
             }
         }
-        quit();  // Close session and drop db tables.
+        quit();  // Close session.
+    }
+
+
+    /**
+     * Closes the application and does clean up if any.
+     */
+    private void quit() {
+        out.println(UiString.goodbyeString);
+        sessionFactory.close(); // This is important for Hibernate to drop tables if create-drop is set.
+        System.exit(0);
     }
 }
 

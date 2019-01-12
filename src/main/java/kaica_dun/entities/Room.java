@@ -2,11 +2,11 @@ package kaica_dun.entities;
 
 import org.hibernate.annotations.*;
 
-import javax.persistence.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
 
