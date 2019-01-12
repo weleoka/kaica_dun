@@ -10,11 +10,11 @@ This application uses a persistance system based on the JPA specifications calle
 ### Service classes
 The service classes have the following responsibilities, as well as for certain processes.
 
-GameService - Avatars & Dungeons
-MovementService - Avatars & Rooms
-CombatService - Avatars & Monsters
-ActionEngineService - Monsters & Directions
-UserService - Users and the authentication
+GameService - Avatars & Dungeons  
+MovementService - Avatars & Rooms  
+CombatService - Avatars & Monsters  
+ActionEngineService - Monsters & Directions  
+UserService - Users and the authentication  
 
 
 ### Setup for development - manual
