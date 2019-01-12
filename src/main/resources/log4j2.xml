@@ -24,9 +24,9 @@
 
         <!-- SQL statements and parameters -->
         <Logger name="org.hibernate" level="warn"/>
-        <Logger name="org.hibernate.SQL" level="info"/>
-        <Logger name="org.hibernate.type.descriptor.sql" level="info"/>
-        <Logger name="org.hibernate.stat" level="info"/>
+        <Logger name="org.hibernate.SQL" level="warn"/>
+        <Logger name="org.hibernate.type.descriptor.sql" level="warn"/>
+        <Logger name="org.hibernate.stat" level="warn"/>
         <Logger name="org.hibernate.tool" level="error"/>
 
 
@@ -44,6 +44,11 @@
 
 
         <Logger name="org.jboss.logging" level="warn"/>
+
+
+        <Logger name="hsqldb.db" level="warn"/>
+
+        <!--<Logger name="kaica_dun.App" level="warn"/>-->
 
 
 

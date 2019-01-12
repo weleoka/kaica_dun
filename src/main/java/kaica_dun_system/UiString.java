@@ -15,6 +15,7 @@ import static java.lang.System.in;
  * outputing strings to the user, or processing strings and then returning to caller.
  *
  */
+
 public class UiString
 {
     public static Random rand = new Random();

@@ -1,20 +1,19 @@
 package kaica_dun_system;
 
-import kaica_dun.dao.*;
-import kaica_dun.entities.*;
+import kaica_dun.config.KaicaDunCfg;
+import kaica_dun.entities.Direction;
+import kaica_dun.entities.Monster;
+import kaica_dun.entities.Room;
 import kaica_dun.util.GameOverException;
 import kaica_dun.util.GameWonException;
 import kaica_dun.util.MenuException;
 import kaica_dun.util.Util;
 import kaica_dun_system.menus.ActionMenuRoom;
-import kaica_dun_system.menus.MenuLoggedIn;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
 
@@ -26,7 +25,6 @@ import java.util.List;
  * - Directions
  * ... - Items?
  *
- * This class will maintain a log of progress
  *
  * @author Kai Weeks
  *
@@ -40,44 +38,16 @@ public class ActionEngineServiceImpl implements ActionEngineService {
     private List<Direction> directions;
 
     @Autowired
-    UserInterface ui;
+    KaicaDunCfg kcfg;
 
     @Autowired
     UserServiceImpl usi;
 
     @Autowired
-    AvatarInterface avatarInterface;
-
-    @Autowired
-    DungeonInterface di;
-
-    @Autowired
     GameServiceImpl gsi;
 
     @Autowired
-    RoomInterfaceCustom ric;
-
-    @Autowired
-    RoomInterface ri;
-
-    @Autowired
     ActionMenuRoom amr;
-
-    @Autowired
-    MenuLoggedIn menuLoggedIn;
-
-    @Autowired
-    EntityManager entityManager;
-
-    @Autowired
-    MonsterInterface monsterInterface;
-
-
-    @Autowired
-    RoomInterfaceCustom roomInterfaceCustom;
-
-    @Autowired
-    SessionFactory sessionFactory;
 
 
     /**
@@ -88,8 +58,8 @@ public class ActionEngineServiceImpl implements ActionEngineService {
         gsi.resetAvatar();
         gsi.startDungeon(); // todo: move out to Movement class
         printDebugInfo("New game: ");
-        //UiString.printLoadingIntro();
-        //UiString.printGameIntro();
+        UiString.printLoadingIntro();
+        UiString.printGameIntro();
         play();
     }
 
@@ -98,18 +68,21 @@ public class ActionEngineServiceImpl implements ActionEngineService {
      * Resume a game that has been paused.
      */
     public void resume() throws MenuException {
+        Room room = null;
 
         try {
-            Room room = gsi.getAvatar().getCurrRoom();
+            room = gsi.getAvatar().getCurrRoom();
 
         } catch (NullPointerException e) {
             log.warn("No Current room is set for Avatar. Can't resume game.");
             throw new MenuException("Quit the current game");
         }
+        log.debug("Found an active room ({}) for avatar: {}", room.getId(), gsi.getAvatar().getName());
         printDebugInfo("Resume game: ");
         UiString.printLoadingIntro();
         play();
     }
+
 
     /**
      * Restart the current game with the same parameters.
@@ -120,11 +93,12 @@ public class ActionEngineServiceImpl implements ActionEngineService {
         printDebugInfo("Restart game: ");
         gsi.resetAvatar();
         gsi.startDungeon();
-        UiString.printLoadingIntro();
-        UiString.printGameIntro();
+        if (!kcfg.debug) {
+            UiString.printLoadingIntro();
+            UiString.printGameIntro();
+        }
         play();
     }
-
 
 
     /**
@@ -251,7 +225,6 @@ public class ActionEngineServiceImpl implements ActionEngineService {
 
 
 
-
     // ********************** Accessor Methods ********************** //
 
     public List<Monster> getMonsters() {
@@ -276,6 +249,8 @@ public class ActionEngineServiceImpl implements ActionEngineService {
     }
 
 
+
+    // ********************** Helper Methods ********************** //
 
     public void printDebugInfo(String extra) {
         log.debug("{} (User: {}, Avatar: '{}', Dungeon: {})",

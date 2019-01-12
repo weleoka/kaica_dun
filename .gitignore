@@ -8,6 +8,7 @@
 # 3) files that are IDE specific for IntelliJ idea.
 # 4) the recommended gitignore from github java type.
 
+
 # 5) The whole .idea/ folder because its always changing.
 .idea
 
@@ -17,6 +18,14 @@ kaiWork/
 
 # 7) log file folder
 log/
+
+
+# 8) files created by the standalone database version of the game
+kaica_dun_db.lck
+kaica_dun_db.properties
+kaica_dun_db.script
+
+
 
 # Contains database access details. hibernate.cfg.xml no longer ignored as moved to application.properties.
 application.properties
