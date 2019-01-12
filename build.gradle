@@ -71,15 +71,15 @@ dependencies {
     // - - - Databases and connections. Can probably remove the mySQl and MariaDb dependencies for release.
     // Depending on the database you may have to change the driver, connection url and hibernate dialect in application.properties.
     // https://mvnrepository.com/artifact/org.hsqldb/hsqldb
-    //compile group: 'org.hsqldb', name: 'hsqldb', version: '2.4.1'
+    compile group: 'org.hsqldb', name: 'hsqldb', version: '2.4.1'
 
     
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
-    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.13'
+    //compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.13'
 
     // If using MariaDB change the hibernate.cfg.xml to use the driver and connection url.
     // https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client
-    compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.3.0'
+    //compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.3.0'
 
    
     

@@ -1,6 +1,8 @@
 package kaica_dun_system;
 
+import kaica_dun.config.KaicaDunCfg;
 import kaica_dun.util.Util;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.Random;
@@ -15,6 +17,7 @@ import static java.lang.System.in;
  * outputing strings to the user, or processing strings and then returning to caller.
  *
  */
+
 public class UiString
 {
     public static Random rand = new Random();

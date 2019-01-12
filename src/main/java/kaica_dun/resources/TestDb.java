@@ -1,8 +1,8 @@
 package kaica_dun.resources;
 
-import kaica_dun_system.MenuMain;
 import kaica_dun_system.User;
 import kaica_dun_system.UserServiceImpl;
+import kaica_dun_system.menus.MenuMain;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

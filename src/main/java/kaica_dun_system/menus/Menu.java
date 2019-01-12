@@ -1,5 +1,8 @@
-package kaica_dun_system;
+package kaica_dun_system.menus;
 
+import kaica_dun_system.GameServiceImpl;
+import kaica_dun_system.UiString;
+import kaica_dun_system.UserServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +23,7 @@ import static java.lang.System.out;
  * The "Menu"-hierarchy goes down to the actual game-cycle, but after that point the
  * "ActionMenu"-hierarchy takes over for displaying and accepting user choice in the game.
  */
-abstract class Menu {
+public abstract class Menu {
     public static final Logger log = LogManager.getLogger();
 
     @Autowired

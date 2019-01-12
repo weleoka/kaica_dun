@@ -112,7 +112,7 @@ public class Avatar extends Fighter {
     /**
      * Set the defaults for the Avatar from standard avatar.
      *
-     * todo: fetch Avatar defaults from store.
+     * todo: fetch Avatar defaults from data store.
      */
     private void setDefaults() {
         this.name = "No name";

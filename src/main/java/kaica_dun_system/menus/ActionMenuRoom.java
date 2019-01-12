@@ -1,7 +1,7 @@
-package kaica_dun_system;
+package kaica_dun_system.menus;
 
 
-import kaica_dun.dao.AvatarInterface;
+import kaica_dun.config.KaicaDunCfg;
 import kaica_dun.dao.RoomInterface;
 import kaica_dun.entities.Direction;
 import kaica_dun.entities.Monster;
@@ -10,6 +10,10 @@ import kaica_dun.util.GameOverException;
 import kaica_dun.util.GameWonException;
 import kaica_dun.util.MenuException;
 import kaica_dun.util.Util;
+import kaica_dun_system.ActionEngineServiceImpl;
+import kaica_dun_system.CombatServiceImpl;
+import kaica_dun_system.MovementServiceImpl;
+import kaica_dun_system.UiString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,6 +39,8 @@ import java.util.List;
  */
 @Component
 public class ActionMenuRoom extends ActionMenu {
+    @Autowired
+    KaicaDunCfg kcfg;
 
     @Autowired
     ActionEngineServiceImpl aesi;
@@ -72,9 +78,8 @@ public class ActionMenuRoom extends ActionMenu {
 
     /**
      * Display the main action options after building all the sub-menu items.
-     *
      */
-    void display() throws MenuException, GameOverException, GameWonException {
+    public void display() throws MenuException, GameOverException, GameWonException {
         int selection;
 
         this.clearOptions();
@@ -102,13 +107,17 @@ public class ActionMenuRoom extends ActionMenu {
                 break;
 
             case 3:
-/*                if (!monsters.isEmpty()) {  // todo: move out to movementService to check.
-                    System.out.println("Can't move because there are enemies in the room!! Kill them first.");
-                    Util.sleeper(1800);
+                if (!kcfg.debug) {
+                    if (!monsters.isEmpty()) {  // todo: move out to movementService to check.
+                        System.out.println("Can't move because there are enemies in the room!! Kill them first.");
+                        Util.sleeper(1800);
+                    } else {
+                        selectMoveOption();
+                    }
                 } else {
-                    selectMoveOption();
-                }*/
-                selectMoveOption(); // Ignore the monsters in the room. Development.
+                    selectMoveOption(); // Ignore the monsters in the room. Development.
+                }
+
                 break;
 
             case 9:
@@ -158,7 +167,7 @@ public class ActionMenuRoom extends ActionMenu {
 
 
     /**
-     * Different things in a room need to be decribed.
+     * Different things in a room need to be described.
      * These are: monsters, directions, chests, other avatars?
      *
      * todo: implement looking at items and other things, not only monsters.
@@ -233,7 +242,9 @@ public class ActionMenuRoom extends ActionMenu {
 
     // ********************** Selection Methods ********************** //
 
-
+    /**
+     * Handles the selection of looking at things.
+     */
     private void selectLookAtOption() {
         String str = UiString.lookAtMenuHeader + lookAtOutput + UiString.makeSelectionPrompt;
         int sel = getUserInput(lookAtOptions.keySet(), str);
@@ -242,7 +253,14 @@ public class ActionMenuRoom extends ActionMenu {
         Util.sleeper(1400);
     }
 
-    void selectBattleOption() throws GameOverException, GameWonException {
+
+    /**
+     * Handles the selection of battle.
+     *
+     * @throws GameOverException
+     * @throws GameWonException
+     */
+    private void selectBattleOption() throws GameOverException, GameWonException {
         String str = UiString.battleMenuHeader + battleOutput + UiString.makeSelectionPrompt;
         System.out.println(str);
 
@@ -272,6 +290,9 @@ public class ActionMenuRoom extends ActionMenu {
     }
 
 
+    /**
+     * Handles the selection of movement.
+     */
     private void selectMoveOption() {
         String str = UiString.moveMenuHeader + moveOutput + UiString.makeSelectionPrompt;
         int sel = getUserInput(moveOptions.keySet(), str);
@@ -287,6 +308,10 @@ public class ActionMenuRoom extends ActionMenu {
         gsi.updateAvatar();
     }
 
+
+    /**
+     * At every iteration of the game loop make sure to clear the options.
+     */
     private void clearOptions() {
 
         battleOptions.clear();
