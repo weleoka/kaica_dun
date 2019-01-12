@@ -84,7 +84,7 @@ public class App implements CommandLineRunner {
      */
     public void run(String... strings) {
         out.printf(UiString.logo);
-
+        log.debug(kcfg.debug);
         if (kcfg.debug) {
             try {
                 StringBuilder str = new StringBuilder();

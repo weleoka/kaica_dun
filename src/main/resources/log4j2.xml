@@ -48,11 +48,11 @@
 
         <Logger name="hsqldb.db" level="warn"/>
 
-        <Logger name="kaica_dun.App" level="warn"/>
+        <!--<Logger name="kaica_dun.App" level="warn"/>-->
 
 
 
-        <Root level="error">
+        <Root level="debug">
 
             <!-- Which appenders to use -->
             <!--<AppenderRef ref="File" />-->
