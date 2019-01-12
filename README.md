@@ -69,9 +69,6 @@ Now it is possible to run the builds using gradle wrapper. I'm not going to tell
 This is the logical model for the the application object oriented design (not necessarily 100% up to date).
 ![ . . . ](model_uml_app.png)
 
-### Logical Database Design
-The primary keys of tables are created by the database server. This means that the annotation `@GeneratedValue(strategy = GenerationType.IDENTITY)` is used. There are significant drawback to this method as it can be substantially slower due to Hibernate not knowing which is the next PK value before the INSERT is made.
-
 #### Entities mappings
 ```xml
 <mapping class="kaica_dun_system.User"/>
@@ -91,7 +88,7 @@ The primary keys of tables are created by the database server. This means that t
         
 #### Logical Diagram
 This is a diagram of the logical database model (not necessarily 100% up to date) resulting from forward engineering database tables using Hibernate and JPA.
-Other aspects to the projects logical design are the method for autoincrementing the Primary Key values wich in this case follows the SEQUENCE method where Java will dictate the sequencing.  [Auto-incrementing and Java Persistence API](https://thoughts-on-java.org/jpa-generate-primary-keys/)
+
 ![ . . . ](model_db_logical.png)
 
 
