@@ -1,6 +1,6 @@
 Hej,
 
-För att köra detta program så krävs det helt enkelt att zippa upp filen. Gå sedan til filmappen `standalone/bin`. Där i `/bin` så hittar du två filer: kör i linux med './kaica_dun' eller i Windows med 'kaica_dun.bat' Programmet inkluderar HSQL database som använder filbaserad lagring men stöder SQL dialekt. 
+För att köra detta program så krävs det helt enkelt att zippa upp filen. Gå sedan til filmappen `standalone/bin`. Där i `/bin` så hittar du två filer: kör i linux med `./kaica_dun`, eller i Windows med `kaica_dun.bat`. Programmet inkluderar HSQL database som använder filbaserad lagring men stöder SQL dialekt. 
 
 För att inspektera källkoden så är det inkluderat i inlämningen. Ett annat alternativ är att ladda ner en zip, eller alternativt klona, repot på: 
 
