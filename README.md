@@ -57,7 +57,7 @@ This is probably the usual method for work on this project
 1. git clone the repository
 2. Open the project in IJ idea.
 3. Stand by while dependencies are satisfied. These will not be stored in the project folder usually, but are instead downloaded to gradle cache for access by all java projects.
-4. Modify the src/resources/hibernate.cfg.xml to use mariaDB or mySQL db, and to set your credentials, utl, port etc.
+4. Modify the `src/resources/hibernate.cfg.xml` to use mariaDB or mySQL db, and to set your credentials, utl, port etc.
 
 Building and running will likely be within the realms of the IDE in these instances.
 
@@ -68,12 +68,12 @@ As always there are few tweaks to be done before compiling successfully for prod
 
 For HSQLDB - standalone game:
 
-1. Switch out the DataSource bean by removing /cfg/DataSourceCfg.java and putting cfg/DataSourceHsCfg.java in place. (todo: change)
+1. Switch out the DataSource bean by removing `/cfg/DataSourceCfg.java` and putting `cfg/DataSourceHsCfg.java` in place. (todo: change)
 2. Change the dialect in application.config to the HSQL dialect by switching the commenting out.
 3. Optional: change the ddl mode in application.config from create-drop to update, but only after ensuring that the tables are in existence. This is a question of weather or not you want save game functions.
 4. In build.gradle uncomment the HSQL db dependency, and consider commenting out mariDb and sqlDb dependencies.
-5. Change the debug in cfg/KaicaDunCfg.java from true to false. 
-6. Finally set the logging level to warn for all the loggers in log4j2.xml and consider changing the appender to file out so you can monitor log/app.log for issues. 
+5. Change the debug in `cfg/KaicaDunCfg.java` from true to false. 
+6. Finally set the logging level to warn for all the loggers in `log4j2.xml` and consider changing the appender to file out so you can monitor log/app.log for issues. 
 
 Now it is possible to run the builds using gradle wrapper. I'm not going to tell you how to use gradle here, but running `./gradlew distZip` or `gradlew.bat distZip` in windows should yield results.
 
