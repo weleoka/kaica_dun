@@ -1,10 +1,7 @@
 package kaica_dun_system;
 
 
-import kaica_dun.dao.AvatarInterface;
-import kaica_dun.dao.DungeonInterface;
-import kaica_dun.dao.RoomInterface;
-import kaica_dun.dao.RoomInterfaceCustom;
+import kaica_dun.dao.*;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Dungeon;
 import kaica_dun.entities.Room;
@@ -67,6 +64,9 @@ public class GameServiceImpl implements GameService {
 
     @Autowired
     private RoomInterface ri;
+
+    @Autowired
+    private UserInterface userInterface;
 
 
     // ********************** Dungeon Methods ********************** //
@@ -172,13 +172,17 @@ public class GameServiceImpl implements GameService {
 
 
     /**
+     * Creates an avatar and adds it to the Users list of avatars. Persists the User and the avatar.
+     *
      * @param user a User instance
-     * @return boolean if success
+     * @return the avatar
      */
     @Transactional
     public Avatar createStaticAvatar(User user) {
-        Avatar avatar =  avatarFactory.makeTestAvatar(user);
+        Avatar avatar = avatarFactory.makeTestAvatar(user);
         avatarInterface.save(avatar);
+        user.addAvatar(avatar);
+        userInterface.save(user);
         log.debug("Saved a new avatar with id: {}", avatar.getId());
         return avatar;
     }

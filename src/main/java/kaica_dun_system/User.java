@@ -7,9 +7,7 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "User")
@@ -32,7 +30,7 @@ public class User {
     private String password;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Dungeon> dungeons = new LinkedList<Dungeon>();
+    private Set<Avatar> avatars = new LinkedHashSet<Avatar>();
 
     //Unidirectional, I think
     @OneToOne(optional = true, cascade = CascadeType.ALL)
@@ -83,7 +81,7 @@ public class User {
 
     public void setPassword(String password) { this.password = password; }
 
-    public List<Dungeon> getDungeons() { return this.dungeons; }
+    public Set<Avatar> getAvatars() { return this.avatars; }
 
     public Avatar getCurrAvatar() { return currAvatar; }
 
@@ -93,16 +91,12 @@ public class User {
 
     // ********************** Model Methods ********************** //
 
-    /**
-     * TODO Replace with avatar list/set method since we have our pointers that way now.
-    public void addDungeon(Dungeon dungeon) {
-        if (dungeon == null) {
-            throw new IllegalArgumentException("Can't add a null Dungeon.");
+    public void addAvatar(Avatar avatar) {
+        if (avatar == null) {
+            throw new IllegalArgumentException("Can't add a null Avatar.");
         }
-        this.getDungeons().add(dungeon);
-        dungeon.setUser(this);
+        this.getAvatars().add(avatar);
     }
-    **/
 
 
     // ********************** Common Methods ********************** //

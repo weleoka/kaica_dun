@@ -22,7 +22,7 @@ public class KaicaDunCfg {
     public boolean debug;
 
     private Properties getProperties() {
-        log.debug("Loading KAica_dun configuration...");
+        log.debug("Loading kaica_dun configuration...");
         Properties properties = new Properties();
         properties.put(debug, env.getRequiredProperty("kaica.debug"));
         return properties;
