@@ -3,6 +3,7 @@ package kaica_dun_system;
 
 import kaica_dun.dao.UserInterface;
 import kaica_dun.dao.UserInterfaceCustom;
+import kaica_dun.entities.Avatar;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -294,6 +295,10 @@ public class UserServiceImpl implements UserService {
         System.out.println();
     }
 
-
+    // TODO just for persistence testing
+    public void setCurrAvatar(Avatar avatar) {
+        this.authenticatedUser.setCurrAvatar(avatar);
+        userInterface.save(this.authenticatedUser);
+    }
 }
 

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @EnableTransactionManagement
@@ -54,7 +55,7 @@ public class CombatServiceImpl {
      */
     public void autoCombat(Avatar avatar) throws GameOverException, GameWonException {
         Room room = avatar.getCurrRoom();
-        List<Monster> monsters = room.getMonsters();
+        Set<Monster> monsters = room.getMonsters();
         while (!monsters.isEmpty()) {
 
             if (avatar.getCurrHealth() <= 0) { //break loop if avatar is dead.
@@ -75,14 +76,14 @@ public class CombatServiceImpl {
      * @param monsters
      * @return
      */
-    public void combatRound(Avatar a, List<Monster> monsters) throws GameWonException {
+    public void combatRound(Avatar a, Set<Monster> monsters) throws GameWonException {
         for (Monster m : monsters) {
             int monsterDealsDamage = m.hit(a);
             System.out.println(m.getName() + " hits " + a.getName() + " for " + monsterDealsDamage + " damage");
             Util.sleeper(800);
         }
 
-        Monster activeMonster = monsters.get(0);
+        Monster activeMonster = monsters.iterator().next();
         int avatarDealsDamage = a.hit(activeMonster);
         System.out.println(a.getName() + " hits " + activeMonster.getName() + " for " + avatarDealsDamage + " damage");
 

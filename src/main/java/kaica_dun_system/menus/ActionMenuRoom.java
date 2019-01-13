@@ -2,6 +2,7 @@ package kaica_dun_system.menus;
 
 import kaica_dun.config.KaicaDunCfg;
 import kaica_dun.dao.RoomInterface;
+import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Direction;
 import kaica_dun.entities.Monster;
 import kaica_dun.entities.Room;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The actions in a room concerning looking at things
@@ -66,11 +68,11 @@ public class ActionMenuRoom extends ActionMenu {
 
     private String battleOutput;
     private HashMap<Integer, Monster> battleOptions = new HashMap<>();
-    private List<Monster> monsters;
+    private Set<Monster> monsters;
 
     private String moveOutput;
     private HashMap<Integer, Direction> moveOptions = new HashMap<>();
-    private List<Direction> directions;
+    private Set<Direction> directions;
 
     ActionMenuRoom() {}
 
@@ -78,7 +80,7 @@ public class ActionMenuRoom extends ActionMenu {
     /**
      * Display the main action options after building all the sub-menu items.
      */
-    public void display() throws MenuException, GameOverException, GameWonException {
+    public void display(Avatar avatar) throws MenuException, GameOverException, GameWonException {
         int selection;
 
         this.clearOptions();
@@ -120,7 +122,7 @@ public class ActionMenuRoom extends ActionMenu {
                 break;
 
             case 9:
-                mig.display(false);
+                mig.display(false, false, avatar);
                 break;
         }
     }
@@ -175,12 +177,12 @@ public class ActionMenuRoom extends ActionMenu {
         StringBuilder output = new StringBuilder();
         lookAtOptions = new HashMap<>();
         //log.debug("There are {} describables in the room (id: {}).", describables.size(), room.getId());
-
-        for (int i = 0; i < monsters.size(); i++) {
-            Monster monster = monsters.get(i);
+        int i = 0;
+        for (Monster monster : monsters) {
+            i++;
             //log.debug("Found: {}(id: {}), building look-at options.", monster.getType(), monster.getId());
-            output.append(String.format("\n[%s] - %s.", i + 1, monster.getType()));
-            lookAtOptions.put(i + 1, monster);
+            output.append(String.format("\n[%s] - %s.", i, monster.getType()));
+            lookAtOptions.put(i, monster);
         }
         //output.append(UiString.noDescribablesVisible);
         lookAtOutput = output.toString();
@@ -198,13 +200,12 @@ public class ActionMenuRoom extends ActionMenu {
         battleOptions = new HashMap<>();
 
         log.debug("There are {} monsters in the room (index: {})", monsters.size(), gsi.getAvatarCurrentRoom().getRoomIndex());
-
-        for (int i = 0; i < monsters.size(); i++) {
-            Monster monster = monsters.get(i);
-
+        int i = 0;
+        for (Monster monster : monsters) {
+            i++;
             if (monster.isAlive()) {
-                output.append(String.format("\n[%s] - %s (HP: %s)", i + 1, monster.getType(), monster.getCurrHealth()));
-                battleOptions.put(i + 1, monster);
+                output.append(String.format("\n[%s] - %s (HP: %s)", i, monster.getType(), monster.getCurrHealth()));
+                battleOptions.put(i, monster);
             }
 
         }

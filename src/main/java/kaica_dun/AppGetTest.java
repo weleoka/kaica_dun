@@ -101,7 +101,7 @@ public class AppGetTest implements CommandLineRunner {
             usi.setCurrAvatar(avatar);
 
 
-            mig.display(true, avatar); // Jump straight in the game.
+            mig.display(true, true, avatar); // Jump straight in the game.
 
             //testdb.main();  // testing
             //Avatar avatar = avatarInterface.save(new Avatar("Rolphius", "A wiry old warrior.", createdUser));

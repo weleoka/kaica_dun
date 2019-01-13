@@ -5,10 +5,7 @@ import kaica_dun.entities.Dungeon;
 import kaica_dun.entities.Room;
 import kaica_dun_system.User;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Trying something smarter to make the dungeon, and separating that from the persistence mechanism
@@ -40,7 +37,7 @@ public class tmpDungeonMaker {
     }
 
     private Dungeon makeDungeon() {
-        List<Room> rooms = new ArrayList<Room>();
+        Set<Room> rooms = new LinkedHashSet<>();
         //loop for room-list creation, initialised to null.
         for (int i = 0; i < (roomRows * roomColumns); i++ ) {
             rooms.add(null);
@@ -48,14 +45,17 @@ public class tmpDungeonMaker {
         int prevRoomIndex;
         int nextRoomIndex;
         //Make starter room
-        rooms.set(0, tmpRoomMaker.makeStarterRoom());
+        //TODO all wrong now with using set, add will push the rooms into the wrong positions
+        rooms.add(tmpRoomMaker.makeStarterRoom());
         prevRoomIndex = 0;
         numRooms++;
 
+        /**
         //Make all the other rooms TODO EVERYTHING! Atm the dungeon is only the entrance room.
         while (numRooms < maxRooms) {
-            Room prevRoom = rooms.get(prevRoomIndex);        //Fetch the previous room
-            List<Direction> incoming = prevRoom.getDirections();  //Fetch previously created room's exit list
+            //TODO all wrong now with using set, add will push the rooms into the wrong positions
+            Room prevRoom = rooms.add(prevRoomIndex);        //Fetch the previous room
+            Set<Direction> incoming = prevRoom.getDirections();  //Fetch previously created room's exit list
             nextRoomIndex = -1;                              //Index of next room to be created, -1 sentinel
             for (Direction d : incoming) {
                 int directionInt = d.getDirectionNumber();
@@ -74,6 +74,7 @@ public class tmpDungeonMaker {
             rooms.set(nextRoomIndex, tmpRoomMaker.makeRoom(prevRoom, nextRoomIndex, Direction.N));
 
         }
+         **/
 
 
         //Make boss room
@@ -82,13 +83,6 @@ public class tmpDungeonMaker {
         //TODO Think about this, the Dungeon exists in an invalid state here until the Dungeon references of its Rooms
         // are updated.
         Dungeon newDungeon = new Dungeon(roomRows, roomColumns, rooms);
-
-        //update the dungeon reference in the rooms of the new dungeon
-        for (Room r : newDungeon.getRooms()) {
-            if (r != null) {
-                r.setDungeon(newDungeon);
-            }
-        }
 
         return newDungeon;
     }

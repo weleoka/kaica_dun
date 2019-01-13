@@ -1,16 +1,14 @@
 package kaica_dun.entities;
 
 import kaica_dun_system.User;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+import java.util.*;
 
 @Entity
 @Table(name = "Dungeon")
@@ -27,10 +25,6 @@ public class Dungeon {
     @Column(name = "dungeonID", updatable = false, nullable = false)
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "userID", updatable = true, nullable = true)
-    private User user;
-
     @Basic
     @Column(name = "room_rows")
     private int roomRows;
@@ -39,12 +33,10 @@ public class Dungeon {
     @Column(name = "room_columns")
     private int roomColumns;
 
-    @OneToMany(
-            mappedBy = "dungeon",
-            cascade = CascadeType.ALL
-    )
-    @LazyCollection(LazyCollectionOption.FALSE) // workaround. Should really use Set and not List.
-    private List<Room> rooms = new ArrayList<Room>();
+    @OneToMany(cascade = CascadeType.ALL)
+    @Fetch(FetchMode.JOIN)
+    @OrderBy("roomIndex")
+    private Set<Room> rooms = new LinkedHashSet<Room>();
 
 
     // Default empty constructor
@@ -59,7 +51,7 @@ public class Dungeon {
      * @param roomColumns   number of columns in the dungeon matrix
      * @param rooms         a list of all rooms in the dungeon, with null-values for empty spaces in the room-matrix
      */
-    public Dungeon(int roomRows, int roomColumns, List<Room> rooms){
+    public Dungeon(int roomRows, int roomColumns, Set<Room> rooms){
         this.roomRows = roomRows;
         this.roomColumns = roomColumns;
         this.rooms = rooms;
@@ -68,16 +60,7 @@ public class Dungeon {
 
     // ********************** Accessor Methods ********************** //
 
-    public User getUser(){
-        return this.user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     //TODO: think about if this(m*n-stuff) is needed or how it can be solved cleaner.
-
     protected int getRoomRows() {
         return this.roomRows;
     }
@@ -98,21 +81,16 @@ public class Dungeon {
 
     public void setDungeonId(UUID dungeonId) { this.id = dungeonId; }
 
-    public List<Room> getRooms() {
+    public Set<Room> getRooms() {
         return this.rooms;
     }
 
-    public void setRooms(List<Room> rooms) {
+    public void setRooms(Set<Room> rooms) {
         this.rooms = rooms;
     }
 
 
     // ********************** Model Methods ********************** //
-
-    public void addRoom(Room room) {
-        room.setDungeon(this);
-        rooms.add(room);
-    }
 
     public int getNorthIndex(int currRoomIndex) {
         int northIndex = currRoomIndex - roomColumns;
@@ -151,13 +129,11 @@ public class Dungeon {
         return ((currRoomIndex + roomColumns) < (roomColumns * roomRows));
     }
 
-    //TODO print more information about the rooms, like ID for example?
     public void printRooms() {
-        for (int i = 0; i < rooms.size(); i++) {
-            System.out.printf(i + ": " + rooms.get(i) + "\n");
+        for (Room r : rooms) {
+            System.out.println("Room index: " + r.getRoomIndex() + "\n" + "Room type: " + r.getRoomType().toString());
         }
     }
-
 
 
     // ********************** Common Methods ********************** //

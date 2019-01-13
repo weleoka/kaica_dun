@@ -40,7 +40,7 @@ class MenuLoggedIn extends Menu {
      * (2. Change Subscription)
      * 9. Return to Main Menu
      */
-    void display() throws MenuException {
+    void display(Avatar avatar) throws MenuException {
         int selection;
 
         if (!usi.isAuthenticatedUser()) {
@@ -59,9 +59,9 @@ class MenuLoggedIn extends Menu {
 
                 if (selectAvatar()) {
                     if (gsi.getAvatarCurrentRoom() != null) {
-                        aesi.resume();
+                        aesi.resume(avatar);
                     } else {
-                        aesi.playNew();
+                        aesi.playNew(avatar);
                     }
                 }
                 break;

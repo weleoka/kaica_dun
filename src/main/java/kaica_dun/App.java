@@ -106,7 +106,8 @@ public class App implements CommandLineRunner {
                 Avatar avatar = gsi.createStaticAvatar(createdUser);
                 gsi.setAvatar(avatar);
 
-                mig.display(true); // Jump straight in the game.
+
+                mig.display(true, true, avatar); // Jump straight in the game.
 
                 //testdb.main();  // testing
                 //Avatar avatar = avatarInterface.save(new Avatar("Rolphius", "A wiry old warrior.", createdUser));
@@ -127,19 +128,19 @@ public class App implements CommandLineRunner {
                 quit();
             }
         }
-        displayMenu();  // Usual app behaviour
+        //displayMenu(avatar);  // Usual app behaviour
     }
 
 
     /**
      * The main menu loop that only stops if a QuitException is thrown.
      */
-    private void displayMenu() {
+    private void displayMenu(Avatar avatar) {
 
         while(true) {
 
             try {
-                menuMain.display();
+                menuMain.display(avatar);
 
             } catch (QuitException e) {
                 log.debug(e);

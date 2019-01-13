@@ -1,6 +1,9 @@
 package kaica_dun_system;
 
+import kaica_dun.entities.Avatar;
+
 import java.util.List;
+import java.util.Set;
 
 public interface UserService {
 
@@ -11,6 +14,8 @@ public interface UserService {
     User findUserByName(String userName);
 
     List<User> findAll();
+
+    void setCurrAvatar(Avatar avatar);
 
 
 

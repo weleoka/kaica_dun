@@ -69,26 +69,6 @@ public class GameServiceImpl implements GameService {
     private RoomInterface ri;
 
 
-
-
-    // ********************** Game Methods ********************** //
-
-    /**
-     * Start playing a dungeon.
-     */
-    public void startDungeon() {
-        Room firstRoom = fetchDungeonFirstRoom(dungeon);
-        avatar.setCurrDungeon(dungeon);
-        avatar.setCurrRoom(firstRoom);
-        avatarInterface.save(avatar);
-        log.debug("Dropping avatar into room (id: {}) -> good luck!.", firstRoom.getId());
-    }
-
-
-
-
-
-
     // ********************** Dungeon Methods ********************** //
 
 
@@ -103,7 +83,8 @@ public class GameServiceImpl implements GameService {
     @Transactional
     public Dungeon makeStaticDungeon() {
         log.debug("Creating static dungeon");
-        dungeon = StaticDungeonFactory.buildDungeon();
+        Dungeon dungeon = StaticDungeonFactory.buildDungeon();
+        log.debug("Persisting static dungeon");
         dungeonInterface.save(dungeon);
 
         return dungeon;
@@ -223,7 +204,7 @@ public class GameServiceImpl implements GameService {
     @Transactional
     public void resetAvatar() {
         avatar.setCurrHealth(avatar.getMaxHealth());
-        avatar.setCurrRoom(null);
+        //avatar.setCurrRoom(null); //TODO this ought to not be needed, currRoom will always be null when it should be.
         avatarInterface.save(avatar);
     }
 

@@ -19,7 +19,7 @@ public class ItemConsumable {
 
 
     // Default empty constructor
-    private ItemConsumable(){}
+    protected ItemConsumable(){}
 
     public Long getItemId() {
         return id;

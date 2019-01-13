@@ -1,5 +1,8 @@
 package kaica_dun.entities;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 
 @Entity
@@ -15,7 +18,7 @@ public class Armor extends Item {
     private Avatar wearer;
 
     // Default empty constructor
-    Armor() {}
+    protected Armor() {}
 
     /**
      * Full constructor.

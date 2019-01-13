@@ -2,9 +2,7 @@ package kaica_dun.resources;
 
 import kaica_dun.entities.Monster;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 class MonsterFactory {
     private final static Random random = new Random();
@@ -30,7 +28,7 @@ class MonsterFactory {
         int damage = random.nextInt(5) + 6;         //6-10 damage
         String type = "Orc";                                //TODO possible enum
         String description = "Looming a head above the other greenskins, this large Orc wears heavy armor and his axe" +
-                " gives of a faint red glow." + " As he turns towards you, you can see his left eyesocket is an empty black pit.";
+                " gives of a faint red glow." + " As he turns towards you, you can see his left eye socket is an empty black pit.";
         String name = "Murash One-Eye";
 
         return new Monster(name, description, type, currHealth, maxHealth, damage, armor);
@@ -83,7 +81,7 @@ class MonsterFactory {
         return new Monster(name, description, type, currHealth, maxHealth, damage, armor);
     }
 
-    private static void orcOrGoblin(List<Monster> monsters) {
+    private static void orcOrGoblin(LinkedHashSet<Monster> monsters) {
         if (random.nextInt(2) == 0) {
             monsters.add(makeGoblin());
         } else {
@@ -91,8 +89,8 @@ class MonsterFactory {
         }
     }
 
-    public static List<Monster> makeEasyGreenskinGroup() {
-        List<Monster> monsters = new LinkedList<Monster>();
+    public static LinkedHashSet<Monster> makeEasyGreenskinGroup() {
+        LinkedHashSet<Monster> monsters = new LinkedHashSet<Monster>();
         //0-4, not normal distribution.
         int numberMonsters = random.nextInt(3) + random.nextInt(2) + random.nextInt(2);
 

@@ -4,9 +4,7 @@ import kaica_dun.entities.Direction;
 import kaica_dun.entities.Monster;
 import kaica_dun.entities.Room;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class tmpRoomMaker {
 
@@ -20,9 +18,9 @@ public class tmpRoomMaker {
      */
     protected static Room makeStarterRoom() {
         Direction dungeonExit = Direction.U;                //leading out of the dungeon
-        List<Direction> exits = new ArrayList<Direction>();         //create List for directions leading out of the room.
-        List<Monster> monsters = new ArrayList<Monster>();        //make no monsters in the starter room, empty monster list.
-        exits.set(0, Direction.S);                          //always exit the starter room to the south
+        Set<Direction> exits = new LinkedHashSet<Direction>();         //create List for directions leading out of the room.
+        Set<Monster> monsters = new LinkedHashSet<>();        //make no monsters in the starter room, empty monster list.
+        exits.add(Direction.S);                          //always exit the starter room to the south
 
         return new Room(0, dungeonExit, exits, monsters);   //create the room using the params created above
     }
@@ -35,9 +33,9 @@ public class tmpRoomMaker {
     protected static Room makeRoom(Room prevRoom, int roomIndex, Direction incomingDoor){
         Random rGen = new Random();
 
-        List<Direction> exits = new ArrayList<Direction>();         //create List for directions leading out of the room.
-        List<Monster> monsters = new ArrayList<Monster>();        //make monsters-list to be populated
-        exits.set(0, Direction.E);                          //set exit direction, TODO PH
+        Set<Direction> exits = new LinkedHashSet<Direction>();         //create List for directions leading out of the room.
+        Set<Monster> monsters = new LinkedHashSet<Monster>();        //make monsters-list to be populated
+        exits.add(Direction.E);                          //set exit direction, TODO PH
 
         return new Room(0, incomingDoor, exits, monsters);   //create the room using the params created above
     }

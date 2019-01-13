@@ -7,8 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.*;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 /**
@@ -26,11 +25,11 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "Room")
-@NamedQuery(name="Room.findFirstRoomInDungeon", query="SELECT MIN(r.id) FROM Room r WHERE r.dungeon LIKE :dungeonId GROUP BY r.dungeon")
-@NamedQuery(name="Room.findLastRoomInDungeon", query="SELECT MAX(r.id) FROM Room r WHERE r.dungeon LIKE :dungeonId GROUP BY r.dungeon")
+//@NamedQuery(name="Room.findFirstRoomInDungeon", query="SELECT MIN(r.id) FROM Room r WHERE r.dungeon LIKE :dungeonId GROUP BY r.dungeon")
+//@NamedQuery(name="Room.findLastRoomInDungeon", query="SELECT MAX(r.id) FROM Room r WHERE r.dungeon LIKE :dungeonId GROUP BY r.dungeon")
 //@NamedQuery(name="Room.findRoomsInDungeonByEnum", query="SELECT r.id FROM Room r WHERE r.roomType LIKE :roomType AND r.dungeon LIKE :dungeonId GROUP BY r.dungeon")
-@NamedQuery(name="Room.findRoomsInDungeonByEnum", query="SELECT r.id FROM Room r WHERE r.roomType LIKE :roomType AND r.dungeon LIKE :dungeonId")
-@NamedQuery(name="Room.findAliveMonstersInRoom", query="SELECT f.id FROM Fighter f WHERE f.room LIKE :roomId AND f.currHealth > 0")
+//@NamedQuery(name="Room.findRoomsInDungeonByEnum", query="SELECT r.id FROM Room r WHERE r.roomType LIKE :roomType AND r.dungeon LIKE :dungeonId")
+//@NamedQuery(name="Room.findAliveMonstersInRoom", query="SELECT f.id FROM Fighter f WHERE f.room LIKE :roomId AND f.currHealth > 0")
 
 public class Room {
 
@@ -45,11 +44,13 @@ public class Room {
     @Column(name = "roomID", updatable = false, nullable = false)
     private UUID id;
 
+    /**
     //Mapping to the dungeon entity that holds the rooms.
     //TODO Fetchtype? Eager or Lazy? More research.
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dungeonID", nullable = false, updatable = false)
     private Dungeon dungeon;
+    **/
 
     //@Transient // This can be transient, currently not for development aid.
     @Column(name="room_index")
@@ -69,57 +70,38 @@ public class Room {
             joinColumns = @JoinColumn(name = "roomID")
     )
     @LazyCollection(LazyCollectionOption.FALSE) // workaround. Should really use Set and not List.
-    private List<Direction> directions;
+    private Set<Direction> directions = new LinkedHashSet<Direction>();
 
 
     @OneToMany( //TODO CascadeType.ALL, rework to minimum
-            fetch = FetchType.LAZY, // Workaround. Should really use Set and not List.
             mappedBy = "room",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    @LazyCollection(LazyCollectionOption.FALSE) // Workaround. Should really use Set and not List.
-    @NotFound(action = NotFoundAction.IGNORE)
-    private List<Monster> monsters;
+    @NotFound(action = NotFoundAction.IGNORE)   //TODO Also potential workaround, might need to remove
+    @Fetch(FetchMode.JOIN)
+    private Set<Monster> monsters = new LinkedHashSet<Monster>();
 
 
     // Default empty constructor
     protected Room() {}
 
     /**
-     * The standard construtor for a room in the dungeon existing on a 2D-matrix. Empty room positions are null valued.
-     *
-     * @param dungeon       the dungeon that the Room belongs to
-     * @param roomIndex     the index of the Room in the Dungeon-matrix
-     * @param incomingDoor  the direction of the door that leads backwards in the dungeon to the starter room
-     * @param directions         a List with the direction(s) of possible directions
-     * @param monsters      a List of the monster(s) in the room
-     */
-    Room(Dungeon dungeon, int roomIndex, Direction incomingDoor, List<Direction> directions, List<Monster> monsters) {
-        this.dungeon = dungeon;
-        this.roomIndex = roomIndex;
-        this.incomingDoor = incomingDoor;
-        this.directions = directions;
-        this.monsters = monsters;
-        this.roomType = RoomType.STD01;
-    }
-
-    /**
      * This constructor is used by the tmpRoomMaker to make a List<Room> to be used in dungeon creation later
      *
-     * Watch out for invalid states of Rooms without Dungeon references!
      *
      * @param roomIndex     the index of the Room in the Dungeon-matrix
      * @param incomingDoor  the direction of the door that leads backwards in the dungeon to the starter room
      * @param directions         a List with the direction(s) of possible directions
      * @param monsters      a List of the monster(s) in the room
      */
-    public Room(int roomIndex, Direction incomingDoor, List<Direction> directions, List<Monster> monsters) {
+    public Room(int roomIndex, Direction incomingDoor, Set<Direction> directions, Set<Monster> monsters) {
         //this.dungeon = dungeon;
         this.roomIndex = roomIndex;
         this.incomingDoor = incomingDoor;
         this.directions = directions;
-        this.monsters = monsters;
+        //This is an O(n) operation.
+        for (Monster m : monsters) { this.monsters.add(m); }
         if (directions != null) {
             this.roomType = RoomType.STD01;
             this.directions.add(Direction.STAY);
@@ -139,16 +121,6 @@ public class Room {
     public void setId(UUID roomId) {
         this.id = roomId;
     }
-
-
-    public Dungeon getDungeon() {
-        return dungeon;
-    }
-
-    public void setDungeon(Dungeon dungeon) {
-        this.dungeon = dungeon;
-    }
-
 
     public int getRoomIndex() {
         return roomIndex;
@@ -173,20 +145,16 @@ public class Room {
     public RoomType getRoomType() { return roomType; }
 
 
-    public List<Monster> getMonsters() {
-        return monsters;
-    }
-
-    public void setMonsters(List<Monster> monsters) {
-        this.monsters = monsters;
-    }
+    public Set<Monster> getMonsters() { return monsters; }
+    //TODO unsure if this need to be Set or LinkedHashSet
+    public void setMonsters(LinkedHashSet<Monster> monsters) { this.monsters = monsters; }
 
 
-    public List<Direction> getDirections() {
+    public Set<Direction> getDirections() {
         return directions;
     }
 
-    public void setDirections(List<Direction> directions) {
+    public void setDirections(LinkedHashSet<Direction> directions) {
         this.directions = directions;
     }
 
@@ -198,22 +166,6 @@ public class Room {
     public void setIncomingDoor(Direction incomingDoor) {
         this.incomingDoor = incomingDoor;
     }
-
-
-    @Override
-    public boolean equals(Object obj) {
-        if(this == obj) {
-            return true;
-        }
-        if(!(obj instanceof Room)) {
-            return false;
-        }
-        Room room = (Room) obj;
-        return id != null && id.equals(room.id);
-    }
-
-    @Override
-    public int hashCode() { return 17; }
 
 
     // ********************** Model Methods ********************** //
@@ -230,28 +182,21 @@ public class Room {
         monsters.remove(monster);
     }
 
-    //TODO NOT IN USE!
-    //Return an array of possible outgoing door directions, not used currently.
-    //TODO: Develop for random dungeon generation.
-    //TODO: Possible refactor. This method has a thousand and one possible implementations, dunno which is the best.
-    private Direction[] legalDirections() {
 
-        boolean[] possibleDirections = new boolean[4];  //possibly replace with Direction[] from the start?
-        Direction[] dir = new Direction[10];            //TODO PLACEHOLDER
-        //Check 1: remove incoming direction. Store possible outgoing directions as true in the boolean array.
-        for (int i = 0; i < 4 ; i++) {
+    // ********************** Common Methods ********************** //
 
-            if (this.incomingDoor.getDirectionNumber() != i) {
-                possibleDirections[i] = true;
-            }
-
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) {
+            return true;
         }
-
-        //check for walls
-        dungeon.getRooms().get(0);
-
-        //check for existing rooms
-
-        return dir;                                     //TODO PH
+        if(!(obj instanceof Room)) {
+            return false;
+        }
+        Room room = (Room) obj;
+        return id != null && id.equals(room.id);
     }
+
+    @Override
+    public int hashCode() { return Objects.hash(id); }
 }

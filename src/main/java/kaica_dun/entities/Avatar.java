@@ -1,6 +1,8 @@
 package kaica_dun.entities;
 
 import kaica_dun_system.User;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -21,13 +23,11 @@ public class Avatar extends Fighter {
 
     //Unidirectional, the Dungeon doesn't "know" there's an avatar in it. TODO think! TEST!
     @OneToOne
+    @Fetch(FetchMode.JOIN)
     private Dungeon currDungeon;
 
     //Unidirectional, the Room doesn't "know" there's an avatar in it. TODO think! TEST!
-    @OneToOne(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
-    )
+    @OneToOne(cascade = CascadeType.ALL)
     private Room currRoom;
 
     //Seems correct to cascade almost everything here, so ALL is a good PH-strategy. TODO remove some of the cascades.
@@ -45,7 +45,7 @@ public class Avatar extends Fighter {
     @Transient
     private Random rand = new Random();
 
-    private Avatar() {}
+    protected Avatar() {}
 
     // Creating a new Avatar from user input with defaults.
     public Avatar(String name, String description, User user) {

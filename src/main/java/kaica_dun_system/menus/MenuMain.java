@@ -1,5 +1,6 @@
 package kaica_dun_system.menus;
 
+import kaica_dun.entities.Avatar;
 import kaica_dun.util.MenuException;
 import kaica_dun.util.QuitException;
 import kaica_dun.util.Util;
@@ -34,7 +35,7 @@ public class MenuMain extends Menu {
      * <p>
      * todo: test the inputLoop breaking and what happens to following switch cases.
      */
-    public void display() throws QuitException {
+    public void display(Avatar avatar) throws QuitException {
         int selection = 0;
 
         Set<Integer> hset = new HashSet<>(Arrays.asList(1, 2, 5 ,9));
@@ -45,7 +46,7 @@ public class MenuMain extends Menu {
             case 1:
                 if (loginUser()) {
                     out.println(UiString.successfullLogin);
-                    displayLoggedInMenu();
+                    displayLoggedInMenu(avatar);
                     break;
 
                 } else {
@@ -72,12 +73,12 @@ public class MenuMain extends Menu {
      * Displays the logged in menu in a loop that
      * is stopped if an exception is thrown.
      */
-    private void displayLoggedInMenu() {
+    private void displayLoggedInMenu(Avatar avatar) {
 
         while(true) {
 
             try {
-                menuLoggedIn.display();
+                menuLoggedIn.display(avatar);
 
             } catch (MenuException e) {
                 log.debug(e);

@@ -2,6 +2,8 @@ package kaica_dun_system;
 
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Dungeon;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
@@ -29,21 +31,17 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Dungeon> dungeons = new LinkedList<Dungeon>();
-
-
-    //TODO dafuq? Usure of mappings, currently mapping onto same column for both Dungeon and Avatar, works?
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private Dungeon currDungeon;
 
     //Unidirectional, I think
     @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @Fetch(FetchMode.JOIN)
     private Avatar currAvatar;
 
 
     // Default empty constructor
-    User() {}
+    protected User() {}
 
 
 
@@ -53,13 +51,11 @@ public class User {
      * @param userName      name of the user
      * @param password      password of the user
      * @param currAvatar    the currently active avatar on the user account
-     * @param currDungeon   the currently active dungeon on the user account
      */
-    public User(String userName, String password, Avatar currAvatar, Dungeon currDungeon) {
+    public User(String userName, String password, Avatar currAvatar) {
         this.userName = userName;
         this.password = password;
         this.currAvatar = currAvatar;
-        this.currDungeon = currDungeon;
     }
 
     /**
@@ -93,13 +89,12 @@ public class User {
 
     public void setCurrAvatar(Avatar currAvatar) { this.currAvatar = currAvatar; }
 
-    public Dungeon getCurrDungeon() { return currDungeon; }
-
-    public void setCurrDungeon(Dungeon currDungeon) { this.currDungeon = currDungeon; }
 
 
     // ********************** Model Methods ********************** //
 
+    /**
+     * TODO Replace with avatar list/set method since we have our pointers that way now.
     public void addDungeon(Dungeon dungeon) {
         if (dungeon == null) {
             throw new IllegalArgumentException("Can't add a null Dungeon.");
@@ -107,7 +102,7 @@ public class User {
         this.getDungeons().add(dungeon);
         dungeon.setUser(this);
     }
-
+    **/
 
 
     // ********************** Common Methods ********************** //

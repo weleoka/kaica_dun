@@ -1,16 +1,15 @@
 package kaica_dun_system;
 
 import kaica_dun.dao.AvatarInterface;
-import kaica_dun.entities.Avatar;
-import kaica_dun.entities.Direction;
-import kaica_dun.entities.Dungeon;
-import kaica_dun.entities.Room;
+import kaica_dun.entities.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Set;
 
 /**
  * Class that deals with assigning a new value for current room to avatar depending on the choices made by player
@@ -22,12 +21,25 @@ public class MovementServiceImpl {
 
     // Fields declared
     private static final Logger log = LogManager.getLogger();
-    private Avatar avatar;
-    private Room room;
 
     @Autowired
     private AvatarInterface avatarInterface;
 
+    /**
+     * Find the first room if the dungeons rooms are EAGER loaded.
+     *
+     * @param dungeon
+     * @return
+     */
+    public Room fetchDungeonFirstRoom(Dungeon dungeon) {
+        Room room = null;
+        for (Room r : dungeon.getRooms()){
+            if(r.getRoomType() == RoomType.FIRST01) {
+                room = r;
+            }
+        }
+        return room;
+    }
 
     /**
      * Enter the dungeon by an enterance.
@@ -36,9 +48,11 @@ public class MovementServiceImpl {
      * @param dungeon
      */
     public void enterDungeon(Avatar avatar, Dungeon dungeon) {
-        avatar.setCurrRoom(dungeon.getRooms().get(0));  //Enter first room of dungeon, always on index 0
+        Room firstRoom = fetchDungeonFirstRoom(dungeon);
+        avatar.setCurrRoom(firstRoom);  //Enter first room of dungeon, always on index 0
         avatar.setCurrDungeon(dungeon);
         avatarInterface.save(avatar);       //commit to db
+        log.debug("Dropping avatar into room (id: {}) -> good luck!.", firstRoom.getId());
     }
 
 
@@ -90,28 +104,40 @@ public class MovementServiceImpl {
      */
     private void moveAvatar(Avatar avatar, Dungeon dungeon, int direction) {
         int currRoomIndex = avatar.getCurrRoom().getRoomIndex();
-
+        Set<Room> rooms = dungeon.getRooms();
         switch (direction) {
             case 0:
                 //TODO simplify logic.
                 int northIndex = avatar.getCurrDungeon().getNorthIndex(currRoomIndex);
-                Room northRoom = dungeon.getRooms().get(northIndex);
-                avatar.setCurrRoom(northRoom);
+                for (Room r : rooms) {
+                    if (r.getRoomIndex() == northIndex) {
+                        avatar.setCurrRoom(r);
+                    }
+                }
                 break;
             case 1:
                 int eastIndex = avatar.getCurrDungeon().getEastIndex(currRoomIndex);
-                Room eastRoom = dungeon.getRooms().get(eastIndex);
-                avatar.setCurrRoom(eastRoom);
+                for (Room r : rooms) {
+                    if (r.getRoomIndex() == eastIndex) {
+                        avatar.setCurrRoom(r);
+                    }
+                }
                 break;
             case 2:
                 int southIndex = avatar.getCurrDungeon().getSouthIndex(currRoomIndex);
-                Room southRoom = dungeon.getRooms().get(southIndex);
-                avatar.setCurrRoom(southRoom);
+                for (Room r : rooms) {
+                    if (r.getRoomIndex() == southIndex) {
+                        avatar.setCurrRoom(r);
+                    }
+                }
                 break;
             case 3:
                 int westIndex = avatar.getCurrDungeon().getWestIndex(currRoomIndex);
-                Room westRoom = dungeon.getRooms().get(westIndex);
-                avatar.setCurrRoom(westRoom);
+                for (Room r : rooms) {
+                    if (r.getRoomIndex() == westIndex) {
+                        avatar.setCurrRoom(r);
+                    }
+                }
                 break;
             case 4:
                 exitDungeon(avatar);

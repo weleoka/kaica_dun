@@ -1,5 +1,6 @@
 package kaica_dun_system.menus;
 
+import kaica_dun.entities.Avatar;
 import kaica_dun.util.MenuException;
 import kaica_dun_system.ActionEngineServiceImpl;
 import kaica_dun_system.UiString;
@@ -28,11 +29,15 @@ public class MenuInGame extends Menu {
     /**
      * Menu for display in game with actions such as restart, quit, save etc.
      */
-    public void display(boolean directPlay) throws MenuException { // todo: change to private after testing.
+    public void display(boolean directPlay, boolean loadedGame, Avatar avatar) throws MenuException { // todo: change to private after testing.
         int selection;
 
         if (directPlay) {
-            aesi.playNew(); // Jump straight in the game.
+            if (loadedGame) {
+                aesi.playLoad(avatar);
+            } else {
+                aesi.playNew(avatar); // Jump straight in the game.
+            }
         }
 
         Set<Integer> hset = new HashSet<>(Arrays.asList(1, 2, 3 ,9));
@@ -41,12 +46,12 @@ public class MenuInGame extends Menu {
         switch (selection) {
 
             case 1: // Resume playing the game
-                aesi.resume();
+                aesi.resume(avatar);
                 break;
 
             case 2: // Restart the same dungeon
 
-                aesi.restart();
+                aesi.restart(avatar);
                 break;
 
             case 3: // Quits with saving
