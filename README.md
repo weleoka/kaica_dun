@@ -1,13 +1,17 @@
-
-# Kaica Dungeon - adventure game
+# Kaica Dungeon - adventure game [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.png?v=103)](https://opensource.org/licenses/mit-license.php)
 This is a dungeon adventure game for the java VM. It uses Java Persistance API via Hibernate. Current build engine is Gradle and with mavenCentral repositories for dependency sourcing.
 
+## Repository information
+The repository, as of from initial release v0.1.0 (which is a development release), follows the a standard structure and workflow. A description of such a workflow is described at [Nvie Git Branches](https://nvie.com/posts/a-successful-git-branching-model/). To introduce the structure it contains the following branches and their roles.  
+There are two main branches: `master` and `develop`. HEAD in `master` is a production ready state. This means that it should be ready to compile and run. HEAD in `develop` is the latest incorporated features and bugfix branches and should be in a state ready to run in development mode. When `develop` is in a stable state it can be merged into `master`. Usually there will be some configuration changes in order to make the `master` branch production ready. Details in `CHANGELOG.md` should be checked, and other standard procedures followed. Conclude the work with a commit, and a version bump. The versioning is according to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). On the issue of then merging this state of `master` to what is known as a release branch; that is not enforced in this repository. For historical releases checkout earlier commits in `master`.  
+There is lastly a naming strategy of branches from `develop`. Branches from develop can be features or bugfixes. The naming convention is as follows: `[ft/fix]-{2-3 word summary}-{id_sequence}`. The id_sequence is to maintain a clear list of squences of branches from `develop`.  
+There is only one other type of branch that may be used and that is the hotfix type, naming: `[hotfix]-{2-3 word summary}-{hotfix_id_sequence}`. If a severe bug is found in production a branch can be made from `master` where the bug is addressed and then merged back into `master`. Important to remember is then to merge the hotfix into `develop` when at a suitable stage in that branch.
 
 # Documentation
 This application uses a persistance system based on the JPA specifications called Hibernate. It also uses a transaction management implementation included in the Spring framework. To compile the program as a standalone application see instructions in documentation.
 
-
-### Service classes
+## Main components
+Main types naming: service, menu (translatable to management), data access objects, configuration, entities, factories and miscellaneous interfaces.
 The service classes have the following responsibilities, as well as for certain processes.
 
 GameService - Avatars & Dungeons  
@@ -17,31 +21,35 @@ ActionEngineService - Monsters & Directions
 UserService - Users and the authentication  
 
 
-### Setup for development - manual
+## Setup 
+The following sections cover a few different scenarios relevant for this project. Steps for setup for development, and development with IDE, build with gradle, and finally also compilation for different persistence providers.
+
+### Development - manual
 These steps are one way of getting the repository ready for development.
 
 1. git clone the repository
-2. Use gradle to fetch the dependencies into the local project folder. The gradle task for copying the dependencies is `cpDeps`. The task is run: `./gradlew cpDeps` results dependencies available for development in lib/ folder. IDE loading will more efficiently keep local copies of repositories to be available for multiple projects.
-3. Configure your IDE to load dependencies *.jar files from `lib` is done by `file->Project Structure->Libraries->[plus-sign]` and then adding the directory `lib`. Consider deleting all other references to other libraries/locations for the project (if there are any).
-4. Modify the src/resources/hibernate.cfg.xml to use mariaDB or mySQL and set your credentials and url parameters.
+2. Use gradle to fetch the dependencies into the local project folder. The gradle task for copying the dependencies is `cpDeps`, and the downloaded total for the dependencies is 27MB. The task `cpDeps` makes dependencies available for development by placing them in `lib/` folder. This is not always required as in most instances IDE loading will more efficiently keep local copies of repositories available, and with the added benefit of providing availability for multiple projects.
+3. Make your IDE load dependencies *.jar files from `lib` in your project structure settings in the IDE. Consider removing other references to libraries/locations if there are any.
+4. Modify `src/resources/application.properties` to use mariaDB, mySQL or hsqldb, and maybe set your credentials and url parameters. Or if required use a standalone environment by setting up file-based hsqldb as per instructions for @link:"compiling-for-production".
 
-To build and run the project with gradle using the gradle wrapper `./gradlew build` and then `./gradlew run` to run the application.
+
+To build and run the project with gradle wrapper `./gradlew build`, and then `./gradlew run` to run the application.
 
 If `./gradlew run` does not work then try the `./gradlew installDist` or `./gradlew distZip` and run the resulting file in the `/bin` folder.
 
 
-### Setup for development - automatic with IJ idea
+### Development - automatic (for IJ idea)
 This is probably the usual method for work on this project
 
 1. git clone the repository
 2. Open the project in IJ idea.
 3. Stand by while dependencies are satisfied. These will not be stored in the project folder usually, but are instead downloaded to gradle cache for access by all java projects.
-4. Modify the `src/resources/hibernate.cfg.xml` to use mariaDB or mySQL db, and to set your credentials, utl, port etc.
+4. Modify the `src/resources/application.properties` to use mariaDB or mySQL db, and to set your credentials, url, port etc.
 
 Building and running will likely be within the realms of the IDE in these instances.
 
 
-### Compiling for production
+### Production build with hsqldb
 As always there are few tweaks to be done before compiling successfully for production.
 
 For HSQLDB - standalone game:
@@ -53,23 +61,36 @@ For HSQLDB - standalone game:
 5. Change the debug in `cfg/KaicaDunCfg.java` from true to false. 
 6. Finally set the logging level to warn for all the loggers in `log4j2.xml` and consider changing the appender to file out so you can monitor log/app.log for issues. 
 
-Now it is possible to run the builds using gradle wrapper. I'm not going to tell you how to use gradle here, but running `./gradlew distZip` or `gradlew.bat distZip` in windows should yield results.
+Now it is possible to run the builds using gradle wrapper: `./gradlew distZip` or `gradlew.bat distZip` in windows should yield results.
+
+### Production build with maria/mySql db
+Currently not covered in the documentation.
 
 
-# Structure and design
+
+## Dependencies and outline
+The following is a selection of details on dependencies and general structure. The information here will probably be less to date than the repository. 
 
 ### Dependencies
 * hibernate-core
 * mysql-connector-java
+* mariadb-java-client
 * log4j2
 * Spring boot 5.2
 * HSQLDB for file based relational db.
+* Spring orm, context, core, boot-starter-log4j, starter-data-jpa
+* hsqldb for standalone application
 
-### UML diagram
-This is the logical model for the the application object oriented design (not necessarily 100% up to date).
+
+## Logical Database Design
+The primary keys of tables are unique ids in the format `ebbed36f-95a1-404a-9a10-4d531703c510`, as well as Integer Long auto-incrementing.
+
+### UML diagram of application
+This is the logical model for the the application object oriented design, again this is probably not up to date.
 ![ . . . ](model_uml_app.png)
 
-#### Entities mappings
+
+### Entities mappings
 ```xml
 <mapping class="kaica_dun_system.User"/>
 
@@ -86,21 +107,40 @@ This is the logical model for the the application object oriented design (not ne
 <mapping class="kaica_dun.entities.Inventory"/>
 ```
         
-#### Logical Diagram
-This is a diagram of the logical database model (not necessarily 100% up to date) resulting from forward engineering database tables using Hibernate and JPA.
+### Logical Diagram of relational database
+This is a diagram of the logical database model (not necessarily 100% up to date) resulting from forward engineering database tables using Hibernate and JPA, and MySQL Workbench.
+![ . . . ](model_db_logical.svg)
 
-![ . . . ](model_db_logical.png)
 
+## Misc
 
 ### Application logging
-Log can be written to stdout, but also to file `log/app.log`. Settings concerning application logging are specified in `resources/log4j2.xml`.
+Log can be written to stdout, but also to file, default `log/app.log`. Settings concerning application logging are specified in `resources/log4j2.xml`.
 
 
 ### Project directory structure
-The [directory structure](https://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html) for tthis project follows the default structure of Maven and Gradle.
+The [directory structure](https://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html) for this project follows the default structure of Maven and Gradle.
 
 
 ### Style guide
 This project attempts to adhere to the following [style guide](https://github.com/weleoka/myJavaStyleGuide).  
 
 
+# Meta
+Developers:  
+Carn Granström - email: *removed*  
+Kai Weeks - email: *removed*  
+
+Distributed under the MIT license. See [LICENSE.md](https://github.com/weleoka/kaica_dun/LICENCE.md) for more information.
+
+
+
+
+# Contributing
+Generally contributing is not going to be met with any particular enthusiasm, as this project is purely educational. If you think it could be fun to get involved then follow the next steps, or ask advice of the core developers directly.
+
+1. Fork it (https://github.com/weleoka/kaica_dun/fork)
+2. Create your feature branch (git checkout -b feature/fooBar)
+3. Commit your changes (git commit -am 'Add some fooBar')
+4. Push to the branch (git push origin feature/fooBar)
+5. Create a new Pull Request
