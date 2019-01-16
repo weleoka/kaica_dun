@@ -46,6 +46,11 @@
         <Logger name="org.jboss.logging" level="warn"/>
 
 
+        <!-- Hikari transaction pool -->
+        <!-- https://github.com/brettwooldridge/HikariCP/blob/dev/README.md -->
+        <Logger name="com.zaxxer" level="info"/>
+
+
         <Logger name="hsqldb.db" level="warn"/>
 
         <!--<Logger name="kaica_dun.App" level="warn"/>-->

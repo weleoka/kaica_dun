@@ -2,7 +2,8 @@ package kaica_dun.resources;
 
 import kaica_dun.entities.Monster;
 
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.Random;
 
 class MonsterFactory {
     private final static Random random = new Random();

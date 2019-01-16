@@ -21,20 +21,19 @@ import java.util.Set;
 public class MenuInGame extends Menu {
 
     @Autowired
-    MenuLoggedIn menuLoggedIn;
+    private ActionEngineServiceImpl aesi;
 
-    @Autowired
-    ActionEngineServiceImpl aesi;
 
     /**
      * Menu for display in game with actions such as restart, quit, save etc.
      */
-    public void display(boolean directPlay, boolean loadedGame, Avatar avatar) throws MenuException { // todo: change to private after testing.
+    public void display(Avatar avatar, boolean directPlay) throws MenuException { // todo: change to private after testing.
         int selection;
 
         if (directPlay) {
-            if (loadedGame) {
-                aesi.playLoad(avatar);
+            if (avatar.getCurrRoom() != null) {
+                aesi.resume(avatar);
+
             } else {
                 aesi.playNew(avatar); // Jump straight in the game.
             }

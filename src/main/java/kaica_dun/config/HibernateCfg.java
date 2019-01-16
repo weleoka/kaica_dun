@@ -3,6 +3,7 @@ package kaica_dun.config;
 
 import org.hibernate.cfg.AvailableSettings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -20,7 +21,12 @@ public class HibernateCfg {
     private Environment env;
 
     @Autowired
+    @Qualifier("dataSourcePrimary")
     private DataSource dataSource;
+
+/*    @Autowired
+    @Qualifier("dataSourceSecondary")
+    private DataSource dataSourceSecondary;*/
 
     private Properties getHibernateProperties() {
         Properties properties = new Properties();
@@ -41,6 +47,15 @@ public class HibernateCfg {
         sessionFactory.setHibernateProperties(getHibernateProperties());
         return sessionFactory;
     }
+}
+
+
+
+
+
+
+
+
 /*
     @Bean
     public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
@@ -73,7 +88,7 @@ public class HibernateCfg {
         return entityManagerFactoryBean;
     }*/
 
-}
+
 
 
 

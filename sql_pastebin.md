@@ -1,4 +1,17 @@
 # The following is the DDL for testing hibernate.
+SET FOREIGN_KEY_CHECKS=0;
+
+DELETE FROM dungeon;
+DELETE FROM fighter;
+DELETE FROM inventory;
+DELETE FROM item;
+DELETE FROM room;
+DELETE FROM room_direction;
+DELETE FROM user;
+
+SET FOREIGN_KEY_CHECKS=1;
+
+
 
 CREATE DATABASE kaica_dun_db;
 CREATE USER 'kaica_dun_db_user'@'localhost' IDENTIFIED BY 'enter112';

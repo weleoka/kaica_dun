@@ -40,30 +40,27 @@ import java.util.Set;
  */
 @Component
 public class ActionMenuRoom extends ActionMenu {
-    @Autowired
-    KaicaDunCfg kcfg;
 
     @Autowired
-    ActionEngineServiceImpl aesi;
+    private KaicaDunCfg kcfg;
 
     @Autowired
-    MovementServiceImpl msi;
+    private ActionEngineServiceImpl aesi;
 
     @Autowired
-    CombatServiceImpl csi;
+    private MovementServiceImpl msi;
 
     @Autowired
-    MenuInGame mig;
+    private CombatServiceImpl csi;
 
     @Autowired
-    RoomInterface roomInterface;
-
+    private MenuInGame mig;
 
     private String mainOutput;
     private HashMap<Integer, String> mainOptions = new HashMap<>();
 
     private String lookAtOutput;
-    private HashMap<Integer, Monster> lookAtOptions = new HashMap<>(); // Currently only look at Monsters.
+    private HashMap<Integer, Monster> lookAtOptions = new HashMap<>(); // todo: look at more than monsters.
     //private HashMap<Describable> describables;
 
     private String battleOutput;
@@ -104,25 +101,25 @@ public class ActionMenuRoom extends ActionMenu {
                 break;
 
             case 2:
-                selectBattleOption();
+                selectBattleOption(avatar);
                 break;
 
             case 3:
-                if (!kcfg.debug) {
-                    if (!monsters.isEmpty()) {  // todo: move out to movementService to check.
-                        System.out.println("Can't move because there are enemies in the room!! Kill them first.");
-                        Util.sleeper(1800);
-                    } else {
-                        selectMoveOption();
-                    }
-                } else {
-                    selectMoveOption(); // Ignore the monsters in the room. Development.
+                if (!kcfg.getDebug()) {
+                    log.debug("debug: allowing moving with monsters in the room.");
+                    selectMoveOption(avatar); // Ignore the monsters in the room. Development.
+                    break;
                 }
-
+                if (!monsters.isEmpty()) {  // todo: move out to movementService to check.
+                    System.out.println("Can't move because there are enemies in the room!! Kill them first.");
+                    Util.sleeper(1800);
+                } else {
+                    selectMoveOption(avatar);
+                }
                 break;
 
             case 9:
-                mig.display(false, false, avatar);
+                mig.display(avatar, false);
                 break;
         }
     }
@@ -198,11 +195,12 @@ public class ActionMenuRoom extends ActionMenu {
     private void buildBattleOptions() {
         StringBuilder output = new StringBuilder();
         battleOptions = new HashMap<>();
-
-        log.debug("There are {} monsters in the room (index: {})", monsters.size(), gsi.getAvatarCurrentRoom().getRoomIndex());
+        log.debug("There are {} monsters in the room.", monsters.size());
         int i = 0;
+
         for (Monster monster : monsters) {
             i++;
+
             if (monster.isAlive()) {
                 output.append(String.format("\n[%s] - %s (HP: %s)", i, monster.getType(), monster.getCurrHealth()));
                 battleOptions.put(i, monster);
@@ -258,7 +256,7 @@ public class ActionMenuRoom extends ActionMenu {
      * @throws GameOverException
      * @throws GameWonException
      */
-    private void selectBattleOption() throws GameOverException, GameWonException {
+    private void selectBattleOption(Avatar avatar) throws GameOverException, GameWonException {
         String str = UiString.battleMenuHeader + battleOutput + UiString.makeSelectionPrompt;
         System.out.println(str);
 
@@ -266,10 +264,8 @@ public class ActionMenuRoom extends ActionMenu {
         System.out.println("(Fighting individual monsters disabled. Commencing auto- battle...)");
         Util.sleeper(1200);
         List<Monster> monsters = new ArrayList<>(battleOptions.values());
-
-        csi.autoCombat(gsi.getAvatar());
+        csi.autoCombat(avatar);
         // END auto-battle
-
 
         // ONE-ON-ONE
         //int sel = getUserInput(battleOptions.keySet(), str);
@@ -277,31 +273,25 @@ public class ActionMenuRoom extends ActionMenu {
         //List<Monster> monstersModified = csi.combat(aesi.getAvatar(), monsters);
         //System.out.printf("\nYou are attacking: %s", monster.toString());
         // END one-on-one
-
-
-        //aesi.getAvatarCurrentRoom().setMonsters(new ArrayList<>()); // Autocombat always results in total extinction.
-        //aesi.getAvatarCurrentRoom().setMonsters(monstersModified);
-
-
-        //roomInterface.save(aesi.getAvatarCurrentRoom());    // Save the updated list of monsters.
-        gsi.updateAvatar(); // Save the HP to database.
     }
 
 
     /**
      * Handles the selection of movement.
      */
-    private void selectMoveOption() {
+    private void selectMoveOption(Avatar avatar) {
         String str = UiString.moveMenuHeader + moveOutput + UiString.makeSelectionPrompt;
         int sel = getUserInput(moveOptions.keySet(), str);
         Direction direction = moveOptions.get(sel);
         //log.debug("Movement selection made {}, resulting in direction: {}", sel, direction.toString());
-        Room newRoom = msi.moveAvatar(gsi.getAvatar(), direction);
+        Room newRoom = msi.moveAvatar(avatar, direction);
+
         if (newRoom != null) {
             System.out.printf("%s %s", UiString.movedAvatarToTheNextRoom, direction.toString());
+
         } else {
             System.out.printf("The direction %s resulted in the Avatar leaving the dungeon.");
-            gsi.setDungeon(null);
+            msi.exitDungeon(avatar);
         }
 
     }

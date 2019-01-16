@@ -150,6 +150,8 @@ public abstract class Fighter implements Describable {
     }
 
 
+
+
     // ********************** Model Methods ********************** //
 
     abstract int takeDamage(int damage);
@@ -158,9 +160,13 @@ public abstract class Fighter implements Describable {
 
     abstract int hit(Fighter opponent);
 
+    public void setHealthToMax() {
+        currHealth = maxHealth;
+    }
+
+
 
     // ********************** Common Methods ********************** //
-
 
     @Override
     public boolean equals(Object obj) {

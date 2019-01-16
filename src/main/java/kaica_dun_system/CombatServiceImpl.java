@@ -1,5 +1,6 @@
 package kaica_dun_system;
 
+import kaica_dun.dao.AvatarInterface;
 import kaica_dun.dao.MonsterInterface;
 import kaica_dun.dao.RoomInterface;
 import kaica_dun.entities.Avatar;
@@ -14,28 +15,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import java.util.List;
+import javax.transaction.Transactional;
 import java.util.Set;
 
 @Service
 @EnableTransactionManagement
 public class CombatServiceImpl {
-
-    // Singleton
-    private static CombatServiceImpl ourInstance = new CombatServiceImpl();
-    public static CombatServiceImpl getInstance() {
-        return ourInstance;
-    }
-    private CombatServiceImpl() {}
-
-    // Fields declared
     private static final Logger log = LogManager.getLogger();
 
     @Autowired
-    MonsterInterface monsterInterface;
+    private AvatarInterface avatarInterface;
 
     @Autowired
-    RoomInterface roomInterface;
+    private RoomInterface roomInterface;
+
 
     /**
      * Will exit when the monster list is empty or when avatar health drops to less than one.
@@ -53,18 +46,21 @@ public class CombatServiceImpl {
      *
      * @param avatar         the avatar fighting the monsters
      */
+    @Transactional
     public void autoCombat(Avatar avatar) throws GameOverException, GameWonException {
         Room room = avatar.getCurrRoom();
         Set<Monster> monsters = room.getMonsters();
+
         while (!monsters.isEmpty()) {
 
             if (avatar.getCurrHealth() <= 0) { //break loop if avatar is dead.
-                throw new GameOverException(String.format("%s has fallen in battle.", avatar.getName()));
 
+                throw new GameOverException(String.format("%s has fallen in battle.", avatar.getName()));
             }
             combatRound(avatar, monsters);
         }
         roomInterface.save(room);
+        avatarInterface.save(avatar); // Save the HP to database.
         System.out.println("The corpses of your enemies litter the floor of the room. Silence falls.");
     }
 

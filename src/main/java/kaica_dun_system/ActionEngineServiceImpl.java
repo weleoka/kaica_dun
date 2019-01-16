@@ -1,6 +1,7 @@
 package kaica_dun_system;
 
 import kaica_dun.config.KaicaDunCfg;
+import kaica_dun.dao.AvatarInterface;
 import kaica_dun.entities.*;
 import kaica_dun.util.GameOverException;
 import kaica_dun.util.GameWonException;
@@ -11,8 +12,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import java.util.List;
+import javax.transaction.Transactional;
 import java.util.Set;
 
 
@@ -29,72 +31,76 @@ import java.util.Set;
  *
  */
 @Service
+@EnableTransactionManagement
 public class ActionEngineServiceImpl implements ActionEngineService {
-
     private static final Logger log = LogManager.getLogger();
 
     private Set<Monster> monsters;
     private Set<Direction> directions;
 
     @Autowired
-    KaicaDunCfg kcfg;
+    private KaicaDunCfg kcfg;
 
     @Autowired
-    UserServiceImpl usi;
+    private GameServiceImpl gsi;
 
     @Autowired
-    GameServiceImpl gsi;
+    private ActionMenuRoom amr;
 
     @Autowired
-    ActionMenuRoom amr;
+    private MovementServiceImpl msi;
 
     @Autowired
-    MovementServiceImpl msi;
+    private AvatarInterface avatarInterface;
 
 
     /**
      * Creates a new dungeon and calls the operations to activate it.
      */
+    @Transactional
     public void playNew(Avatar avatar) throws MenuException {
+        log.debug("New game: ");
         Dungeon dungeon = null;
+
         if (avatar.getCurrDungeon() == null) {
             dungeon = gsi.makeStaticDungeon();
-            gsi.resetAvatar();
+            avatar.setCurrDungeon(dungeon);
+            avatar.setHealthToMax();
+
         } else {
             dungeon = avatar.getCurrDungeon();
         }
-        gsi.setDungeon(dungeon);
-        msi.enterDungeon(avatar, dungeon);
-        printDebugInfo("New game: ");
-        //UiString.printLoadingIntro();
-        //UiString.printGameIntro();
+        msi.enterDungeon(avatar);
+        avatarInterface.save(avatar); // todo: calls save here msi.enterDungeon() does not;
+
+        if (!kcfg.getDebug()) {
+            UiString.printLoadingIntro();
+            UiString.printGameIntro();
+        }
         play(avatar);
     }
 
-    /**
-     * For testing, relies on user avatar and dungeon to be set already.
-     */
-    public void playLoad(Avatar avatar) throws MenuException {
-        play(avatar);
-    }
 
     /**
      * Resume a game that has been paused.
      */
     public void resume(Avatar avatar) throws MenuException {
+        log.debug("Resume game: ");
         Room room = null;
 
         try {
-            room = gsi.getAvatar().getCurrRoom();
+            room = avatar.getCurrRoom();
 
         } catch (NullPointerException e) {
             log.warn("No Current room is set for Avatar. Can't resume game.");
             throw new MenuException("Quit the current game");
         }
-        log.debug("Found an active room ({}) for avatar: {}", room.getId(), gsi.getAvatar().getName());
-        printDebugInfo("Resume game: ");
-        UiString.printLoadingIntro();
-        play(avatar);
+        log.debug("Found an active room ({}) for avatar: {}", room.getId(), avatar.getName());
+
+        if (!kcfg.getDebug()) {
+            UiString.printLoadingIntro();
+            play(avatar);
+        }
     }
 
 
@@ -103,11 +109,14 @@ public class ActionEngineServiceImpl implements ActionEngineService {
      * Currently it is a random re-generation, as original parameters were not saved.
      * todo: implement original values for all rooms etc for real re-start.
      */
+    @Transactional
     public void restart(Avatar avatar) throws MenuException {
-        printDebugInfo("Restart game: ");
-        gsi.resetAvatar();
-        msi.enterDungeon(avatar, avatar.getCurrDungeon());
-        if (!kcfg.debug) {
+        log.debug("Restart game");
+        avatar.setHealthToMax();
+        msi.enterDungeon(avatar);
+        avatarInterface.save(avatar);
+
+        if (true) {
             UiString.printLoadingIntro();
             UiString.printGameIntro();
         }
@@ -127,15 +136,14 @@ public class ActionEngineServiceImpl implements ActionEngineService {
 
         mainGameLoop:
         while(true) {
-            //this.room = avatar.getCurrRoom();
-            //TODO Think about how we want to handle having exited the dungeon.
-            if (getCurrentRoom() != null) {
-                monsters = getMonstersCurrentRoom();
-                directions = getDirectionsCurrentRoom();
+
+            if (avatar != null) {
+                monsters = avatar.getCurrRoom().getMonsters();
+                directions = avatar.getCurrRoom().getDirections();
             } else { break mainGameLoop; }
 
             try {
-                System.out.println(buildStateInfo());
+                System.out.println(buildStateInfo(avatar));
                 amr.display(avatar);
 
             } catch (MenuException e) {
@@ -146,7 +154,6 @@ public class ActionEngineServiceImpl implements ActionEngineService {
             } catch (GameOverException e) {
                 log.debug("Game over. Breaking mainGameLoop.");
                 System.out.println("Your avatar has died in battle...");
-                gsi.resetAvatar();
                 Util.sleeper(2400);
                 throw new MenuException("Quit in-game menu due to game over.");
 
@@ -160,16 +167,13 @@ public class ActionEngineServiceImpl implements ActionEngineService {
     }
 
 
-
-
-
     /**
      * Method to collect and output to user interesting information.
      *
      * todo: move the strings to UiStrings for consistency and language support.
-     * todo: split the method up.
+     * todo: split the method up, possibly.
      */
-    private String buildStateInfo() {
+    private String buildStateInfo(Avatar avatar) {
         StringBuilder str;
         String monstersInTheRoom;
         String exitsFromTheRoom;
@@ -225,7 +229,7 @@ public class ActionEngineServiceImpl implements ActionEngineService {
         // Combine it all to make sense.
         str = new StringBuilder();
         str.append(
-                String.format("\n%s health: %s", gsi.getAvatar().getName(), gsi.getAvatar().getCurrHealth()) +
+                String.format("\n%s health: %s", avatar.getName(), avatar.getCurrHealth()) +
                 String.format("\n%s", monstersInTheRoom) +
                 String.format("\n%s", exitsFromTheRoom) +
                 //String.format("\n%s", describablesInTheRoom) +
@@ -249,28 +253,7 @@ public class ActionEngineServiceImpl implements ActionEngineService {
     }
 
 
-    public Set<Monster> getMonstersCurrentRoom() {
-        return gsi.getAvatarCurrentRoom().getMonsters();
-    }
-
-    public Set<Direction> getDirectionsCurrentRoom() {
-        return gsi.getAvatarCurrentRoom().getDirections();
-    }
-
-    public Room getCurrentRoom() {
-        return gsi.getAvatarCurrentRoom();
-    }
-
-
 
     // ********************** Helper Methods ********************** //
 
-    public void printDebugInfo(String extra) {
-        log.debug("{} (User: {}, Avatar: '{}', Dungeon: {})",
-                extra,
-                //gsi.getDungeon().getUser().getName(),
-                usi.getAuthenticatedUser().getName(),
-                gsi.getAvatar().getName(),
-                gsi.getDungeon().getDungeonId());
-    }
 }

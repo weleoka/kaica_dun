@@ -97,7 +97,7 @@ public class UiString
     // Avatar selection
     public static String selectYourAvatarHeader = "\n - - - Avatar List - - -";
     public static String noAvatarAvailable = "You don't have any Avatars to play as. Create a new one.";
-    public static String avatarSelectedSuccess = "You have selected to play as: ";
+    public static String avatarSelectedSuccess = "You have selected your avatar.";
 
 
 

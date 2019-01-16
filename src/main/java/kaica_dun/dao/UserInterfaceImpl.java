@@ -3,10 +3,10 @@ package kaica_dun.dao;
 import kaica_dun_system.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
@@ -14,7 +14,8 @@ public class UserInterfaceImpl implements UserInterfaceCustom {
 
     private static final Logger log = LogManager.getLogger();
 
-    @Autowired
+    //@Autowired
+    @PersistenceContext(unitName = "entityManagerFactory")
     private EntityManager entityManager;
 
     /**

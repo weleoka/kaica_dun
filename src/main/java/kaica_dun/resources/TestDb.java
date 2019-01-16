@@ -14,6 +14,9 @@ import org.springframework.stereotype.Component;
  *
  * Primarily concerning persistence issues but can be used for logical
  * operation tests too.
+ *
+ * todo: purge this old relic of a file
+ *
  */
 @Component
 public class TestDb {

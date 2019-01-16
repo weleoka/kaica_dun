@@ -1,11 +1,11 @@
 package kaica_dun_system.menus;
 
-import kaica_dun.dao.UserInterface;
 import kaica_dun.entities.Avatar;
 import kaica_dun.util.MenuException;
 import kaica_dun.util.Util;
 import kaica_dun_system.ActionEngineServiceImpl;
 import kaica_dun_system.UiString;
+import kaica_dun_system.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,16 +20,7 @@ import static java.lang.System.out;
 class MenuLoggedIn extends Menu {
 
     @Autowired
-    MenuMain menuMain;
-
-    @Autowired
-    MenuInGame menuInGame;
-
-    @Autowired
-    ActionEngineServiceImpl aesi;
-
-    @Autowired // Can be removed in development.
-            UserInterface userInterface;
+    private ActionEngineServiceImpl aesi;
 
 
     /**
@@ -40,15 +31,8 @@ class MenuLoggedIn extends Menu {
      * (2. Change Subscription)
      * 9. Return to Main Menu
      */
-    void display(Avatar avatar) throws MenuException {
+    void display(User user) throws MenuException {
         int selection;
-
-        if (!usi.isAuthenticatedUser()) {
-            out.println(UiString.userNotAuthenticated);
-            Util.sleeper(900);
-            log.warn("REMEBER to disable access to MenuLoggedIn#display for production.");
-            //return;
-        }
 
         Set<Integer> hset = new HashSet<>(Arrays.asList(1, 2, 9));
         selection = getUserInput(hset, UiString.loggedInMenu);
@@ -56,10 +40,13 @@ class MenuLoggedIn extends Menu {
         switch (selection) {
 
             case 1: // Start a new game (or resume a game if the avatar is in a dungeon already.)
+                Avatar avatar = selectAvatarPrompt(user);
 
-                if (selectAvatar()) {
-                    if (gsi.getAvatarCurrentRoom() != null) {
+                if (avatar != null) {
+
+                    if (avatar.getCurrDungeon() != null) {
                         aesi.resume(avatar);
+
                     } else {
                         aesi.playNew(avatar);
                     }
@@ -67,11 +54,12 @@ class MenuLoggedIn extends Menu {
                 break;
 
             case 2: // Create new Avatar
-                createAvatar();
+                createAvatar(user);
                 break;
 
             case 9:
-                this.logoutUser();
+                out.println(UiString.logoutSuccessfull);
+                Util.sleeper(700);
                 throw new MenuException("Logged out");
         }
     }
@@ -83,32 +71,19 @@ class MenuLoggedIn extends Menu {
      * arr[0] Name
      * arr[1] Description
      */
-    private void createAvatar() {
+    private void createAvatar(User user) {
         String[] arr = this.createAvatarPrompt();
-        if (gsi.createNewAvatar(arr, usi.getAuthenticatedUser())) {
+
+        if (gsi.createNewAvatar(arr, user)) {
             out.println(UiString.newAvatarCreated);
         }
     }
 
 
-    /**
-     * A selecting an existing Avatar to play as.
-     */
-    private boolean selectAvatar() {
-        Avatar tmpAvatar = selectAvatarPrompt();
-
-        if (tmpAvatar != null) {
-            usi.getAuthenticatedUser().setCurrAvatar(tmpAvatar);
-            gsi.setAvatar(tmpAvatar);
-
-            return true;
-        }
-
-        return false;
-    }
 
 
-    // Prompts for user choice
+    // ********************** Prompts for user choice ********************** //
+
 
     /**
      * User input prompt for creating Avatar.
@@ -128,57 +103,29 @@ class MenuLoggedIn extends Menu {
         return tmpArr;
     }
 
+
     /**
      * A user can have many avatars and this lets them choose between them.
      *
      * @return
      */
-    private Avatar selectAvatarPrompt() {
-        int selection;
-        String selectionOptions = "";
-        List<Avatar> avatarList = gsi.fetchAvatarByUser(usi.getAuthenticatedUser());
+    private Avatar selectAvatarPrompt(User user) {
+        StringBuilder str = new StringBuilder();
+        List<Avatar> avatars = gsi.fetchAvatarByUser(user);
 
-        if (avatarList.size() == 0) {
+        if (avatars.size() == 0) {
             out.println(UiString.noAvatarAvailable);
-
             return null;
         }
+        str.append(UiString.selectYourAvatarHeader);
 
-        selectionOptions = gsi.printAvatarListByUser(usi.getAuthenticatedUser(), false); // print to stdout.
-
-
-        inputLoop:
-        while (true) {
-            out.println(UiString.selectYourAvatarHeader);
-            out.println(selectionOptions);
-            out.println(UiString.makeSelectionPrompt);
-
-            if (userInput.hasNextInt()) {
-                selection = userInput.nextInt() - 1;
-
-                if (selection >= 0 && selection < avatarList.size()) {
-                    Avatar avatar = avatarList.get(selection);
-                    out.println(UiString.avatarSelectedSuccess + avatar.getName());
-
-                    return avatarList.get(selection);
-
-                } else {
-                    out.println(UiString.menuSelectionFailed);
-                }
-                userInput.reset(); // flush the in buffer
-            }
+        for (int i = 0; i < avatars.size() ; i++) {
+            str.append(String.format("\n[%s] - %s", i + 1, avatars.get(i).getName()));
         }
+        str.append(UiString.makeSelectionPrompt);
+        int sel = getUserInput(avatars.size(), str.toString());
+        out.println(UiString.avatarSelectedSuccess);
+
+        return avatars.get(sel - 1);
     }
-
-
-
-    /**
-     * Steps for logging user out.
-     */
-    private void logoutUser() {
-        usi.logoutUser();
-        out.println(UiString.logoutSuccessfull);
-        Util.sleeper(700);
-    }
-
 }

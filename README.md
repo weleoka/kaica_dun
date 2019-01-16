@@ -2,13 +2,13 @@
 This is a dungeon adventure game for the java VM. It uses Java Persistance API via Hibernate. Current build engine is Gradle and with mavenCentral repositories for dependency sourcing.
 
 ## Repository information
-The repository, as of from initial release v0.1.0 (which is a development release), follows the a standard structure and workflow. A description of such a workflow is described at [Nvie Git Branches](https://nvie.com/posts/a-successful-git-branching-model/). To introduce the structure it contains the following branches and their roles.  
-There are two main branches: `master` and `develop`. HEAD in `master` is a production ready state. This means that it should be ready to compile and run. HEAD in `develop` is the latest incorporated features and bugfix branches and should be in a state ready to run in development mode. When `develop` is in a stable state it can be merged into `master`. Usually there will be some configuration changes in order to make the `master` branch production ready. Details in `CHANGELOG.md` should be checked, and other standard procedures followed. Conclude the work with a commit, and a version bump. The versioning is according to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). On the issue of then merging this state of `master` to what is known as a release branch; that is not enforced in this repository. For historical releases checkout earlier commits in `master`.  
-There is lastly a naming strategy of branches from `develop`. Branches from develop can be features or bugfixes. The naming convention is as follows: `[ft/fix]-{2-3 word summary}-{id_sequence}`. The id_sequence is to maintain a clear list of squences of branches from `develop`.  
-There is only one other type of branch that may be used and that is the hotfix type, naming: `[hotfix]-{2-3 word summary}-{hotfix_id_sequence}`. If a severe bug is found in production a branch can be made from `master` where the bug is addressed and then merged back into `master`. Important to remember is then to merge the hotfix into `develop` when at a suitable stage in that branch.
+The repository, as of from initial release v0.1.0 (which is a development release), follows a standard workflow structure, sometimes called the Git Feature Branch Workflow. A description of such a workflow is described at [Nvie Git Branches](https://nvie.com/posts/a-successful-git-branching-model/). To introduce the structure it contains the following branches and their roles.  
+There are two main branches: `master` and `develop`. HEAD in `master` is a production ready state. This means that it should be ready to compile and run. HEAD in `develop` is the latest incorporated features and bugfix branches and should be in a state ready to run in development mode. When `develop` is in a stable state it can be merged into `master`. Usually there will be some configuration changes in order to make the `master` branch production ready. Details in `CHANGELOG.md` should be checked, and other standard procedures followed. Conclude the work with a commit, and a version bump. The versioning is according to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). On the issue of then merging this state of `master` to what is known as a release branch; that is not enforced in this repository. For historical releases simply checkout earlier commits in `master`.  
+There is a naming strategy of branches from `develop`. Branches from develop can be features or bugfixes. The naming convention is as follows: `[ft/fix]-{2-3 word summary}-{id_sequence}` example: `ft-23-save-game`. The id_sequence is to maintain a clear list of sequences of branches from `develop`.  
+There is only one other type of branch that may be used and that is the hotfix type, naming: `[hotfix]-{2-3 word summary}-{hotfix_id_sequence}`. Hotfix is used if a severe bug is found in production, in which case a branch can be made from `master` where the bug is addressed and then merged back into `master`. Important to remember is to then merge the hotfix into `develop` when at a suitable stage in that branch.
 
 # Documentation
-This application uses a persistance system based on the JPA specifications called Hibernate. It also uses a transaction management implementation included in the Spring framework. To compile the program as a standalone application see instructions in documentation.
+This application uses a persistence system based on the JPA specifications called Hibernate. It also uses a transaction management implementation included in the Spring framework. To compile the program as a standalone application see instructions in documentation.
 
 ## Main components
 Main types naming: service, menu (translatable to management), data access objects, configuration, entities, factories and miscellaneous interfaces.
@@ -30,7 +30,7 @@ These steps are one way of getting the repository ready for development.
 1. git clone the repository
 2. Use gradle to fetch the dependencies into the local project folder. The gradle task for copying the dependencies is `cpDeps`, and the downloaded total for the dependencies is 27MB. The task `cpDeps` makes dependencies available for development by placing them in `lib/` folder. This is not always required as in most instances IDE loading will more efficiently keep local copies of repositories available, and with the added benefit of providing availability for multiple projects.
 3. Make your IDE load dependencies *.jar files from `lib` in your project structure settings in the IDE. Consider removing other references to libraries/locations if there are any.
-4. Modify `src/resources/application.properties` to use mariaDB, mySQL or hsqldb, and maybe set your credentials and url parameters. Or if required use a standalone environment by setting up file-based hsqldb as per instructions for @link:"compiling-for-production".
+4. Rename `src/resources/application_example.properties` to `src/resources/application.properties` and edit it to use mariaDB, mySQL or hsqldb, and maybe set your credentials and url parameters. Or if required use a standalone environment by setting up file-based hsqldb as per instructions for "Production build with hsqldb".
 
 
 To build and run the project with gradle wrapper `./gradlew build`, and then `./gradlew run` to run the application.
@@ -44,7 +44,7 @@ This is probably the usual method for work on this project
 1. git clone the repository
 2. Open the project in IJ idea.
 3. Stand by while dependencies are satisfied. These will not be stored in the project folder usually, but are instead downloaded to gradle cache for access by all java projects.
-4. Modify the `src/resources/application.properties` to use mariaDB or mySQL db, and to set your credentials, url, port etc.
+4. Rename `src/resources/application_example.properties` to `src/resources/application.properties` and edit it to use mariaDB or mySQL db, and to set your credentials, url, port etc.
 
 Building and running will likely be within the realms of the IDE in these instances.
 
@@ -54,12 +54,13 @@ As always there are few tweaks to be done before compiling successfully for prod
 
 For HSQLDB - standalone game:
 
-1. Switch out the DataSource bean by removing `/cfg/DataSourceCfg.java` and putting `cfg/DataSourceHsCfg.java` in place. (todo: change)
-2. Change the dialect in application.config to the HSQL dialect by switching the commenting out.
-3. Optional: change the ddl mode in application.config from create-drop to update, but only after ensuring that the tables are in existence. This is a question of weather or not you want save game functions.
-4. In build.gradle uncomment the HSQL db dependency, and consider commenting out mariDb and sqlDb dependencies.
-5. Change the debug in `cfg/KaicaDunCfg.java` from true to false. 
-6. Finally set the logging level to warn for all the loggers in `log4j2.xml` and consider changing the appender to file out so you can monitor log/app.log for issues. 
+1. Optional: switch out the primary DataSource bean's configuration by changing the prefix `datasource.sqldb` to `datasource.hsqldb` in `config/DataSourceCfg.java`
+2. If you don't have it already rename `src/resources/application_example.properties` to `src/resources/application.properties` and edit it to use mariaDB, mySQL or hsqldb, and maybe set your credentials and url parameters.
+3. Set the kaica.debug parameter to false
+4. Change the dialect in `application.config` to the HSQL dialect by switching the commenting out.
+5. Optional: change the ddl mode in `application.config` from create-drop to update, but only after ensuring that the tables are in existence. This is a question of weather or not you want save game functions.
+6. Change the debug in `cfg/KaicaDunCfg.java` from true to false. 
+7. Finally set the logging level to warn for all the loggers in `log4j2.xml` and consider changing the appender to file out so you can monitor log/app.log for issues. 
 
 Now it is possible to run the builds using gradle wrapper: `./gradlew distZip` or `gradlew.bat distZip` in windows should yield results.
 

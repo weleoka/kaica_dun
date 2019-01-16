@@ -1,13 +1,14 @@
 package kaica_dun_system;
 
 import kaica_dun.entities.Avatar;
-import kaica_dun.entities.Dungeon;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "User")
@@ -29,7 +30,7 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER) // See developer notes #04
     private Set<Avatar> avatars = new LinkedHashSet<Avatar>();
 
     //Unidirectional, I think
@@ -40,7 +41,6 @@ public class User {
 
     // Default empty constructor
     protected User() {}
-
 
 
     /**
@@ -55,6 +55,7 @@ public class User {
         this.password = password;
         this.currAvatar = currAvatar;
     }
+
 
     /**
      * Partial constructor.
@@ -95,7 +96,9 @@ public class User {
         if (avatar == null) {
             throw new IllegalArgumentException("Can't add a null Avatar.");
         }
-        this.getAvatars().add(avatar);
+        avatars.add(avatar);
+        //Set<Avatar> aaa = this.getAvatars();
+        //aaa.add(avatar);
     }
 
 
