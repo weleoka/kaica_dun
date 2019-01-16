@@ -163,6 +163,8 @@ public class Avatar extends Fighter {
     public void setCurrRoom(Room currRoom) { this.currRoom = currRoom; }
 
 
+
+
     // ********************** Model Methods ********************** //
 
     //Equipp a weapon in your EquippedWeapon slot
@@ -237,6 +239,9 @@ public class Avatar extends Fighter {
 
         return dealtDamage;
     }
+
+
+
 
     // ********************** Common Methods ********************** //
 

@@ -25,6 +25,7 @@ public class MovementServiceImpl {
     @Autowired
     private AvatarInterface avatarInterface;
 
+
     /**
      * Find the first room if the dungeons rooms are EAGER loaded.
      *
@@ -38,20 +39,19 @@ public class MovementServiceImpl {
                 room = r;
             }
         }
+        log.debug("Fetching first room (id: {}) of the dungeon.", room.getId());
         return room;
     }
+
 
     /**
      * Enter the dungeon by an enterance.
      *
      * @param avatar
-     * @param dungeon
      */
-    public void enterDungeon(Avatar avatar, Dungeon dungeon) {
-        Room firstRoom = fetchDungeonFirstRoom(dungeon);
+    public void enterDungeon(Avatar avatar) {
+        Room firstRoom = fetchDungeonFirstRoom(avatar.getCurrDungeon());
         avatar.setCurrRoom(firstRoom);  //Enter first room of dungeon, always on index 0
-        avatar.setCurrDungeon(dungeon);
-        avatarInterface.save(avatar);       //commit to db
         log.debug("Dropping avatar into room (id: {}) -> good luck!.", firstRoom.getId());
     }
 
@@ -93,6 +93,7 @@ public class MovementServiceImpl {
 
         return newRoom;
     }
+
 
     /**
      * Handles the finding of the next room by user input parameter in the chain of rooms

@@ -6,7 +6,10 @@ import kaica_dun.entities.RoomType;
 import kaica_dun.resources.TestDb;
 import kaica_dun.util.MenuException;
 import kaica_dun.util.QuitException;
-import kaica_dun_system.*;
+import kaica_dun_system.GameServiceImpl;
+import kaica_dun_system.UiString;
+import kaica_dun_system.User;
+import kaica_dun_system.UserServiceImpl;
 import kaica_dun_system.menus.MenuInGame;
 import kaica_dun_system.menus.MenuMain;
 import org.apache.logging.log4j.LogManager;
@@ -40,14 +43,13 @@ import static java.lang.System.out;
 
 
 // lazyInit means the beans are loaded as used. Gained 1 second boot time.
-// todo: learn the @Lazy annotation.
 @ComponentScan(basePackages = {"kaica_dun_system", "kaica_dun"}, lazyInit=true)
 public class App implements CommandLineRunner {
     // This logger has a name so that it can retrieved for use from anywhere in the application.
     private static final Logger log = LogManager.getLogger("MAIN");
 
     @Autowired
-    KaicaDunCfg kcfg;
+    private KaicaDunCfg kcfg;
 
     @Autowired
     private UserServiceImpl usi;
@@ -60,9 +62,6 @@ public class App implements CommandLineRunner {
 
     @Autowired
     private MenuMain menuMain;
-
-    @Autowired
-    private MovementServiceImpl msi;
 
     @Autowired
     MenuInGame mig;
@@ -84,10 +83,14 @@ public class App implements CommandLineRunner {
      */
     public void run(String... strings) {
         out.printf(UiString.logo);
-        log.debug(kcfg.debug);
-        if (kcfg.debug) {
+        kcfg.readProperties(); // Read config file.
+
+        if (kcfg.getDebug()) {
+            log.debug("DEBUG mode is enabled");
+
             try {
                 StringBuilder str = new StringBuilder();
+
                 for (RoomType type : RoomType.values()) {
                     str.append(String.format("'%s', ", type.name()));
                 }
@@ -101,13 +104,10 @@ public class App implements CommandLineRunner {
                 // Game Creation for testing
                 // The Game service needs a user and a selected avatar.
                 User createdUser = usi.findUserById(userId);
-                usi.setAuthenticatedUser(createdUser);
 
                 Avatar avatar = gsi.createStaticAvatar(createdUser);
-                gsi.setAvatar(avatar);
 
-
-                mig.display(true, true, avatar); // Jump straight in the game.
+                mig.display(avatar, true); // Jump straight in the game.
 
                 //testdb.main();  // testing
                 //Avatar avatar = avatarInterface.save(new Avatar("Rolphius", "A wiry old warrior.", createdUser));
@@ -128,19 +128,20 @@ public class App implements CommandLineRunner {
                 quit();
             }
         }
-        //displayMenu(avatar);  // Usual app behaviour
+
+        displayMenu();  // Usual app behaviour
     }
 
 
     /**
      * The main menu loop that only stops if a QuitException is thrown.
      */
-    private void displayMenu(Avatar avatar) {
+    private void displayMenu() {
 
         while(true) {
 
             try {
-                menuMain.display(avatar);
+                menuMain.display();
 
             } catch (QuitException e) {
                 log.debug(e);

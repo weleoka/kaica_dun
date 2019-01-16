@@ -37,21 +37,6 @@ public class AvatarFactory {
     private AvatarFactory() {}
 
 
-
-    /**
-     * Pass user input for the creation of an avatar.
-     *
-     * @param name
-     * @param description
-     * @return
-     */
-    public Avatar make(String name, String description) {
-        User user = usi.getAuthenticatedUser();
-
-        return make(name, description, user);
-    }
-
-
     /**
      * Pass user input and a user instance for the creation of an avatar.
      *

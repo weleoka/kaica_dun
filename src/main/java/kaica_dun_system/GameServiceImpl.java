@@ -1,11 +1,11 @@
 package kaica_dun_system;
 
 
-import kaica_dun.dao.*;
+import kaica_dun.dao.AvatarInterface;
+import kaica_dun.dao.DungeonInterface;
+import kaica_dun.dao.UserInterface;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Dungeon;
-import kaica_dun.entities.Room;
-import kaica_dun.entities.RoomType;
 import kaica_dun.resources.AvatarFactory;
 import kaica_dun.resources.StaticDungeonFactory;
 import org.apache.logging.log4j.LogManager;
@@ -16,10 +16,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 
 /**
@@ -38,11 +38,10 @@ import java.util.UUID;
 @Service
 @EnableTransactionManagement
 public class GameServiceImpl implements GameService {
-
-    // Fields declared
     private static final Logger log = LogManager.getLogger();
-    private Avatar avatar;
-    private Dungeon dungeon;
+
+    @Autowired
+    private UserInterface userInterface;
 
     @Autowired
     private AvatarFactory avatarFactory;
@@ -54,19 +53,11 @@ public class GameServiceImpl implements GameService {
     private DungeonInterface dungeonInterface;
 
     @Autowired
-    ActionEngineServiceImpl aesi;
+    @PersistenceContext(unitName = "entityManagerFactory")
+    private EntityManager entityManager; // todo: see notes on fetchAvatarByUser todo's
 
-    @Autowired
-    private EntityManager entityManager;
 
-    @Autowired
-    private RoomInterfaceCustom ric;
 
-    @Autowired
-    private RoomInterface ri;
-
-    @Autowired
-    private UserInterface userInterface;
 
 
     // ********************** Dungeon Methods ********************** //
@@ -90,48 +81,6 @@ public class GameServiceImpl implements GameService {
         return dungeon;
     }
 
-    /**
-     * Search for the room in the dungeon with the correct enum type.
-     * This is the method where LAZY loading is used.
-     *
-     * todo: ensure that a dungeon only contains one single entry for certain enum types
-     *  and modify the method for fetch single result.
-     *
-     * @param
-     * @return
-     */
-    @Transactional
-    public Room fetchDungeonFirstRoom() {
-        List<UUID> results = ric.findRoomsInDungeonByEnum(dungeon, RoomType.FIRST01);
-        UUID firstRoomId = results.get(0);
-
-        Room firstRoom = null;
-
-        log.debug("Fetching first room (id: {}) of the dungeon.", firstRoomId);
-        Optional result = ri.findById(firstRoomId);
-        if (result.isPresent()) {
-            firstRoom = (Room) result.get();
-        }
-
-        return firstRoom;
-    }
-
-    /**
-     * Find the first room if the dungeons rooms are EAGER loaded.
-     *
-     * @param dungeon
-     * @return
-     */
-    public Room fetchDungeonFirstRoom(Dungeon dungeon) {
-        Room room = null;
-        for (Room r : dungeon.getRooms()){
-            if(r.getRoomType() == RoomType.FIRST01) {
-                room = r;
-            }
-        }
-        return room;
-    }
-
 
 
 
@@ -142,37 +91,37 @@ public class GameServiceImpl implements GameService {
      * Uses native SQL.
      *
      * todo: sort out compiler warning about unchecked assignment.
+     * todo: set this call out to the Repository interface and don't have EntityManager injected into this class
+     * todo: adapt this method to the JPA criteria API.... It is hard with the inheritance strategy and
+     *       having to reference columns by field variable names and not column names.
+     *
      * @param user a User instance
      * @return a list of avatars
      */
     public List<Avatar> fetchAvatarByUser (User user) {
         log.debug("Searching for all Avatars belonging to {}.", user.getName());
-
-/*
-        Query query = entityManager.createQuery(
+        /*        Query query = entityManager.createQuery(
                 //"SELECT fighter FROM Fighter fighter WHERE Fighter.userID LIKE :userId")
                 "SELECT Avatar FROM Avatar avatar WHERE avatar.userID = :userId")
                 //.addEntity(Avatar.class)
                 .setParameter("userId", user.getId());
         List<Avatar> avatarList = query.getResultList();
 */
-        // todo: adapt this method to the JPA criteria API.... It is hard with the inheritance strategy and
-        //  having to reference columns by field variable names and not column names.
-        TypedQuery<Avatar> query = this.entityManager.createNamedQuery("Avatar.findByUserID", Avatar.class);
-        //Query query = this.entityManager.createNativeQuery("SELECT * FROM Fighter f WHERE f.userId = ?", Avatar.class);
-
-
+        TypedQuery<Avatar> query = entityManager.createNamedQuery("Avatar.findByUserID", Avatar.class); // Named
+        //Query query = this.entityManager.createNativeQuery("SELECT * FROM Fighter f WHERE f.userId = ?", Avatar.class); // Native
         query.setParameter("userInstance", user); // Named
         //query.setParameter(1, user.getId()); // Native
         List<Avatar> results = query.getResultList();
         log.debug("A List of {} avatars was fetched.", results.size());
-
         return results;
     }
 
 
     /**
      * Creates an avatar and adds it to the Users list of avatars. Persists the User and the avatar.
+     *
+     * todo: not essential but if user had a lot of avatars a better method would be required for access
+     *  to the set. See more at https://stackoverflow.com/a/16562663/3092830
      *
      * @param user a User instance
      * @return the avatar
@@ -189,6 +138,7 @@ public class GameServiceImpl implements GameService {
 
 
     /**
+     * Creates a new avatar for the user.
      *
      * @param arr a String[] with name and description
      * @param user a User instance
@@ -202,63 +152,6 @@ public class GameServiceImpl implements GameService {
     }
 
 
-    /**
-     * Reset the health and current room of the avatar.
-     */
-    @Transactional
-    public void resetAvatar() {
-        avatar.setCurrHealth(avatar.getMaxHealth());
-        //avatar.setCurrRoom(null); //TODO this ought to not be needed, currRoom will always be null when it should be.
-        avatarInterface.save(avatar);
-    }
-
-
-    /**
-     * Save any changes changes to the avatar.
-     * @return
-     */
-    @Transactional
-    public void updateAvatar() {
-        avatarInterface.save(avatar);
-    }
-
-
-    /**
-     * Get the current room which an avatar is in.
-     *
-     * @return
-     */
-    public Room getAvatarCurrentRoom() {
-        return getAvatar().getCurrRoom();
-    }
-
-
-
-
-
-    // ********************** Accessor methods ********************** //
-
-
-    public Avatar getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(Avatar avatar) {
-        log.debug("An avatar(id:{}) has been set for username '{}'.", avatar.getId(), avatar.getUser().getName());
-        this.avatar = avatar;
-    }
-
-
-    public Dungeon getDungeon() {
-        return dungeon;
-    }
-
-    public void setDungeon(Dungeon dungeon) {
-        this.dungeon = dungeon;
-    }
-
-
-
 
 
     // ********************** Helper methods ********************** //
@@ -267,25 +160,19 @@ public class GameServiceImpl implements GameService {
      * Find all the avatars belonging to a certain user.
      * If boolean value is set then print the results to stdout.
      *
-     * @param user
-     * @param stdout
-     * @return
+     * @param user a user instance
+     * @return str a string of information
      */
-    public String printAvatarListByUser(User user, boolean stdout) {
-        String stringOutput = "";
-        String row = "";
-        List<Avatar> avatarList = fetchAvatarByUser(user);
+    public HashMap<Integer, String> buildAvatarOptions(User user) {
+        HashMap<Integer, String> options = new HashMap<>();
+        List<Avatar> avatars = fetchAvatarByUser(user);
+        int i = 1;
 
-        for (int i = 0; i < avatarList.size(); i++) {
-            Avatar tmpAvatar = avatarList.get(i);
-            row = String.format("\n[%s] - %s", i + 1, tmpAvatar.getName()); // plus 1 for readability
-
-            if (stdout) {
-                System.out.println(row);
-            }
-            stringOutput += row;
+        for (Avatar avatar : avatars) {
+            options.put(i, String.format("\n[%s] - %s", i, avatar.getName()));
+            i++;
         }
 
-        return stringOutput;
+        return options;
     }
 }

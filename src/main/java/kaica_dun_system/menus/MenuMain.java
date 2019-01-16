@@ -1,6 +1,5 @@
 package kaica_dun_system.menus;
 
-import kaica_dun.entities.Avatar;
 import kaica_dun.util.MenuException;
 import kaica_dun.util.QuitException;
 import kaica_dun.util.Util;
@@ -26,16 +25,13 @@ public class MenuMain extends Menu {
      * Menu default to all players.
      * <p>
      * Items:
-     * 1) Login player
-     * 2) Create player
-     * -3) Generate default rooms
-     * -4) empty
+     * 1) Login user
+     * 2) Create user
      * -5) List all users and their data.
      * 9) Quit Application
      * <p>
-     * todo: test the inputLoop breaking and what happens to following switch cases.
      */
-    public void display(Avatar avatar) throws QuitException {
+    public void display() throws QuitException {
         int selection = 0;
 
         Set<Integer> hset = new HashSet<>(Arrays.asList(1, 2, 5 ,9));
@@ -44,9 +40,10 @@ public class MenuMain extends Menu {
         switch (selection) {
 
             case 1:
-                if (loginUser()) {
+                User user = loginUser();
+                if (user != null) {
                     out.println(UiString.successfullLogin);
-                    displayLoggedInMenu(avatar);
+                    displayLoggedInMenu(user);
                     break;
 
                 } else {
@@ -73,12 +70,12 @@ public class MenuMain extends Menu {
      * Displays the logged in menu in a loop that
      * is stopped if an exception is thrown.
      */
-    private void displayLoggedInMenu(Avatar avatar) {
+    private void displayLoggedInMenu(User user) {
 
         while(true) {
 
             try {
-                menuLoggedIn.display(avatar);
+                menuLoggedIn.display(user);
 
             } catch (MenuException e) {
                 log.debug(e);
@@ -116,27 +113,25 @@ public class MenuMain extends Menu {
      *
      * @return boolean
      */
-    private boolean loginUser() {
+    private User loginUser() {
         String[] creds = credentialsPrompt();
         User user = usi.findUserByName(creds[0]);
 
         if (user != null) {
             out.println(UiString.userNameFound);
 
-            if (usi.loginUser(user, creds[1])) {
-                return true;
-
-            } else {
-                out.println(UiString.userNameToPasswordMismatch); // todo: change to userNameToPwdMismatch
+            if (!usi.loginUser(user, creds[1])) {
+                out.println(UiString.userNameToPasswordMismatch);
                 Util.sleeper(700);
-                return false;
+                user = null;
             }
 
         } else {
             out.println(UiString.userNameNotFound);
             Util.sleeper(700);
-            return false;
         }
+
+        return user;
 
     }
 

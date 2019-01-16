@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.UUID;
@@ -18,6 +19,7 @@ public class RoomInterfaceImpl implements RoomInterfaceCustom {
     private static final Logger log = LogManager.getLogger();
 
     @Autowired
+    @PersistenceContext(unitName = "entityManagerFactory")
     private EntityManager entityManager;
 
     /**

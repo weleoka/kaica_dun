@@ -4,7 +4,9 @@ import kaica_dun.entities.Direction;
 import kaica_dun.entities.Monster;
 import kaica_dun.entities.Room;
 
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.Random;
+import java.util.Set;
 
 public class tmpRoomMaker {
 

@@ -1,50 +1,55 @@
 # Git ignore file modified for project KaicaDungeon
 # See README for information about setting up the development environment.
-#
-# Ignores:
-# 0) Database specifics due to redentials.
-# 1) files specific for gradle builds
-# 2) lib folder in project root (be aware of this if manually importing dependencies)
-# 3) files that are IDE specific for IntelliJ idea.
-# 4) the recommended gitignore from github java type.
+
+# 0) Contains database access details.
+application.properties
+
+
+# 1) Ignore Gradle project-specific cache directory and Gradle build output directory
+.gradle
+
+
+# 2) lib folder in project root - Locally download dependency jar files.
+lib/
+
+
+# 3) The entire build folder
+build
+
+
+# 4) not used
 
 
 # 5) The whole .idea/ folder because its always changing.
 .idea
 
-# 6) *kaiwork* Files and folders that are for reference and copy paste.
-*.kaiWork*
-kaiWork/
+
+# 6) Work folders that are for developers reference and copy paste.
+kaiwork/
+kaiwork.txt
+
 
 # 7) log file folder
 log/
 
 
 # 8) files created by the standalone database version of the game
+hsqldb_data
 kaica_dun_db.lck
 kaica_dun_db.properties
 kaica_dun_db.script
 
 
 
-# Contains database access details. hibernate.cfg.xml no longer ignored as moved to application.properties.
-application.properties
-
-#1 Ignore Gradle project-specific cache directory and Gradle build output directory
-.gradle
-
-build
-
-
-# Locally download dependency jar files.
-lib/
 
 
 
+
+
+# 9) files that are IDE specific for IntelliJ idea.
 # Created by https://www.gitignore.io/api/intellij
 # Edit at https://www.gitignore.io/?templates=intellij
 
-### Intellij ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
@@ -132,11 +137,9 @@ fabric.properties
 # Sonarlint plugin
 .idea/sonarlint
 
-# End of https://www.gitignore.io/api/intellij
 
 
-
-
+# 10) the recommended gitignore from github java type.
 # Github's java filter
 # Compiled class file
 *.class

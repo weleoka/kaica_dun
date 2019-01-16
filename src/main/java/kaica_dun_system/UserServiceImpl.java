@@ -3,7 +3,6 @@ package kaica_dun_system;
 
 import kaica_dun.dao.UserInterface;
 import kaica_dun.dao.UserInterfaceCustom;
-import kaica_dun.entities.Avatar;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +28,6 @@ import java.util.Optional;
 @Service
 @EnableTransactionManagement
 public class UserServiceImpl implements UserService {
-
-    // Fields declared
     private static final Logger log = LogManager.getLogger();
 
     @Autowired
@@ -39,8 +36,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserInterfaceCustom userInterfaceCustom;
 
-    // User management
-    private User authenticatedUser; // holds a reference to the user object if isAuthenticated.
 
 
 
@@ -48,20 +43,20 @@ public class UserServiceImpl implements UserService {
     /**
      * Create a new user.
      *
-     * @param user a User instance
+     * @param nUser a User instance
      * @return boolean          true if user was created
      */
     @Transactional
-    public Long createUser(User user) { // Change to package private after testing.
-        log.debug("Creating user '{}'.", user.getName());
+    public Long createUser(User nUser) { // Change to package private after testing.
+        log.debug("Creating user '{}'.", nUser.getName());
 
         try {
-            User nUser = userInterface.save(user);
+            User user = userInterface.save(nUser);
 
-            if (nUser.getId() != null) {
+            if (user.getId() != null) {
                 log.debug("Created new user with ID: '{}'.", user.getId());
 
-                return nUser.getId();
+                return user.getId();
             }
 
         } catch (Exception e) {
@@ -171,9 +166,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    public void updateAuthenticatedUser() {
-        userInterface.save(authenticatedUser);
-    }
 
 
     // ********************** Checking Methods ********************** //
@@ -196,46 +188,6 @@ public class UserServiceImpl implements UserService {
 
     // ********************** Authentication Methods ********************** //
 
-    /**
-     * Checks if authenticatedUser is set and returns result
-     *
-     * @return boolean              true if user is set and thus logged in
-     */
-    public boolean isAuthenticatedUser() {
-
-        if (authenticatedUser == null) {
-
-            return false;
-        }
-
-        return true;
-    }
-
-
-    /**
-     * return the ID of the selected user
-     *
-     * @return userID           true if user is set and thus logged in
-     */
-    public Long getAuthenticatedUserId() {
-        return authenticatedUser.getId();
-    }
-
-
-    /**
-     *
-     * @return User
-     */
-    public User getAuthenticatedUser() {
-        return authenticatedUser;
-    }
-
-
-    public void setAuthenticatedUser(User user) {
-        this.authenticatedUser = user;
-        log.warn("REMEBER to disable access to this setAuthenticatedUser() for production.");
-    }
-
 
     /**
      * setAuthenticated
@@ -252,7 +204,6 @@ public class UserServiceImpl implements UserService {
         log.debug("Comparing passwords: '{}' VS '{}'", user.getPassword(), password); //debug line.
 
         if (user.getPassword().equals(password)) {
-            this.authenticatedUser = user;
 
             return true;
         }
@@ -261,12 +212,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    /**
-     * set authenticatedUser to null.
-     */
-    public void logoutUser() {
-        authenticatedUser = null;
-    }
 
 
 
@@ -295,10 +240,5 @@ public class UserServiceImpl implements UserService {
         System.out.println();
     }
 
-    // TODO just for persistence testing
-    public void setCurrAvatar(Avatar avatar) {
-        this.authenticatedUser.setCurrAvatar(avatar);
-        userInterface.save(this.authenticatedUser);
-    }
 }
 

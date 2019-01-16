@@ -1,11 +1,12 @@
 package kaica_dun.resources;
 
-import kaica_dun.entities.Direction;
 import kaica_dun.entities.Dungeon;
 import kaica_dun.entities.Room;
 import kaica_dun_system.User;
 
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * Trying something smarter to make the dungeon, and separating that from the persistence mechanism
