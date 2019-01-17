@@ -39,12 +39,6 @@ public class Item implements Describable {
     @Column(name = "description")
     private String description;
 
-    //points to the inventory of an avatar if the item is located there. TODO possibly remove this pointer and make unidirectional
-    @ManyToOne
-    @JoinColumn(name = "inventoryID", nullable = true, updatable = true)
-    private Inventory inventory;
-
-
     // Default empty constructor
     protected Item() {}
 
@@ -77,10 +71,6 @@ public class Item implements Describable {
     }
 
     public void setDescription(String description) { this.description = description; }
-
-    public Inventory getInventory() { return this.inventory; }
-
-    public void setInventory(Inventory inventory) { this.inventory = inventory; }
 
 
     // ********************** Common Methods ********************** //

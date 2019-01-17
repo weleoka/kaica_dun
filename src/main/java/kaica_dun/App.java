@@ -106,7 +106,7 @@ public class App implements CommandLineRunner {
                 User createdUser = usi.findUserById(userId);
 
                 Avatar avatar = gsi.createStaticAvatar(createdUser);
-
+                
                 mig.display(avatar, true); // Jump straight in the game.
 
                 //testdb.main();  // testing
