@@ -32,6 +32,22 @@ public class Chest implements Lootable {
     // ********************** Accessor Methods ********************** //
 
 
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
+    }
+
     // ********************** Model Methods ********************** //
     @Override
     public List<Item> lootAll() { return null; //TODO ph
