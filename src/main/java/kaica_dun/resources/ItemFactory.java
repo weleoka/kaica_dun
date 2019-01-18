@@ -2,10 +2,8 @@ package kaica_dun.resources;
 
 import kaica_dun.entities.Armor;
 import kaica_dun.entities.Container;
-import kaica_dun.entities.Item;
 import kaica_dun.entities.Weapon;
 
-import java.util.LinkedHashSet;
 import java.util.Random;
 
 public class ItemFactory {

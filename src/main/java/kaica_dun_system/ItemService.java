@@ -2,7 +2,6 @@ package kaica_dun_system;
 
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Container;
-import kaica_dun.entities.Item;
 import kaica_dun.interfaces.Lootable;
 
 public interface ItemService {

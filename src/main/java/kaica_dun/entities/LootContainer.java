@@ -1,13 +1,11 @@
 package kaica_dun.entities;
 
-import kaica_dun.interfaces.Lootable;
 import kaica_dun.resources.ItemFactory;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @DiscriminatorValue("CONT_LOOT")

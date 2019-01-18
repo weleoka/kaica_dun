@@ -5,7 +5,6 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;

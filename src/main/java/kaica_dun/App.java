@@ -128,7 +128,7 @@ public class App implements CommandLineRunner {
                 quit();
             }
         } else {
-            // Usual app behaviour
+            // Usual app behaviouFORMAT_SQLr
             out.printf(UiString.logo);
             displayMainMenu();
         }
