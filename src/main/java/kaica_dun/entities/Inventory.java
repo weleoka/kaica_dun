@@ -1,10 +1,7 @@
 package kaica_dun.entities;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
-
-import javax.persistence.*;
-import java.util.*;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 
 /**
  * The inventory of an Avatar.

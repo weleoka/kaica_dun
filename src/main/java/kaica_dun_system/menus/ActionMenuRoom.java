@@ -1,7 +1,6 @@
 package kaica_dun_system.menus;
 
 import kaica_dun.config.KaicaDunCfg;
-import kaica_dun.dao.RoomInterface;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Direction;
 import kaica_dun.entities.Monster;

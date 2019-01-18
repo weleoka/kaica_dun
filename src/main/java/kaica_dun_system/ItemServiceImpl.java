@@ -1,6 +1,5 @@
 package kaica_dun_system;
 
-import kaica_dun.dao.AvatarInterface;
 import kaica_dun.dao.ContainerInterface;
 import kaica_dun.dao.ItemInterface;
 import kaica_dun.entities.Avatar;

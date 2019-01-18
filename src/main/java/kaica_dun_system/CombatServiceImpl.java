@@ -1,7 +1,6 @@
 package kaica_dun_system;
 
 import kaica_dun.dao.AvatarInterface;
-import kaica_dun.dao.MonsterInterface;
 import kaica_dun.dao.RoomInterface;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Monster;
