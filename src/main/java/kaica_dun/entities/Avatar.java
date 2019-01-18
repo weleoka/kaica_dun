@@ -22,7 +22,7 @@ public class Avatar extends Fighter {
     private User user;
 
     //Unidirectional, the Dungeon doesn't "know" there's an avatar in it. TODO think! TEST!
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @Fetch(FetchMode.JOIN)
     private Dungeon currDungeon;
 
@@ -55,7 +55,7 @@ public class Avatar extends Fighter {
         this.type = "User Avatar";
         this.user = user;               //For use in the dealDamage-method.
         // todo: not implemented because creating the inventory cant be done before knowing the AvatarId(FighterId)
-        this.inventory = new Inventory(this);
+        this.inventory = new Inventory(20);
     }
 
 
@@ -85,7 +85,7 @@ public class Avatar extends Fighter {
         this.user = user;
         equippWeapon(equippedWeapon);
         equippArmor(equippedArmor);
-        this.inventory = new Inventory(this);
+        this.inventory = new Inventory(20);
     }
 
 
@@ -111,7 +111,7 @@ public class Avatar extends Fighter {
         this.damage = damage;
         this.armor = armor;
         this.user = user;
-        this.inventory = new Inventory(this);
+        this.inventory = new Inventory(20);
     }
 
 
@@ -128,7 +128,7 @@ public class Avatar extends Fighter {
         this.maxHealth = currHealth;
         this.damage = 12;
         this.armor = 2;
-        this.inventory = new Inventory(this);
+        this.inventory = new Inventory(20);
     }
 
 

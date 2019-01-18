@@ -84,6 +84,15 @@ public class Room {
     @Fetch(FetchMode.JOIN)
     private Set<Monster> monsters = new LinkedHashSet<Monster>();
 
+    @OneToMany( //TODO CascadeType.ALL, rework to minimum
+            mappedBy = "room",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @NotFound(action = NotFoundAction.IGNORE)   //TODO Also potential workaround, might need to remove
+    @Fetch(FetchMode.JOIN)
+    private Set<Chest> chests = new LinkedHashSet<Chest>();
+
 
     // Default empty constructor
     protected Room() {}
@@ -110,7 +119,6 @@ public class Room {
         } else {
             this.roomType = RoomType.NULL;
         }
-
     }
 
 
@@ -143,6 +151,11 @@ public class Room {
     public void setRoomType(RoomType rt) {
         this.roomType = rt;
     }
+
+    //TODO replace, or add this functionality to constructor.
+    public void addStarterChest() { this.chests.add(new Chest(true)); }
+
+    public void addChest() {}
 
     public RoomType getRoomType() { return roomType; }
 

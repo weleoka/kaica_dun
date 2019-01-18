@@ -4,10 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * The inventory of an Avatar.
@@ -23,28 +20,8 @@ import java.util.UUID;
  * @see Avatar
  */
 @Entity
-@Table(name = "Inventory")
-public class Inventory {
-
-    @Id
-    @Type(type="uuid-char")             //Will not match UUIDs i MySQL otherwise
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
-    @Column(name = "inventoryID")
-    private UUID id;
-
-    @OneToOne(optional = true) // todo: change to non-optional OR remove reference to owner completely.
-    private Avatar owner;
-
-    @Basic
-    @Column(name = "max_size")
-    private int maxSize;
-
-    @OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL)
-    private List<Item> items;
+@DiscriminatorValue("CONT_INV")
+public class Inventory extends Container {
 
     //Default no-args constructor
     protected Inventory() {}
@@ -52,70 +29,33 @@ public class Inventory {
     /**
      * Full constructor.
      *
-     * @param avatar the avatar to which the inventory belongs
      */
-    protected Inventory(Avatar avatar) {
-        this.maxSize = 20;
-        this.owner = avatar;
-        this.items = new ArrayList<Item>(maxSize);
+    protected Inventory(int maxSize) {
+        super(maxSize);
     }
-
-
-    // ********************** Accessor Methods ********************** //
-
-    public int getMaxSize() { return maxSize; }
-
-    public void setMaxSize(int maxSize) { this.maxSize = maxSize; }
-
-    public List<Item> getItems() { return items; }
-
-    public void setItems(List<Item> items) { this.items = items; }
-
-    public UUID getId() { return id; }
-
-    public void setId(UUID id) { this.id = id; }
-
-
 
     // ********************** Model Methods ********************** //
 
     //use this method to manage the bidirectional pointers
+    @Override
     public void addItem(Item item) {
-        items.add(item);
-        item.setInventory(this);
-        //Remove the bidirectional pointers between the item and any Armor/Weapon and the Avatar.
+        super.addItem(item);
+        //Remove the bidirectional pointers between the item and Avatar if item is Armor/Weapon
+        //TODO replace with call to Avatar.equippment.remove
         if (item.getClass() == Weapon.class) {
-            if (((Weapon)item).getWielder() == null){
+            if (((Weapon)item).getWielder() != null){
                 ((Weapon)item).getWielder().unEquippWeapon();
             }
         } else if (item.getClass() == Armor.class) {
-            ((Armor)item).getWearer().unEquippArmor();
+            if (((Armor)item).getWearer() != null) {
+                ((Armor)item).getWearer().unEquippArmor();}
         }
     }
 
-    //use this method to manage the bidirectional pointers
+
+    //Remove a given item from this inventory, not sure it's needed. O(n) worst case.
+    @Override
     public void removeItem(Item item) {
-        item.setInventory(null);
-        items.remove(item);
-    }
-
-
-    // ********************** Common Methods ********************** //
-
-    @Override
-    public boolean equals(Object obj) {
-        if(this == obj) {
-            return true;
-        }
-        if(!(obj instanceof Inventory)) {
-            return false;
-        }
-        Inventory inventory = (Inventory) obj;
-        return id != null && id.equals(inventory.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+        super.removeItem(item);
     }
 }

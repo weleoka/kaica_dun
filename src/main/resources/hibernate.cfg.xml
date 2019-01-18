@@ -28,6 +28,8 @@ https://o7planning.org/en/10201/java-hibernate-tutorial-for-beginners -->
         <mapping class="kaica_dun.entities.Avatar"/>
         <mapping class="kaica_dun.entities.Monster"/>
         <mapping class="kaica_dun.entities.Chest"/>
+        <mapping class="kaica_dun.entities.Container"/>
+        <mapping class="kaica_dun.entities.LootContainer"/>
         <mapping class="kaica_dun.entities.Inventory"/>
 
     </session-factory>

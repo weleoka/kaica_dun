@@ -30,7 +30,7 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER) // See developer notes #04
+    @OneToMany(mappedBy ="user", cascade = CascadeType.ALL, fetch = FetchType.EAGER) // See developer notes #04
     private Set<Avatar> avatars = new LinkedHashSet<Avatar>();
 
     //Unidirectional, I think
