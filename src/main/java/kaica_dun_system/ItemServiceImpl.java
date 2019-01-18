@@ -11,6 +11,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -43,7 +45,7 @@ public class ItemServiceImpl {
      * @param avatar        the avatar that is looting the lootable
      * @param lootable      the lootable object to take the {@code Item} from
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     public void lootOne(Avatar avatar, Lootable lootable) {
         Inventory avatarInventory = avatar.getInventory();
         //Pointer setting
@@ -60,7 +62,7 @@ public class ItemServiceImpl {
      * @param avatar        the avatar that is looting the lootable
      * @param lootable      the lootable object to take the {@code Item} from
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     public void lootAll(Avatar avatar, Lootable lootable) {
         Inventory avatarInventory = avatar.getInventory();
         //Pointer setting
@@ -72,5 +74,4 @@ public class ItemServiceImpl {
         //TODO this might not be needed when Item is the owner of the relationship
         containerInterface.save(lootable.getContainer());
     }
-
 }

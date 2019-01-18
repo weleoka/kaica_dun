@@ -13,8 +13,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Set;
 
 @Service
@@ -45,7 +47,7 @@ public class CombatServiceImpl {
      *
      * @param avatar         the avatar fighting the monsters
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     public void autoCombat(Avatar avatar) throws GameOverException, GameWonException {
         Room room = avatar.getCurrRoom();
         Set<Monster> monsters = room.getMonsters();

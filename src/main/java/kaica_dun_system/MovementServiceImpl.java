@@ -7,6 +7,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
@@ -49,6 +51,7 @@ public class MovementServiceImpl {
      *
      * @param avatar
      */
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     public void enterDungeon(Avatar avatar) {
         Room firstRoom = fetchDungeonFirstRoom(avatar.getCurrDungeon());
         avatar.setCurrRoom(firstRoom);  //Enter first room of dungeon, always on index 0
@@ -61,6 +64,7 @@ public class MovementServiceImpl {
      *
      * @param avatar
      */
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     public void exitDungeon(Avatar avatar) {
         avatar.setCurrRoom(null);           //Exit the room
         avatar.setCurrDungeon(null);        //Exit the dungeon
@@ -75,7 +79,7 @@ public class MovementServiceImpl {
      * @param direction     the direction to move the avatar
      * @return              the room that you moved the avatar to, returns null if the avatar has exited the dungeon
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     public Room moveAvatar(Avatar avatar, Direction direction) {
         Dungeon dungeon = avatar.getCurrDungeon();
         int directionNum = direction.ordinal();
