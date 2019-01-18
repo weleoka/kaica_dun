@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -23,11 +24,23 @@ public class Chest implements Lootable {
     @Column(name = "chestID", updatable = false, nullable = false)
     protected UUID id;
 
-    @OneToOne(cascade = CascadeType.ALL, optional = false)
+    @OneToOne(cascade = CascadeType.ALL, optional = true)
     @PrimaryKeyJoinColumn
-    private Inventory inventory;
+    private LootContainer loot;
+
+    @ManyToOne
+    @JoinColumn(name = "roomID", nullable = true, updatable = false)
+    private Room room;
 
     protected Chest() {}
+
+    protected Chest(int rewardLevel) {
+        this.loot = new LootContainer();
+    }
+
+    protected Chest(boolean startChest) {
+        this.loot = new LootContainer(true);
+    }
 
     // ********************** Accessor Methods ********************** //
 
@@ -40,22 +53,42 @@ public class Chest implements Lootable {
         this.id = id;
     }
 
-    public Inventory getInventory() {
-        return inventory;
+    public LootContainer getContainer() {
+        return loot;
     }
 
-    public void setInventory(Inventory inventory) {
-        this.inventory = inventory;
+    public void setLoot(LootContainer loot) {
+        this.loot = loot;
     }
 
     // ********************** Model Methods ********************** //
-    @Override
-    public List<Item> lootAll() { return null; //TODO ph
-        }
 
-    @Override
-    public Item lootItem(int index) { return null; //TODO ph
-        }
+    /**
+     * Take one item from the chest.
+     *
+     * //TODO take one item from the chest by indexing into a specific location containing an item.
+     *
+     * @param inventory     the {@code Inventory} which is to have the {@code Item} added to it
+     * @return              the {@code Item} that was looted, or {@code null} if no {@code Item} is exists in the chest
+     */
+    public Item lootNextItem(Inventory inventory) {
+        //Updates the item pointers in both of the containers and returns a reference to the moved item.
+        //TODO possibly update the Item.container reference as well. If bidirectional.
+        return loot.moveNextItem(inventory);
+    }
+
+    /**
+     * Take all items from the chest.
+     *
+     * @param inventory     the {@code Inventory} which is to have the {@code Item}s added to it
+     * @return              a {@code LinkedList} of the objects to be looted, or {@code null} if no
+     *                      {@code Item}s are returned
+     */
+    public List<Item> lootAll(Inventory inventory) {
+        //Updates the item pointers in both of the containers and returns a reference to the moved item.
+        //TODO possibly update the Item.container reference as well. If bidirectional.
+        return loot.moveAll(inventory);
+    }
 
 
     // ********************** Common Methods ********************** //

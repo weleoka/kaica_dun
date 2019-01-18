@@ -4,10 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "container")
@@ -68,6 +65,12 @@ public class Container {
 
     public void addItem(Item item) {
         items.add(item);
+    }
+
+    public void removeAll() { items.clear(); }
+
+    public void addAllItems(List<Item> items) {
+        getItems().addAll(items);
     }
 
     @Override

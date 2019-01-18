@@ -31,6 +31,11 @@ public class Item implements Describable {
     @Column(name = "itemID", updatable = false, nullable = false)
     private UUID id;
 
+    //TODO optional = true for testing, might want it set to false later
+    @OneToOne(optional = true)
+    @JoinColumn(name = "containerID")
+    private Container containedIn;
+
     @Basic
     @Column(name = "item_name")
     private String itemName;

@@ -67,7 +67,7 @@ public class AvatarFactory {
     public Avatar makeTestAvatar(User user) {
         Weapon wep = createDefaultWeapon();
         Armor arm = createDefaultArmor();
-        Avatar avatar = new Avatar("Billy the Burly", "Oh, yeah!", user, "User Avatar", 9000, 1, 2, wep, arm);
+        Avatar avatar = new Avatar("Billy the Burly", "Oh, yeah!", user, "Berserker", 9000, 1, 2, wep, arm);
 
         return avatar;
     }

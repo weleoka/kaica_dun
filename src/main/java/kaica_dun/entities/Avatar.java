@@ -22,7 +22,7 @@ public class Avatar extends Fighter {
     private User user;
 
     //Unidirectional, the Dungeon doesn't "know" there's an avatar in it. TODO think! TEST!
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @Fetch(FetchMode.JOIN)
     private Dungeon currDungeon;
 

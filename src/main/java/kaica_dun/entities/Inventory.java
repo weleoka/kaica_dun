@@ -41,6 +41,7 @@ public class Inventory extends Container {
     public void addItem(Item item) {
         super.addItem(item);
         //Remove the bidirectional pointers between the item and Avatar if item is Armor/Weapon
+        //TODO replace with call to Avatar.equippment.remove
         if (item.getClass() == Weapon.class) {
             if (((Weapon)item).getWielder() != null){
                 ((Weapon)item).getWielder().unEquippWeapon();
@@ -50,6 +51,7 @@ public class Inventory extends Container {
                 ((Armor)item).getWearer().unEquippArmor();}
         }
     }
+
 
     //Remove a given item from this inventory, not sure it's needed. O(n) worst case.
     @Override

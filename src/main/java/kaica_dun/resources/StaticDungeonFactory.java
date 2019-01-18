@@ -1,5 +1,6 @@
 package kaica_dun.resources;
 
+import kaica_dun.dao.DungeonInterface;
 import kaica_dun.entities.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,6 +12,7 @@ public final class StaticDungeonFactory {
     private MonsterFactory mf = new MonsterFactory();
     private static int roomRows = 5;
     private static int roomColumns = 5;
+    private static DungeonInterface di;
 
     private static final Logger log = LogManager.getLogger();
 
@@ -23,6 +25,7 @@ public final class StaticDungeonFactory {
         ex0.add(Direction.S);
         Room r0 = new Room(0, Direction.U, ex0, MonsterFactory.makeEasyGreenskinGroup());
         r0.setRoomType(RoomType.FIRST01);
+        r0.addStarterChest();
         updateMonsters(r0);
 
         Set<Direction> ex5 = new LinkedHashSet<Direction>();
@@ -96,7 +99,6 @@ public final class StaticDungeonFactory {
         //User user, int roomRows, int roomColumns, List<Room> rooms
         log.debug("Starting/building dungeon instance...");
         Dungeon dungeon = new Dungeon(roomRows, roomColumns, rooms);
-
         return dungeon;
     }
 
@@ -119,7 +121,7 @@ public final class StaticDungeonFactory {
 
     private static void updateMonsters(Room r) {
         for (Monster m : r.getMonsters()) {
-            log.debug("updateMonsters: '{}' to the room '{}'.", m.getDescription(), r.getRoomIndex());
+            log.debug("updateMonsters: '{}' to the room '{}'.", m.getType(), r.getRoomIndex());
             m.setRoom(r);
         }
     }
