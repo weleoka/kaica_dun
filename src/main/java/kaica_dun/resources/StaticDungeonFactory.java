@@ -4,9 +4,11 @@ import kaica_dun.dao.DungeonInterface;
 import kaica_dun.entities.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+@Component
 public final class StaticDungeonFactory {
     private Random rand = new Random();
     private MonsterFactory mf = new MonsterFactory();
@@ -16,59 +18,62 @@ public final class StaticDungeonFactory {
 
     private static final Logger log = LogManager.getLogger();
 
+    protected StaticDungeonFactory() {}
 
     public static Dungeon buildDungeon() {
+        Set<Chest> chests = new LinkedHashSet<>();
+        chests.add(new Chest(true));
 
         // rooms named after their index in the 5x5 matrix.
         Set<Direction> ex0 = new LinkedHashSet<Direction>();
         ex0.add(Direction.U);
         ex0.add(Direction.S);
-        Room r0 = new Room(0, Direction.U, ex0, MonsterFactory.makeEasyGreenskinGroup());
+        Room r0 = new Room(0, Direction.U, ex0, MonsterFactory.makeEasyGreenskinGroup(), chests);
         r0.setRoomType(RoomType.FIRST01);
-        r0.addStarterChest();
         updateMonsters(r0);
+        updateChest(r0);
 
         Set<Direction> ex5 = new LinkedHashSet<Direction>();
         ex5.add(Direction.N);
         ex5.add(Direction.E);
-        Room r5 = new Room(5, Direction.N, ex5, MonsterFactory.makeEasyGreenskinGroup());
+        Room r5 = new Room(5, Direction.N, ex5, MonsterFactory.makeEasyGreenskinGroup(), null);
         updateMonsters(r5);
 
         Set<Direction> ex6 = new LinkedHashSet<Direction>();
         ex6.add(Direction.W);
         ex6.add(Direction.E);
-        Room r6 = new Room(6, Direction.W, ex6, MonsterFactory.makeEasyGreenskinGroup());
+        Room r6 = new Room(6, Direction.W, ex6, MonsterFactory.makeEasyGreenskinGroup(), null);
         updateMonsters(r6);
 
         Set<Direction> ex7 = new LinkedHashSet<Direction>();
         ex7.add(Direction.W);
         ex7.add(Direction.S);
-        Room r7 = new Room(7, Direction.W, ex7, MonsterFactory.makeEasyGreenskinGroup());
+        Room r7 = new Room(7, Direction.W, ex7, MonsterFactory.makeEasyGreenskinGroup(), null);
         updateMonsters(r7);
 
         Set<Direction> ex12 = new LinkedHashSet<Direction>();
         ex12.add(Direction.N);
         ex12.add(Direction.E);
-        Room r12 = new Room(12, Direction.N, ex12, MonsterFactory.makeEasyGreenskinGroup());
+        Room r12 = new Room(12, Direction.N, ex12, MonsterFactory.makeEasyGreenskinGroup(), null);
         r12.setRoomType(RoomType.HARD01);
         updateMonsters(r12);
 
         Set<Direction> ex13 = new LinkedHashSet<Direction>();
         ex13.add(Direction.W);
         ex13.add(Direction.E);
-        Room r13 = new Room(13, Direction.W, ex13, MonsterFactory.makeEasyGreenskinGroup());
+        Room r13 = new Room(13, Direction.W, ex13, MonsterFactory.makeEasyGreenskinGroup(), null);
         updateMonsters(r13);
 
         Set<Direction> ex14 = new LinkedHashSet<Direction>();
         ex14.add(Direction.W);
         ex14.add(Direction.N);
-        Room r14 = new Room(14, Direction.W, ex14, MonsterFactory.makeEasyGreenskinGroup());
+        Room r14 = new Room(14, Direction.W, ex14, MonsterFactory.makeEasyGreenskinGroup(), null);
         updateMonsters(r14);
 
         Set<Direction> ex9 = new LinkedHashSet<Direction>();
         ex9.add(Direction.S);
         ex9.add(Direction.U);
-        Room r9 = new Room(9, Direction.S, ex9, makeSmug());
+        Room r9 = new Room(9, Direction.S, ex9, makeSmug(), null);
         r9.setRoomType(RoomType.LAST01);
         updateMonsters(r9);
 
@@ -92,7 +97,7 @@ public final class StaticDungeonFactory {
             if(tmpRooms.get(i) != null) {
                 rooms.add(tmpRooms.get(i));
             } else {
-                rooms.add(new Room(i , null, null, new LinkedHashSet<Monster>()));
+                rooms.add(new Room(i , null, null, new LinkedHashSet<Monster>(), null));
             }
         }
 
@@ -123,6 +128,13 @@ public final class StaticDungeonFactory {
         for (Monster m : r.getMonsters()) {
             log.debug("updateMonsters: '{}' to the room '{}'.", m.getType(), r.getRoomIndex());
             m.setRoom(r);
+        }
+    }
+
+    private static void updateChest(Room r) {
+        for (Chest c : r.getChests()) {
+            log.debug("updated chests in the room '{}'.", r.getRoomIndex());
+            c.setRoom(r);
         }
     }
 }

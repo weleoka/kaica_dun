@@ -14,7 +14,7 @@ public class LootContainer extends Container {
     protected LootContainer() {}
 
     LootContainer(int rewardLevel) {
-
+        super(10);
     }
 
     LootContainer(boolean starterChest) {
@@ -53,5 +53,12 @@ public class LootContainer extends Container {
         container.addAllItems(loot);
         this.removeAll();
         return loot;
+    }
+
+    /**
+     * Static adding of item for testing
+     */
+    public void addTestItem() {
+        this.getItems().add(ItemFactory.createDragonSlayer(this));
     }
 }

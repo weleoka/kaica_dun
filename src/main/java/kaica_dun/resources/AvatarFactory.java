@@ -34,7 +34,7 @@ public class AvatarFactory {
      * This class can be used to implement such things as Avatar guild/species/trade
      * an modify attributes of the avatar accordingly.
      */
-    private AvatarFactory() {}
+    protected AvatarFactory() {}
 
 
     /**

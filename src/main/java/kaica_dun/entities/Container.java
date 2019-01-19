@@ -38,8 +38,10 @@ public class Container {
      *
      */
     protected Container(int maxSize) {
-        this.maxSize = 20;
-        this.items = new LinkedHashSet<>(maxSize);
+        this.maxSize = maxSize;
+        if(this.items == null) {
+            this.items = new LinkedHashSet<>(maxSize);
+        }
     }
 
     // ********************** Accessor Methods ********************** //

@@ -25,7 +25,7 @@ public class Chest implements Lootable {
 
     @OneToOne(cascade = CascadeType.ALL, optional = true)
     @PrimaryKeyJoinColumn
-    private LootContainer loot;
+    private LootContainer loot = new LootContainer();
 
     @ManyToOne
     @JoinColumn(name = "roomID", nullable = true, updatable = false)
@@ -33,11 +33,11 @@ public class Chest implements Lootable {
 
     protected Chest() {}
 
-    protected Chest(int rewardLevel) {
+    public Chest(int rewardLevel) {
         this.loot = new LootContainer();
     }
 
-    protected Chest(boolean startChest) {
+    public Chest(boolean startChest) {
         this.loot = new LootContainer(true);
     }
 
@@ -50,6 +50,14 @@ public class Chest implements Lootable {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
     }
 
     public LootContainer getContainer() {

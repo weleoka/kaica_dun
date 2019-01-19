@@ -91,7 +91,7 @@ public class Room {
     )
     @NotFound(action = NotFoundAction.IGNORE)   //TODO Also potential workaround, might need to remove
     @Fetch(FetchMode.JOIN)
-    private Set<Chest> chests = new LinkedHashSet<Chest>();
+    private Set<Chest> chests = new LinkedHashSet<>();
 
 
     // Default empty constructor
@@ -106,19 +106,23 @@ public class Room {
      * @param directions         a List with the direction(s) of possible directions
      * @param monsters      a List of the monster(s) in the room
      */
-    public Room(int roomIndex, Direction incomingDoor, Set<Direction> directions, Set<Monster> monsters) {
+    public Room(int roomIndex, Direction incomingDoor, Set<Direction> directions, Set<Monster> monsters, Set<Chest> chests) {
         //this.dungeon = dungeon;
         this.roomIndex = roomIndex;
         this.incomingDoor = incomingDoor;
         this.directions = directions;
         //This is an O(n) operation.
-        for (Monster m : monsters) { this.monsters.add(m); }
+        for(Monster m : monsters) { this.monsters.add(m); }
         if (directions != null) {
             this.roomType = RoomType.STD01;
             this.directions.add(Direction.STAY);
         } else {
             this.roomType = RoomType.NULL;
         }
+        if(chests != null) {
+            for(Chest c : chests) { this.chests.add(c); }
+        }
+
     }
 
 
@@ -152,13 +156,13 @@ public class Room {
         this.roomType = rt;
     }
 
-    //TODO replace, or add this functionality to constructor.
-    public void addStarterChest() { this.chests.add(new Chest(true)); }
-
     public void addChest() {}
 
     public RoomType getRoomType() { return roomType; }
 
+    public Set<Chest> getChests() { return chests; }
+
+    public void setChests(LinkedHashSet<Chest> chests) { this.chests = chests; }
 
     public Set<Monster> getMonsters() { return monsters; }
     //TODO unsure if this need to be Set or LinkedHashSet

@@ -3,14 +3,16 @@ package kaica_dun.resources;
 import kaica_dun.entities.Armor;
 import kaica_dun.entities.Container;
 import kaica_dun.entities.Weapon;
+import org.springframework.stereotype.Component;
 
 import java.util.Random;
 
+@Component
 public class ItemFactory {
 
     private final static Random random = new Random();
 
-    ItemFactory() {}
+    protected ItemFactory() {}
 
     public static Weapon makeSmashanizer(Container container) {
         //Weapon deals 4-8 (min) or 5-11(max) damage

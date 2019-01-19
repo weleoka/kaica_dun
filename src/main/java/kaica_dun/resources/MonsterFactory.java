@@ -1,14 +1,15 @@
 package kaica_dun.resources;
 
 import kaica_dun.entities.Monster;
+import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashSet;
 import java.util.Random;
-
+@Component
 class MonsterFactory {
     private final static Random random = new Random();
 
-    MonsterFactory() {}
+    protected MonsterFactory() {}
 
     public static Monster makeOrc() {
         int armor = random.nextInt(3);
