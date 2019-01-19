@@ -1,5 +1,6 @@
 package kaica_dun.entities;
 
+import kaica_dun.interfaces.Describable;
 import org.hibernate.annotations.*;
 
 import javax.persistence.CascadeType;
@@ -84,6 +85,9 @@ public class Room {
     @Fetch(FetchMode.JOIN)
     private Set<Monster> monsters = new LinkedHashSet<Monster>();
 
+    @Transient
+    private Set<Describable> describables =  new LinkedHashSet<>();
+
     @OneToMany( //TODO CascadeType.ALL, rework to minimum
             mappedBy = "room",
             cascade = CascadeType.ALL,
@@ -119,7 +123,7 @@ public class Room {
         } else {
             this.roomType = RoomType.NULL;
         }
-        if(chests != null) {
+        if(chests != null) {  // change to this.chests.addAll(c); ??
             for(Chest c : chests) { this.chests.add(c); }
         }
 
@@ -172,6 +176,14 @@ public class Room {
     public Set<Direction> getDirections() {
         return directions;
     }
+
+    public Set<Describable> getDescribables() {
+        describables.addAll(monsters);
+        describables.addAll(chests);
+
+        return describables;
+    }
+
 
     public void setDirections(LinkedHashSet<Direction> directions) {
         this.directions = directions;

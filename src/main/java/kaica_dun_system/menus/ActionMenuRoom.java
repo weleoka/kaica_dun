@@ -5,6 +5,8 @@ import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Direction;
 import kaica_dun.entities.Monster;
 import kaica_dun.entities.Room;
+import kaica_dun.interfaces.Describable;
+import kaica_dun.interfaces.Lootable;
 import kaica_dun.util.GameOverException;
 import kaica_dun.util.GameWonException;
 import kaica_dun.util.MenuException;
@@ -47,6 +49,9 @@ public class ActionMenuRoom extends ActionMenu {
     private ActionEngineServiceImpl aesi;
 
     @Autowired
+    private ActionMenuLootable aml;
+
+    @Autowired
     private MovementServiceImpl msi;
 
     @Autowired
@@ -59,8 +64,9 @@ public class ActionMenuRoom extends ActionMenu {
     private HashMap<Integer, String> mainOptions = new HashMap<>();
 
     private String lookAtOutput;
-    private HashMap<Integer, Monster> lookAtOptions = new HashMap<>(); // todo: look at more than monsters.
-    //private HashMap<Describable> describables;
+    //private HashMap<Integer, Monster> lookAtOptions = new HashMap<>();
+    private HashMap<Integer, Describable> lookAtOptions = new HashMap<>();
+    private Set<Describable> describables;
 
     private String battleOutput;
     private HashMap<Integer, Monster> battleOptions = new HashMap<>();
@@ -79,11 +85,11 @@ public class ActionMenuRoom extends ActionMenu {
     public void display(Avatar avatar) throws MenuException, GameOverException, GameWonException {
         int selection;
 
-        this.clearOptions();
+        clearOptions();
 
         this.monsters = aesi.getMonsters();
         this.directions = aesi.getDirections();
-        //this.describables = aesi.getDescribables();
+        this.describables = aesi.getDescribables();
 
         buildLookAtOptions();
         buildBattleOptions();
@@ -96,7 +102,7 @@ public class ActionMenuRoom extends ActionMenu {
 
         switch (selection) {
             case 1:
-                selectLookAtOption();
+                selectLookAtOption(avatar);
                 break;
 
             case 2:
@@ -117,9 +123,14 @@ public class ActionMenuRoom extends ActionMenu {
                 }
                 break;
 
-            case 9:
-                mig.display(avatar, false);
+            case 4:
+                selectInventoryOption(avatar);
                 break;
+
+            case 9:
+                throw new MenuException("Left the room action menu.");
+                //mig.display(avatar, false);
+                //break;
         }
     }
 
@@ -172,15 +183,14 @@ public class ActionMenuRoom extends ActionMenu {
     private void buildLookAtOptions() {
         StringBuilder output = new StringBuilder();
         lookAtOptions = new HashMap<>();
-        //log.debug("There are {} describables in the room (id: {}).", describables.size(), room.getId());
+        log.debug("There are {} describables in the room.", describables.size());
         int i = 0;
-        for (Monster monster : monsters) {
+
+        for (Describable describable : describables) {
             i++;
-            //log.debug("Found: {}(id: {}), building look-at options.", monster.getType(), monster.getId());
-            output.append(String.format("\n[%s] - %s.", i, monster.getType()));
-            lookAtOptions.put(i, monster);
+            output.append(String.format("\n[%s] - %s.", i, describable.getDescription()));
+            lookAtOptions.put(i, describable);
         }
-        //output.append(UiString.noDescribablesVisible);
         lookAtOutput = output.toString();
     }
 
@@ -240,12 +250,19 @@ public class ActionMenuRoom extends ActionMenu {
     /**
      * Handles the selection of looking at things.
      */
-    private void selectLookAtOption() {
+    private void selectLookAtOption(Avatar avatar) {
         String str = UiString.lookAtMenuHeader + lookAtOutput + UiString.makeSelectionPrompt;
         int sel = getUserInput(lookAtOptions.keySet(), str);
-        Monster monster = lookAtOptions.get(sel);
-        System.out.println(monster.getDescription());
+        Describable describable = lookAtOptions.get(sel);
+
+
+        System.out.println(describable.getDescription());
         Util.sleeper(1400);
+
+        if (describable instanceof Lootable) {
+            // TODO: cast from one interface to another interface
+            loot(avatar, (Lootable) describable);
+        }
     }
 
 
@@ -277,6 +294,7 @@ public class ActionMenuRoom extends ActionMenu {
 
     /**
      * Handles the selection of movement.
+     * @param avatar
      */
     private void selectMoveOption(Avatar avatar) {
         String str = UiString.moveMenuHeader + moveOutput + UiString.makeSelectionPrompt;
@@ -292,7 +310,15 @@ public class ActionMenuRoom extends ActionMenu {
             System.out.printf("The direction %s resulted in the Avatar leaving the dungeon.");
             msi.exitDungeon(avatar);
         }
+    }
 
+
+    /**
+     * Handles selection of inventory options.
+     * @param avatar
+     */
+    private void selectInventoryOption(Avatar avatar) {
+        log.debug("Inventory selection made");
     }
 
 
@@ -311,5 +337,29 @@ public class ActionMenuRoom extends ActionMenu {
         //this.describables.clear();
 
         mainOptions.clear();
+    }
+
+
+    /**
+     * The method for initialising loot loop and handling
+     * exception bubbling thrown in nested loops.
+     */
+    public void loot(Avatar avatar, Lootable lootable) {
+        log.debug("Starting game loop.");
+
+        lootLoop:
+        while(true) {
+
+            try {
+                //System.out.println(buildStateInfo(lootable));
+                aml.display(avatar, lootable);
+
+            } catch (MenuException e) {
+                log.debug("Returned to Look at Menu");
+                System.out.println("You stepped back from the chest");
+
+                break lootLoop;
+            }
+        }
     }
 }

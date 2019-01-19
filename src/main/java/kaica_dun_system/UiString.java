@@ -49,7 +49,8 @@ public class UiString
     public static String moveMenuHeader = "\n - - - Time to move to the next room - - -";
     public static String battleMenuHeader = "\n - - - Fight the monsters - - -";
 
-
+    // LOOTABLE menu
+    public static String menuHeader5 = "\n - - - Looting Actions - - -";
 
     // Dungeon navigation
     public static String welcomeToTheDungeon1 = "\n ... (darkness) ....";

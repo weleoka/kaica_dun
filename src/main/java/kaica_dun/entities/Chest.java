@@ -1,5 +1,6 @@
 package kaica_dun.entities;
 
+import kaica_dun.interfaces.Describable;
 import kaica_dun.interfaces.Lootable;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -9,9 +10,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+
+/**
+ * A container that is Lootable. It is also describable.
+ */
 @Entity
 @Table(name = "Chest")
-public class Chest implements Lootable {
+public class Chest implements Describable, Lootable {
 
     @Id
     @Type(type="uuid-char")             //Will not match UUIDs i MySQL otherwise
@@ -97,6 +102,14 @@ public class Chest implements Lootable {
         return loot.moveAll(inventory);
     }
 
+    /**
+     * Look at the chest.
+     *
+     * @return
+     */
+    public String getDescription() {
+        return String.format("A chest, it looks unlocked.");
+    }
 
     // ********************** Common Methods ********************** //
 
