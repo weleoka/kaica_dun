@@ -345,7 +345,7 @@ public class ActionMenuRoom extends ActionMenu {
      * exception bubbling thrown in nested loops.
      */
     public void loot(Avatar avatar, Lootable lootable) {
-        log.debug("Starting game loop.");
+        log.debug("Starting looting loop.");
 
         lootLoop:
         while(true) {
@@ -356,6 +356,7 @@ public class ActionMenuRoom extends ActionMenu {
 
             } catch (MenuException e) {
                 log.debug("Returned to Look at Menu");
+                System.out.println(e.getMessage());
                 System.out.println("You stepped back from the chest");
 
                 break lootLoop;

@@ -51,6 +51,8 @@ public class UiString
 
     // LOOTABLE menu
     public static String menuHeader5 = "\n - - - Looting Actions - - -";
+    public static String lootMenuHeader = "\n - - - Pick an item - - -";
+
 
     // Dungeon navigation
     public static String welcomeToTheDungeon1 = "\n ... (darkness) ....";

@@ -68,9 +68,6 @@ public class GameServiceImpl implements GameService {
     /**
      * Create a dungeon for a user.
      *
-     * todo: it still needs input about the avatar. In fact a dungeon should be owned
-     *   by an avatar and not the user really.
-     *
      * @return
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
