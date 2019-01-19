@@ -47,8 +47,7 @@ public class MovementServiceImpl {
 
 
     /**
-     * Enter the dungeon by an enterance.
-     *
+     * Enter the dungeon by an entrance.
      * @param avatar
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
@@ -56,6 +55,7 @@ public class MovementServiceImpl {
         Room firstRoom = fetchDungeonFirstRoom(avatar.getCurrDungeon());
         avatar.setCurrRoom(firstRoom);  //Enter first room of dungeon, always on index 0
         log.debug("Dropping avatar into room (id: {}) -> good luck!.", firstRoom.getId());
+        avatarInterface.save(avatar);
     }
 
 

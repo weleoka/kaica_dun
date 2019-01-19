@@ -59,7 +59,7 @@ public class ActionEngineServiceImpl implements ActionEngineService {
     /**
      * Creates a new dungeon and calls the operations to activate it.
      */
-    @Transactional
+    //@Transactional
     public void playNew(Avatar avatar) throws MenuException {
         log.debug("New game: ");
         Dungeon dungeon = null;
@@ -73,7 +73,6 @@ public class ActionEngineServiceImpl implements ActionEngineService {
             dungeon = avatar.getCurrDungeon();
         }
         msi.enterDungeon(avatar);
-        avatarInterface.save(avatar); // todo: calls save here msi.enterDungeon() does not;
 
         if (!kcfg.getDebug()) {
             UiString.printLoadingIntro();
