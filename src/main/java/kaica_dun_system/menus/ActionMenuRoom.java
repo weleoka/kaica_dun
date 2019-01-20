@@ -54,14 +54,10 @@ public class ActionMenuRoom extends ActionMenu {
     @Autowired
     private CombatServiceImpl csi;
 
-    @Autowired
-    private MenuInGame mig;
-
     private String mainOutput;
     private HashMap<Integer, String> mainOptions = new HashMap<>();
 
     private String lookAtOutput;
-    //private HashMap<Integer, Monster> lookAtOptions = new HashMap<>();
     private HashMap<Integer, Describable> lookAtOptions = new HashMap<>();
     private Set<Describable> describables;
 
@@ -107,7 +103,7 @@ public class ActionMenuRoom extends ActionMenu {
                 break;
 
             case 3:
-                if (!kcfg.getDebug()) {
+                if (kcfg.getDebug()) {
                     log.debug("debug: allowing moving with monsters in the room.");
                     selectMoveOption(avatar); // Ignore the monsters in the room. Development.
                     break;
@@ -126,8 +122,6 @@ public class ActionMenuRoom extends ActionMenu {
 
             case 9:
                 throw new MenuException("Left the room action menu.");
-                //mig.display(avatar, false);
-                //break;
         }
     }
 
