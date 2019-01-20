@@ -1,10 +1,7 @@
 package kaica_dun_system.menus;
 
 import kaica_dun.config.KaicaDunCfg;
-import kaica_dun.entities.Avatar;
-import kaica_dun.entities.Direction;
-import kaica_dun.entities.Monster;
-import kaica_dun.entities.Room;
+import kaica_dun.entities.*;
 import kaica_dun.interfaces.Describable;
 import kaica_dun.interfaces.Lootable;
 import kaica_dun.util.GameOverException;
@@ -249,19 +246,29 @@ public class ActionMenuRoom extends ActionMenu {
 
     /**
      * Handles the selection of looking at things.
+     *
+     * If the thing is a container it can be looted, i.e. has items in it
+     * then go to the looting menu.
      */
     private void selectLookAtOption(Avatar avatar) {
         String str = UiString.lookAtMenuHeader + lookAtOutput + UiString.makeSelectionPrompt;
         int sel = getUserInput(lookAtOptions.keySet(), str);
         Describable describable = lookAtOptions.get(sel);
 
-
         System.out.println(describable.getDescription());
         Util.sleeper(1400);
 
         if (describable instanceof Lootable) {
-            // TODO: cast from one interface to another interface
-            loot(avatar, (Lootable) describable);
+            Lootable lootable = (Lootable) describable;
+            Container container = lootable.getContainer();
+
+            if (container.getItems().size() > 0) {
+                loot(avatar, (Lootable) describable);
+
+            } else {
+                System.out.println(UiString.containerHasNoItems);
+                Util.sleeper(1400);
+            }
         }
     }
 
@@ -351,7 +358,6 @@ public class ActionMenuRoom extends ActionMenu {
         while(true) {
 
             try {
-                //System.out.println(buildStateInfo(lootable));
                 aml.display(avatar, lootable);
 
             } catch (MenuException e) {

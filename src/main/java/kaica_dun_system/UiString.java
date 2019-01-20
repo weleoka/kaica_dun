@@ -46,6 +46,7 @@ public class UiString
     // ACTION menu
     public static String menuHeader4 = "\n - - - Game Actions - - -";
     public static String lookAtMenuHeader = "\n - - - Look at something - - -";
+    public static String containerHasNoItems  = "\n It looks completely empty.";
     public static String moveMenuHeader = "\n - - - Time to move to the next room - - -";
     public static String battleMenuHeader = "\n - - - Fight the monsters - - -";
 

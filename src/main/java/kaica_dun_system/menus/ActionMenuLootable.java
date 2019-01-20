@@ -34,24 +34,15 @@ public class ActionMenuLootable extends ActionMenu {
      * Display the lootable action options.
      */
     public void display(Avatar avatar, Lootable lootable) throws MenuException {
-        int selection;
-
         clearOptions();
-
         this.items = lootable.getContainer().getItems();
-
         buildLootOptions();
-
-        //buildMainOptions();
-
         String str = UiString.menuHeader5 + lootOutput + UiString.makeSelectionPrompt;
-        selection = getUserInput(lootOptions.keySet(), str);
+        int selection = getUserInput(lootOptions.keySet(), str);
 
         switch (selection) {
             case 1:
-                //selectLootOption(avatar);
                 selectLootOption(avatar, lootable);
-                //break;
                 throw new MenuException("Left the loot menu after looting all items.");
 
             case 9:
