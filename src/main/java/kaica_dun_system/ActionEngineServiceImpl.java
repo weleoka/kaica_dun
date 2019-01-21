@@ -100,8 +100,8 @@ public class ActionEngineServiceImpl implements ActionEngineService {
 
         if (!kcfg.getDebug()) {
             UiString.printLoadingIntro();
-            play(avatar);
         }
+        play(avatar);
     }
 
 
@@ -117,7 +117,7 @@ public class ActionEngineServiceImpl implements ActionEngineService {
         msi.enterDungeon(avatar);
         avatarInterface.save(avatar);
 
-        if (true) {
+        if (!kcfg.getDebug()) {
             UiString.printLoadingIntro();
             UiString.printGameIntro();
         }
