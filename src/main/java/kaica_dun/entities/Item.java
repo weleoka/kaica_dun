@@ -2,6 +2,7 @@ package kaica_dun.entities;
 
 import kaica_dun.interfaces.Describable;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -20,19 +21,18 @@ import java.util.UUID;
 @DiscriminatorColumn(name = "item_discriminator")
 public class Item implements Describable {
 
-    // Field variable declarations and Hibernate annotation scheme
     @Id
-    @Type(type="uuid-char")             //Will not match UUIDs i MySQL otherwise
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
+    @GeneratedValue
     @Column(name = "itemID", updatable = false, nullable = false)
-    private UUID id;
+    protected Long id;
+
+    @NaturalId
+    @Type(type="uuid-char")             //Will not match UUIDs i MySQL otherwise
+    @Column(nullable = false, unique = true)
+    protected UUID uuid = UUID.randomUUID();
 
     //TODO optional = true for testing, might want it set to false later
-    @OneToOne(optional = true)
+    @ManyToOne(optional = true)
     @JoinColumn(name = "containerID")
     private Container containedIn;
 
@@ -47,19 +47,32 @@ public class Item implements Describable {
     // Default empty constructor
     protected Item() {}
 
+    //TODO temporary while reworking equipment
     public Item(String itemName, String description) {
         this.itemName = itemName;
         this.description = description;
     }
 
+    /**
+     * Full constructor.
+     * @param itemName      the name of the item
+     * @param description   the item's description
+     * @param container     the {@code Container} that the item is to be held in when created
+     */
+    public Item(String itemName, String description, Container container) {
+        this.itemName = itemName;
+        this.description = description;
+        this.containedIn = container;
+    }
+
 
     // ********************** Accessor Methods ********************** //
 
-    public UUID getItemId() {
+    public Long getItemId() {
         return id;
     }
 
-    public void setItemId(UUID itemId) {
+    public void setItemId(Long itemId) {
         this.id = itemId;
     }
 
@@ -77,22 +90,27 @@ public class Item implements Describable {
 
     public void setDescription(String description) { this.description = description; }
 
+    public void setContainedIn(Container containedIn) { this.containedIn = containedIn; }
+
+    public Container getContainedIn() { return this.containedIn; }
+
 
     // ********************** Common Methods ********************** //
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Item that = (Item) o;
-        return id.equals(that.id) &&
-                Objects.equals(itemName, that.itemName) &&
-                Objects.equals(description, that.description);
-
+    public boolean equals(Object obj) {
+        if(this == obj) {
+            return true;
+        }
+        if(!(obj instanceof Item)) {
+            return false;
+        }
+        Item item = (Item) obj;
+        return uuid != null && uuid.equals(item.uuid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, itemName, description);
+        return uuid.hashCode();
     }
 }

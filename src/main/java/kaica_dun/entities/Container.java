@@ -1,6 +1,7 @@
 package kaica_dun.entities;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -14,20 +15,20 @@ import java.util.*;
 public class Container {
 
     @Id
+    @GeneratedValue
+    @Column(name = "containerID", updatable = false, nullable = false)
+    protected Long id;
+
+    @NaturalId
     @Type(type="uuid-char")             //Will not match UUIDs i MySQL otherwise
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
-    @Column(name = "containerID")
-    private UUID id;
+    @Column(nullable = false, unique = true)
+    protected UUID uuid = UUID.randomUUID();
 
     @Basic
     @Column(name = "max_size")
     private int maxSize;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "containedIn", cascade = CascadeType.ALL)
     private Set<Item> items;
 
     //Default no-args constructor
@@ -54,9 +55,9 @@ public class Container {
 
     public void setItems(Set<Item> items) { this.items = items; }
 
-    public UUID getId() { return id; }
+    public Long getId() { return id; }
 
-    public void setId(UUID id) { this.id = id; }
+    public void setId(Long id) { this.id = id; }
 
     // ********************** Model Methods ********************** //
 
@@ -84,11 +85,11 @@ public class Container {
             return false;
         }
         Container container = (Container) obj;
-        return id != null && id.equals(container.id);
+        return uuid != null && uuid.equals(container.uuid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return uuid.hashCode();
     }
 }

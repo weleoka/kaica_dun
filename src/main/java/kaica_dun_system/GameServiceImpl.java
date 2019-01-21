@@ -70,7 +70,7 @@ public class GameServiceImpl implements GameService {
      *
      * @return
      */
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_UNCOMMITTED)
     public Dungeon makeStaticDungeon() {
         log.debug("Creating static dungeon");
         Dungeon dungeon = StaticDungeonFactory.buildDungeon();
@@ -125,7 +125,7 @@ public class GameServiceImpl implements GameService {
      * @param user a User instance
      * @return the avatar
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_UNCOMMITTED)
     public Avatar createStaticAvatar(User user) {
         Avatar avatar = avatarFactory.makeTestAvatar(user);
         avatarInterface.save(avatar);
@@ -143,7 +143,7 @@ public class GameServiceImpl implements GameService {
      * @param user a User instance
      * @return boolean if success
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_UNCOMMITTED)
     public boolean createNewAvatar(String[] arr, User user) {
         Avatar avatar = avatarFactory.make(arr[0], arr[1], user);
         avatarInterface.save(avatar);

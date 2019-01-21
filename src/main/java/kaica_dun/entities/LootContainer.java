@@ -61,4 +61,21 @@ public class LootContainer extends Container {
     public void addTestItem() {
         this.getItems().add(ItemFactory.createDragonSlayer(this));
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) {
+            return true;
+        }
+        if(!(obj instanceof LootContainer)) {
+            return false;
+        }
+        LootContainer lootContainer = (LootContainer) obj;
+        return uuid != null && uuid.equals(lootContainer.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
+    }
 }

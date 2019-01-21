@@ -2,6 +2,7 @@ package kaica_dun.entities;
 
 import kaica_dun.interfaces.Describable;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -19,14 +20,14 @@ import java.util.UUID;
 public abstract class Fighter implements Describable {
 
     @Id
-    @Type(type="uuid-char")             //Will not match UUIDs i MySQL otherwise
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
+    @GeneratedValue
     @Column(name = "fighterID", updatable = false, nullable = false)
-    protected UUID id;
+    protected Long id;
+
+    @NaturalId
+    @Type(type="uuid-char")             //Will not match UUIDs i MySQL otherwise
+    @Column(nullable = false, unique = true)
+    protected UUID uuid = UUID.randomUUID();
 
     @Basic
     @Column(name = "fighter_name")
@@ -85,11 +86,11 @@ public abstract class Fighter implements Describable {
 
     // ********************** Accessor Methods ********************** //
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID fighterId) {
+    public void setId(Long fighterId) {
         this.id = fighterId;
     }
 
@@ -177,12 +178,12 @@ public abstract class Fighter implements Describable {
             return false;
         }
         Fighter fighter = (Fighter) obj;
-        return id != null && id.equals(fighter.id);
+        return uuid != null && uuid.equals(fighter.uuid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(uuid);
     }
 
 }

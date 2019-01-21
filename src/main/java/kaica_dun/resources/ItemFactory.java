@@ -34,6 +34,6 @@ public class ItemFactory {
     }
 
     public static Weapon createDragonSlayer(Container container) {
-        return new Weapon("'Wipe that Smug smile from your face', The Dragonslayer", "Smug dragons, beware", 8, 22);
+        return new Weapon("'Wipe that Smug smile from your face', The Dragonslayer", "Smug dragons, beware", 8, 22, container);
     }
 }

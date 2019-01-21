@@ -36,24 +36,15 @@ import java.util.UUID;
 
 public class Room {
 
-    // Field variable declarations and Hibernate annotation scheme
     @Id
-    @Type(type="uuid-char")             //Will not match UUIDs i MySQL otherwise
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
+    @GeneratedValue
     @Column(name = "roomID", updatable = false, nullable = false)
-    private UUID id;
+    protected Long id;
 
-    /**
-    //Mapping to the dungeon entity that holds the rooms.
-    //TODO Fetchtype? Eager or Lazy? More research.
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dungeonID", nullable = false, updatable = false)
-    private Dungeon dungeon;
-    **/
+    @NaturalId
+    @Type(type="uuid-char")             //Will not match UUIDs i MySQL otherwise
+    @Column(nullable = false, unique = true)
+    protected UUID uuid = UUID.randomUUID();
 
     //@Transient // This can be transient, currently not for development aid.
     @Column(name="room_index")
@@ -132,11 +123,11 @@ public class Room {
 
     // ********************** Accessor Methods ********************** //
 
-    public UUID getId() {
+    public Long getId() {
         return this.id;
     }
 
-    public void setId(UUID roomId) {
+    public void setId(Long roomId) {
         this.id = roomId;
     }
 
@@ -225,9 +216,9 @@ public class Room {
             return false;
         }
         Room room = (Room) obj;
-        return id != null && id.equals(room.id);
+        return uuid != null && uuid.equals(room.uuid);
     }
 
     @Override
-    public int hashCode() { return Objects.hash(id); }
+    public int hashCode() { return uuid.hashCode(); }
 }

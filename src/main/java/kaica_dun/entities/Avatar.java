@@ -254,12 +254,12 @@ public class Avatar extends Fighter {
             return false;
         }
         Avatar avatar = (Avatar) obj;
-        return id != null && id.equals(avatar.id);
+        return uuid != null && uuid.equals(avatar.uuid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return uuid.hashCode();
     }
 
     @Override

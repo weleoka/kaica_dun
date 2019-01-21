@@ -47,10 +47,14 @@ public class CombatServiceImpl {
      *
      * @param avatar         the avatar fighting the monsters
      */
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_UNCOMMITTED)
     public void autoCombat(Avatar avatar) throws GameOverException, GameWonException {
         Room room = avatar.getCurrRoom();
         Set<Monster> monsters = room.getMonsters();
+        for(Monster m : monsters) {
+            System.out.println(m.getName());
+        }
+
 
         while (!monsters.isEmpty()) {
 
@@ -86,7 +90,7 @@ public class CombatServiceImpl {
 
         if ((activeMonster.deathCheck())) {
             System.out.println(activeMonster.getName() + " dies");
-            a.getCurrRoom().getMonsters().remove(activeMonster);
+            activeMonster.setRoom(null);
             monsters.remove(activeMonster); // remove from the array.
 
             if (activeMonster.getType() == "Dragon") {

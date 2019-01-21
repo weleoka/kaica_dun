@@ -50,7 +50,7 @@ public class MovementServiceImpl {
      * Enter the dungeon by an entrance.
      * @param avatar
      */
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_UNCOMMITTED)
     public void enterDungeon(Avatar avatar) {
         Room firstRoom = fetchDungeonFirstRoom(avatar.getCurrDungeon());
         avatar.setCurrRoom(firstRoom);  //Enter first room of dungeon, always on index 0
@@ -64,7 +64,7 @@ public class MovementServiceImpl {
      *
      * @param avatar
      */
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_UNCOMMITTED)
     public void exitDungeon(Avatar avatar) {
         avatar.setCurrRoom(null);           //Exit the room
         avatar.setCurrDungeon(null);        //Exit the dungeon
@@ -79,7 +79,7 @@ public class MovementServiceImpl {
      * @param direction     the direction to move the avatar
      * @return              the room that you moved the avatar to, returns null if the avatar has exited the dungeon
      */
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_UNCOMMITTED)
     public Room moveAvatar(Avatar avatar, Direction direction) {
         Dungeon dungeon = avatar.getCurrDungeon();
         int directionNum = direction.ordinal();

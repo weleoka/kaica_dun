@@ -3,6 +3,7 @@ package kaica_dun.entities;
 import kaica_dun.interfaces.Describable;
 import kaica_dun.interfaces.Lootable;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -19,14 +20,14 @@ import java.util.UUID;
 public class Chest implements Describable, Lootable {
 
     @Id
-    @Type(type="uuid-char")             //Will not match UUIDs i MySQL otherwise
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
+    @GeneratedValue
     @Column(name = "chestID", updatable = false, nullable = false)
-    protected UUID id;
+    protected Long id;
+
+    @NaturalId
+    @Type(type="uuid-char")             //Will not match UUIDs i MySQL otherwise
+    @Column(nullable = false, unique = true)
+    protected UUID uuid = UUID.randomUUID();
 
     @OneToOne(cascade = CascadeType.ALL, optional = true)
     @PrimaryKeyJoinColumn
@@ -49,11 +50,11 @@ public class Chest implements Describable, Lootable {
     // ********************** Accessor Methods ********************** //
 
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -98,8 +99,11 @@ public class Chest implements Describable, Lootable {
      */
     public List<Item> lootAll(Inventory inventory) {
         //Updates the item pointers in both of the containers and returns a reference to the moved item.
-        //TODO possibly update the Item.container reference as well. If bidirectional.
-        return loot.moveAll(inventory);
+        List<Item> tmp = loot.moveAll(inventory);
+        for(Item item : tmp) {
+            item.setContainedIn(inventory);
+        }
+        return tmp;
     }
 
     /**
@@ -122,11 +126,11 @@ public class Chest implements Describable, Lootable {
             return false;
         }
         Chest chest = (Chest) obj;
-        return id != null && id.equals(chest.id);
+        return uuid != null && uuid.equals(chest.uuid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return uuid.hashCode();
     }
 }

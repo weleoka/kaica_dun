@@ -55,4 +55,21 @@ public class Inventory extends Container {
     public void removeItem(Item item) {
         super.removeItem(item);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) {
+            return true;
+        }
+        if(!(obj instanceof Inventory)) {
+            return false;
+        }
+        Inventory inventory = (Inventory) obj;
+        return uuid != null && uuid.equals(inventory.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
+    }
 }

@@ -45,7 +45,7 @@ public class ItemServiceImpl {
      * @param avatar        the avatar that is looting the lootable
      * @param lootable      the lootable object to take the {@code Item} from
      */
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_UNCOMMITTED)
     public void lootOne(Avatar avatar, Lootable lootable) {
         Inventory avatarInventory = avatar.getInventory();
         //Pointer setting
@@ -62,16 +62,19 @@ public class ItemServiceImpl {
      * @param avatar        the avatar that is looting the lootable
      * @param lootable      the lootable object to take the {@code Item} from
      */
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_UNCOMMITTED)
     public void lootAll(Avatar avatar, Lootable lootable) {
         Inventory avatarInventory = avatar.getInventory();
         //Pointer setting
         List<Item> items = lootable.lootAll(avatarInventory);
         //Persisting pointer changes
         for(Item item : items) {
+            log.debug("The following item was looted {}.", item.getItemName());
             itemInterface.save(item);
         }
         //TODO this might not be needed when Item is the owner of the relationship
         containerInterface.save(lootable.getContainer());
+        System.out.println("Items in avatar inventory after looting: ");
+        for(Item i : avatar.getInventory().getItems()) {System.out.println();}
     }
 }
