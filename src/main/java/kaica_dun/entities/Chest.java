@@ -29,12 +29,16 @@ public class Chest implements Describable, Lootable {
     @Column(nullable = false, unique = true)
     protected UUID uuid = UUID.randomUUID();
 
-    @OneToOne(cascade = CascadeType.ALL, optional = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = true)
     @PrimaryKeyJoinColumn
     private LootContainer loot = new LootContainer();
 
+    @Basic
+    @Column(name = "name")
+    private String name;        //TODO possibly refactor into enum of chest types
+
     @ManyToOne
-    @JoinColumn(name = "roomID", nullable = true, updatable = false)
+    @JoinColumn(name = "roomID", nullable = false, updatable = false)
     private Room room;
 
     protected Chest() {}
@@ -49,6 +53,7 @@ public class Chest implements Describable, Lootable {
 
     // ********************** Accessor Methods ********************** //
 
+    public String getName() { return this.name; }
 
     public Long getId() {
         return id;
@@ -101,7 +106,9 @@ public class Chest implements Describable, Lootable {
         //Updates the item pointers in both of the containers and returns a reference to the moved item.
         List<Item> tmp = loot.moveAll(inventory);
         for(Item item : tmp) {
-            item.setContainedIn(inventory);
+            if(item != null) {
+                item.setContainedIn(inventory);
+            }
         }
         return tmp;
     }

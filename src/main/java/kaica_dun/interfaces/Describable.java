@@ -8,4 +8,6 @@ package kaica_dun.interfaces;
  */
 public interface Describable {
     String getDescription();
+
+    String getName();
 }

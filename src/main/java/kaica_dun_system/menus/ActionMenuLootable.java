@@ -11,7 +11,9 @@ import kaica_dun_system.UiString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -26,7 +28,6 @@ public class ActionMenuLootable extends ActionMenu {
 
     private String lootOutput;
     private HashMap<Integer, Item> lootOptions = new HashMap<>();
-    private Set<Item> items;
 
     ActionMenuLootable() { }
 
@@ -35,8 +36,7 @@ public class ActionMenuLootable extends ActionMenu {
      */
     public void display(Avatar avatar, Lootable lootable) throws MenuException {
         clearOptions();
-        this.items = lootable.getContainer().getItems();
-        buildLootOptions();
+        buildLootOptions(lootable);
         String str = UiString.menuHeader5 + lootOutput + UiString.makeSelectionPrompt;
         int selection = getUserInput(lootOptions.keySet(), str);
 
@@ -56,16 +56,25 @@ public class ActionMenuLootable extends ActionMenu {
      *
      * todo: implement looking at items and other things, not only monsters.
      */
-    private void buildLootOptions() {
+    private void buildLootOptions(Lootable lootable) {
+        List<Item> items = new ArrayList<>();
+        for(Item i : lootable.getContainer().getItems()) {
+            if(i != null) {
+                items.add(i);
+            }
+        }
         StringBuilder output = new StringBuilder();
         lootOptions = new HashMap<>();
+        //TODO this is broken because we now add nulls to the containers
         log.debug("There are {} items in the lootable.", items.size());
         int i = 0;
 
         for (Item item : items) {
             i++;
-            output.append(String.format("\n[%s] - %s.", i, item.getItemName()));
-            lootOptions.put(i, item);
+            if(item != null) {
+                output.append(String.format("\n[%s] - %s.", i, item.getName()));
+                lootOptions.put(i, item);
+            }
         }
         lootOutput = output.toString();
     }

@@ -37,8 +37,8 @@ public class Item implements Describable {
     private Container containedIn;
 
     @Basic
-    @Column(name = "item_name")
-    private String itemName;
+    @Column(name = "name")
+    private String name;
 
     @Basic
     @Column(name = "description")
@@ -48,19 +48,19 @@ public class Item implements Describable {
     protected Item() {}
 
     //TODO temporary while reworking equipment
-    public Item(String itemName, String description) {
-        this.itemName = itemName;
+    public Item(String name, String description) {
+        this.name = name;
         this.description = description;
     }
 
     /**
      * Full constructor.
-     * @param itemName      the name of the item
+     * @param name      the name of the item
      * @param description   the item's description
      * @param container     the {@code Container} that the item is to be held in when created
      */
-    public Item(String itemName, String description, Container container) {
-        this.itemName = itemName;
+    public Item(String name, String description, Container container) {
+        this.name = name;
         this.description = description;
         this.containedIn = container;
     }
@@ -76,12 +76,12 @@ public class Item implements Describable {
         this.id = itemId;
     }
 
-    public String getItemName() {
-        return itemName;
+    public String getName() {
+        return name;
     }
 
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {

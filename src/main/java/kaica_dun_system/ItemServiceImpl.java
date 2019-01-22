@@ -69,12 +69,61 @@ public class ItemServiceImpl {
         List<Item> items = lootable.lootAll(avatarInventory);
         //Persisting pointer changes
         for(Item item : items) {
-            log.debug("The following item was looted {}.", item.getItemName());
-            itemInterface.save(item);
+            if(item != null) {
+                log.debug("The following item was looted {}.", item.getName());
+                itemInterface.save(item);
+            }
         }
         //TODO this might not be needed when Item is the owner of the relationship
         containerInterface.save(lootable.getContainer());
         System.out.println("Items in avatar inventory after looting: ");
-        for(Item i : avatar.getInventory().getItems()) {System.out.println();}
+        for(Item i : avatar.getInventory().getItems()) {
+            if(i != null) {
+                System.out.println();
+            }
+        }
+    }
+
+    /**
+     * Take an item from the inventory and equip it in the appropriate slot.
+     *
+     * @param avatar    the avatar which holds the item in its inventory
+     * @param index     the index of the item in the inventory.items-list
+     *
+     * @return          the item that was equipped
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_UNCOMMITTED)
+    public Item equipp(Avatar avatar, int index) {
+        Inventory avatarInventory = avatar.getInventory();
+        //Pointer setting
+        Item item = avatarInventory.getItems().get(index);
+
+        //Persisting pointer changes
+        log.debug("Equipped {}.", item.getName());
+        itemInterface.save(item);
+        containerInterface.save(avatar.getInventory());
+        containerInterface.save(avatar.getEquipment());
+
+        return item;
+    }
+
+    /**
+     * Retuns a list of the items in the avatar's inventory.
+     *
+     * @param avatar    the avatar who's inventory items are to be returned
+     * @return          a list of the items in the inventory
+     */
+    public List<Item> getInventory(Avatar avatar) {
+        return avatar.getInventory().getItems();
+    }
+
+    /**
+     * Retuns a list of the items equipped on the avatar.
+     *
+     * @param avatar    the avatar who's equipment items are to be returned
+     * @return          a list of the items equipped on the avatar
+     */
+    public List<Item> getEquipment(Avatar avatar) {
+        return avatar.getEquipment().getItems();
     }
 }

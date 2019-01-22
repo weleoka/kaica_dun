@@ -20,6 +20,8 @@ public final class StaticDungeonFactory {
 
     protected StaticDungeonFactory() {}
 
+    //TODO the whole procedure of generating a dungeon is in need of refactoring, there are too many hacks.
+    //TODO the problem is with bidirectionality: what to create first, the room or the monsters/chests/decorators in it?
     public static Dungeon buildDungeon() {
         Set<Chest> chests = new LinkedHashSet<>();
         chests.add(new Chest(true));

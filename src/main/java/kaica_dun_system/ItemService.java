@@ -2,7 +2,10 @@ package kaica_dun_system;
 
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Container;
+import kaica_dun.entities.Item;
 import kaica_dun.interfaces.Lootable;
+
+import java.util.List;
 
 public interface ItemService {
 
@@ -25,6 +28,31 @@ public interface ItemService {
     void lootAll(Avatar avatar, Lootable lootable);
 
     /**
+     * Equipp an item in the appropriate slot.
+     *
+     * @param avatar    the avatar equipping the item.
+     * @param index     the index of the item in the avatar's inventory
+     * @return          the item that was equipped
+     */
+    Item equipp(Avatar avatar, int index);
+
+    /**
+     * Return a list of inventory items.
+     *
+     * @param avatar    the avatar whose inventory is to be returned
+     * @return          the list of items in the inventory
+     */
+    List<Item> getInventory(Avatar avatar);
+
+    /**
+     * Return a list of the currently equipped items on an avatar.
+     *
+     * @param avatar    the avatar whose equipment is to be returned
+     * @return          the list of equipped items
+     */
+    List<Item> getEquipment(Avatar avatar);
+
+    /**
      * TODO might not want this here at all, not thought this though properly.
      * Create new loot inside a container, which can be held in a chest TODO or monster, decorative and so on
      *
@@ -35,5 +63,4 @@ public interface ItemService {
      * @return              the created {@code Item}
      */
     void createLoot(Container container, int rewardLevel);
-
 }

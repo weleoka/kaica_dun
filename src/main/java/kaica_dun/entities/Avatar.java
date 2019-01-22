@@ -38,7 +38,10 @@ public class Avatar extends Fighter {
     @OneToOne(mappedBy = "wearer", optional = true, cascade = CascadeType.ALL)
     private Armor equippedArmor;
 
-    @OneToOne(cascade = CascadeType.ALL, optional = true)
+    @OneToOne(mappedBy = "avatar", fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = true)
+    private Equipment equipment;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = true)
     @PrimaryKeyJoinColumn
     private Inventory inventory;
 
@@ -55,7 +58,8 @@ public class Avatar extends Fighter {
         this.type = "User Avatar";
         this.user = user;               //For use in the dealDamage-method.
         // todo: not implemented because creating the inventory cant be done before knowing the AvatarId(FighterId)
-        this.inventory = new Inventory(20);
+        this.inventory = new Inventory(this, 20);
+        this.equipment = new Equipment(this);
     }
 
 
@@ -83,9 +87,8 @@ public class Avatar extends Fighter {
         this.damage = damage;
         this.armor = armor;
         this.user = user;
-        equippWeapon(equippedWeapon);
-        equippArmor(equippedArmor);
-        this.inventory = new Inventory(20);
+        this.inventory = new Inventory(this, 20);
+        this.equipment = new Equipment(this);
     }
 
 
@@ -111,7 +114,8 @@ public class Avatar extends Fighter {
         this.damage = damage;
         this.armor = armor;
         this.user = user;
-        this.inventory = new Inventory(20);
+        this.inventory = new Inventory(this, 20);
+        this.equipment = new Equipment(this);
     }
 
 
@@ -128,10 +132,8 @@ public class Avatar extends Fighter {
         this.maxHealth = currHealth;
         this.damage = 12;
         this.armor = 2;
-        this.inventory = new Inventory(20);
+        this.inventory = new Inventory(this, 20);
     }
-
-
 
 
     // ********************** Accessor Methods ********************** //
@@ -154,6 +156,8 @@ public class Avatar extends Fighter {
 
     public Inventory getInventory() { return inventory; }
 
+    public Equipment getEquipment() { return equipment; }
+
     public Dungeon getCurrDungeon() { return currDungeon; }
 
     public void setCurrDungeon(Dungeon currDungeon) { this.currDungeon = currDungeon; }
@@ -163,58 +167,19 @@ public class Avatar extends Fighter {
     public void setCurrRoom(Room currRoom) { this.currRoom = currRoom; }
 
 
-
-
     // ********************** Model Methods ********************** //
-
-    //Equipp a weapon in your EquippedWeapon slot
-    public void equippWeapon(Weapon weapon){
-        this.equippedWeapon = weapon;
-        equippedWeapon.setWielder(this);
-        //Remove the weapon from Avatar.inventory if it's in the inventory
-        if(this.inventory != null) {
-            if (this.getInventory().getItems().contains(weapon)) {
-                this.getInventory().removeItem(weapon);
-            }
-        }
-
-    }
-
-    //Unequipp your currently equipped weapon. Set references to null on both entities.
-    public void unEquippWeapon(){
-        equippedWeapon.setWielder(null);
-        this.equippedWeapon = null;
-    }
-
-    //Equipp a weapon in your EquippedWeapon slot
-    public void equippArmor(Armor armor){
-        this.equippedArmor = armor;
-        equippedArmor.setWearer(this);
-        //Remove the armor from Avatar.inventory if it's in the inventory
-        if (this.inventory != null) {
-            if (this.getInventory().getItems().contains(armor)) {
-                this.getInventory().removeItem(armor);
-            }
-        }
-    }
-
-    //Unequipp your currently equipped weapon. Set references to null on both entities.
-    public void unEquippArmor(){
-        equippedArmor.setWearer(null);
-        this.equippedArmor = null;
-    }
 
 
     @Override
     public int takeDamage(int damage) {
         int takenDamage;
 
-        if (equippedArmor == null) {
+        if (equipment.getItems().get(1) == null) {
             takenDamage = damage - getArmor();
             setCurrHealth(getCurrHealth() - (takenDamage));
         } else {
-            takenDamage = damage - equippedArmor.getArmorValue();
-            setCurrHealth(getCurrHealth() - (takenDamage)); ;
+            takenDamage = damage - equipment.getArmor().getArmorValue();
+            setCurrHealth(getCurrHealth() - (takenDamage));
         }
 
         return takenDamage;
@@ -223,11 +188,11 @@ public class Avatar extends Fighter {
     @Override
     public int dealDamage() {
         int damage = 0;
-        if (equippedWeapon == null) {
+        if (equipment.getItems().get(0) == null) {
             damage = getDamage();
         } else {
             //nextInt is non-inclusive, so needs +1 to match damageRange
-            damage = equippedWeapon.getLowDamage() + rand.nextInt(equippedWeapon.getDamageRange() + 1);
+            damage = equipment.getWeapon().getLowDamage() + rand.nextInt(equipment.getWeapon().getDamageRange() + 1);
         }
         return damage;
     }

@@ -29,7 +29,7 @@ public class Container {
     private int maxSize;
 
     @OneToMany(mappedBy = "containedIn", cascade = CascadeType.ALL)
-    private Set<Item> items;
+    List<Item> items;
 
     //Default no-args constructor
     protected Container() {}
@@ -41,7 +41,10 @@ public class Container {
     protected Container(int maxSize) {
         this.maxSize = maxSize;
         if(this.items == null) {
-            this.items = new LinkedHashSet<>(maxSize);
+            this.items = new ArrayList<>(maxSize);
+        }
+        for(int i = 0; i < maxSize ; i++) {
+            items.add(null);
         }
     }
 
@@ -51,9 +54,9 @@ public class Container {
 
     public void setMaxSize(int maxSize) { this.maxSize = maxSize; }
 
-    public Set<Item> getItems() { return items; }
+    public List<Item> getItems() { return items; }
 
-    public void setItems(Set<Item> items) { this.items = items; }
+    public void setItems(List<Item> items) { this.items = items; }
 
     public Long getId() { return id; }
 

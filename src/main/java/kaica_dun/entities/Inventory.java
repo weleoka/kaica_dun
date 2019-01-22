@@ -2,6 +2,8 @@ package kaica_dun.entities;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 /**
  * The inventory of an Avatar.
@@ -20,6 +22,11 @@ import javax.persistence.Entity;
 @DiscriminatorValue("CONT_INV")
 public class Inventory extends Container {
 
+    //TODO repeat code from equipment, possible refactor into another inheritance level
+    @OneToOne
+    @JoinColumn(name = "fighterID")
+    private Avatar avatar;
+
     //Default no-args constructor
     protected Inventory() {}
 
@@ -27,26 +34,21 @@ public class Inventory extends Container {
      * Full constructor.
      *
      */
-    protected Inventory(int maxSize) {
+    protected Inventory(Avatar avatar, int maxSize) {
         super(maxSize);
+        this.avatar = avatar;
     }
 
     // ********************** Model Methods ********************** //
+
 
     //use this method to manage the bidirectional pointers
     @Override
     public void addItem(Item item) {
         super.addItem(item);
-        //Remove the bidirectional pointers between the item and Avatar if item is Armor/Weapon
-        //TODO replace with call to Avatar.equippment.remove
-        if (item.getClass() == Weapon.class) {
-            if (((Weapon)item).getWielder() != null){
-                ((Weapon)item).getWielder().unEquippWeapon();
-            }
-        } else if (item.getClass() == Armor.class) {
-            if (((Armor)item).getWearer() != null) {
-                ((Armor)item).getWearer().unEquippArmor();}
-        }
+        //Remove the bidirectional pointers between the equipment and item
+        item.getContainedIn().removeItem(item);
+        item.setContainedIn(this);
     }
 
 
@@ -55,6 +57,8 @@ public class Inventory extends Container {
     public void removeItem(Item item) {
         super.removeItem(item);
     }
+
+    // ********************** Common Methods ********************** //
 
     @Override
     public boolean equals(Object obj) {
