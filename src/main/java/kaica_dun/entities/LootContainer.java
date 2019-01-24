@@ -1,13 +1,11 @@
 package kaica_dun.entities;
 
-import kaica_dun.interfaces.Lootable;
 import kaica_dun.resources.ItemFactory;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @DiscriminatorValue("CONT_LOOT")
@@ -16,7 +14,7 @@ public class LootContainer extends Container {
     protected LootContainer() {}
 
     LootContainer(int rewardLevel) {
-
+        super(10);
     }
 
     LootContainer(boolean starterChest) {
@@ -55,5 +53,29 @@ public class LootContainer extends Container {
         container.addAllItems(loot);
         this.removeAll();
         return loot;
+    }
+
+    /**
+     * Static adding of item for testing
+     */
+    public void addTestItem() {
+        this.getItems().add(ItemFactory.createDragonSlayer(this));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) {
+            return true;
+        }
+        if(!(obj instanceof LootContainer)) {
+            return false;
+        }
+        LootContainer lootContainer = (LootContainer) obj;
+        return uuid != null && uuid.equals(lootContainer.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
     }
 }

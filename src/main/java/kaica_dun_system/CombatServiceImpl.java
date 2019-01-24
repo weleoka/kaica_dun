@@ -1,7 +1,6 @@
 package kaica_dun_system;
 
 import kaica_dun.dao.AvatarInterface;
-import kaica_dun.dao.MonsterInterface;
 import kaica_dun.dao.RoomInterface;
 import kaica_dun.entities.Avatar;
 import kaica_dun.entities.Monster;
@@ -14,8 +13,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Set;
 
 @Service
@@ -46,10 +47,14 @@ public class CombatServiceImpl {
      *
      * @param avatar         the avatar fighting the monsters
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_UNCOMMITTED)
     public void autoCombat(Avatar avatar) throws GameOverException, GameWonException {
         Room room = avatar.getCurrRoom();
         Set<Monster> monsters = room.getMonsters();
+        for(Monster m : monsters) {
+            System.out.println(m.getName());
+        }
+
 
         while (!monsters.isEmpty()) {
 
@@ -72,6 +77,7 @@ public class CombatServiceImpl {
      * @param monsters
      * @return
      */
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_UNCOMMITTED)
     public void combatRound(Avatar a, Set<Monster> monsters) throws GameWonException {
         for (Monster m : monsters) {
             int monsterDealsDamage = m.hit(a);
@@ -85,7 +91,7 @@ public class CombatServiceImpl {
 
         if ((activeMonster.deathCheck())) {
             System.out.println(activeMonster.getName() + " dies");
-            a.getCurrRoom().getMonsters().remove(activeMonster);
+            activeMonster.setRoom(null);
             monsters.remove(activeMonster); // remove from the array.
 
             if (activeMonster.getType() == "Dragon") {

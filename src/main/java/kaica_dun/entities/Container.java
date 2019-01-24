@@ -1,6 +1,7 @@
 package kaica_dun.entities;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -14,21 +15,21 @@ import java.util.*;
 public class Container {
 
     @Id
+    @GeneratedValue
+    @Column(name = "containerID", updatable = false, nullable = false)
+    protected Long id;
+
+    @NaturalId
     @Type(type="uuid-char")             //Will not match UUIDs i MySQL otherwise
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
-    @Column(name = "containerID")
-    private UUID id;
+    @Column(nullable = false, unique = true)
+    protected UUID uuid = UUID.randomUUID();
 
     @Basic
     @Column(name = "max_size")
     private int maxSize;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private Set<Item> items;
+    @OneToMany(mappedBy = "containedIn", cascade = CascadeType.ALL)
+    List<Item> items;
 
     //Default no-args constructor
     protected Container() {}
@@ -38,8 +39,13 @@ public class Container {
      *
      */
     protected Container(int maxSize) {
-        this.maxSize = 20;
-        this.items = new LinkedHashSet<>(maxSize);
+        this.maxSize = maxSize;
+        if(this.items == null) {
+            this.items = new ArrayList<>(maxSize);
+        }
+        for(int i = 0; i < maxSize ; i++) {
+            items.add(null);
+        }
     }
 
     // ********************** Accessor Methods ********************** //
@@ -48,13 +54,13 @@ public class Container {
 
     public void setMaxSize(int maxSize) { this.maxSize = maxSize; }
 
-    public Set<Item> getItems() { return items; }
+    public List<Item> getItems() { return items; }
 
-    public void setItems(Set<Item> items) { this.items = items; }
+    public void setItems(List<Item> items) { this.items = items; }
 
-    public UUID getId() { return id; }
+    public Long getId() { return id; }
 
-    public void setId(UUID id) { this.id = id; }
+    public void setId(Long id) { this.id = id; }
 
     // ********************** Model Methods ********************** //
 
@@ -82,11 +88,11 @@ public class Container {
             return false;
         }
         Container container = (Container) obj;
-        return id != null && id.equals(container.id);
+        return uuid != null && uuid.equals(container.uuid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return uuid.hashCode();
     }
 }

@@ -8,5 +8,5 @@ import org.springframework.stereotype.Component;
  * or equipping a weapon or armour.
  */
 @Component
-public class ActionMenuAvatar extends ActionMenu {
+public class ActionMenuInventory extends ActionMenu {
 }

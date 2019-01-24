@@ -21,10 +21,25 @@ public class Weapon extends Item {
     private Avatar wielder;
 
     // Default empty constructor
-    Weapon() {}
+    protected Weapon() {}
 
+    //TODO remove when equipment is reworked to be a container
     public Weapon(String itemName, String description, int lowDamage, int damageRange) {
         super(itemName, description);
+        this.lowDamage = lowDamage;
+        this.damageRange = damageRange;
+    }
+
+    /**
+     * Full constructor.
+     * @param itemName      name of the weapon
+     * @param description   the weapon's description
+     * @param lowDamage     lowest possible raw damage the weapon can deal
+     * @param damageRange   the range of additional damage the weapon can deal on top of the {@code lowDamage}
+     * @param container     the container the weapon is to be held in on creation
+     */
+    public Weapon(String itemName, String description, int lowDamage, int damageRange, Container container) {
+        super(itemName, description, container);
         this.lowDamage = lowDamage;
         this.damageRange = damageRange;
     }
@@ -49,4 +64,22 @@ public class Weapon extends Item {
     }
 
 
+    // ********************** Common Methods ********************** //
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) {
+            return true;
+        }
+        if(!(obj instanceof Weapon)) {
+            return false;
+        }
+        Weapon weapon = (Weapon) obj;
+        return uuid != null && uuid.equals(weapon.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
+    }
 }

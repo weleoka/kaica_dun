@@ -18,10 +18,18 @@ public class Armor extends Item {
     protected Armor() {}
 
     /**
-     * Full constructor.
+     * create without container. //TODO temporary while equipment is being reworked.
      */
     public Armor(String itemName, String description, int armorValue) {
         super(itemName, description);
+        this.armorValue = armorValue;
+    }
+
+    /**
+     * Full constructor.
+     */
+    public Armor(String itemName, String description, int armorValue, Container container) {
+        super(itemName, description, container);
         this.armorValue = armorValue;
     }
 
@@ -44,5 +52,23 @@ public class Armor extends Item {
 
     public void setArmorValue(int armorValue) { this.armorValue = armorValue; }
 
+    // ********************** Common Methods ********************** //
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) {
+            return true;
+        }
+        if(!(obj instanceof Armor)) {
+            return false;
+        }
+        Armor armor = (Armor) obj;
+        return uuid != null && uuid.equals(armor.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
+    }
 
 }

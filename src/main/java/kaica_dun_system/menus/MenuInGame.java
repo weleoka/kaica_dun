@@ -31,6 +31,7 @@ public class MenuInGame extends Menu {
         int selection;
 
         if (directPlay) {
+
             if (avatar.getCurrRoom() != null) {
                 aesi.resume(avatar);
 

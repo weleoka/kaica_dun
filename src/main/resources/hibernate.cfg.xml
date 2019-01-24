@@ -31,6 +31,7 @@ https://o7planning.org/en/10201/java-hibernate-tutorial-for-beginners -->
         <mapping class="kaica_dun.entities.Container"/>
         <mapping class="kaica_dun.entities.LootContainer"/>
         <mapping class="kaica_dun.entities.Inventory"/>
+        <mapping class="kaica_dun.entities.Equipment"/>
 
     </session-factory>
 

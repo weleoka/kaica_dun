@@ -1,5 +1,6 @@
 package kaica_dun.entities;
 
+import kaica_dun.interfaces.Describable;
 import org.hibernate.annotations.*;
 
 import javax.persistence.CascadeType;
@@ -35,24 +36,15 @@ import java.util.UUID;
 
 public class Room {
 
-    // Field variable declarations and Hibernate annotation scheme
     @Id
-    @Type(type="uuid-char")             //Will not match UUIDs i MySQL otherwise
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
+    @GeneratedValue
     @Column(name = "roomID", updatable = false, nullable = false)
-    private UUID id;
+    protected Long id;
 
-    /**
-    //Mapping to the dungeon entity that holds the rooms.
-    //TODO Fetchtype? Eager or Lazy? More research.
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dungeonID", nullable = false, updatable = false)
-    private Dungeon dungeon;
-    **/
+    @NaturalId
+    @Type(type="uuid-char")             //Will not match UUIDs i MySQL otherwise
+    @Column(nullable = false, unique = true)
+    protected UUID uuid = UUID.randomUUID();
 
     //@Transient // This can be transient, currently not for development aid.
     @Column(name="room_index")
@@ -84,6 +76,9 @@ public class Room {
     @Fetch(FetchMode.JOIN)
     private Set<Monster> monsters = new LinkedHashSet<Monster>();
 
+    @Transient
+    private Set<Describable> describables =  new LinkedHashSet<>();
+
     @OneToMany( //TODO CascadeType.ALL, rework to minimum
             mappedBy = "room",
             cascade = CascadeType.ALL,
@@ -91,7 +86,7 @@ public class Room {
     )
     @NotFound(action = NotFoundAction.IGNORE)   //TODO Also potential workaround, might need to remove
     @Fetch(FetchMode.JOIN)
-    private Set<Chest> chests = new LinkedHashSet<Chest>();
+    private Set<Chest> chests = new LinkedHashSet<>();
 
 
     // Default empty constructor
@@ -106,29 +101,33 @@ public class Room {
      * @param directions         a List with the direction(s) of possible directions
      * @param monsters      a List of the monster(s) in the room
      */
-    public Room(int roomIndex, Direction incomingDoor, Set<Direction> directions, Set<Monster> monsters) {
+    public Room(int roomIndex, Direction incomingDoor, Set<Direction> directions, Set<Monster> monsters, Set<Chest> chests) {
         //this.dungeon = dungeon;
         this.roomIndex = roomIndex;
         this.incomingDoor = incomingDoor;
         this.directions = directions;
         //This is an O(n) operation.
-        for (Monster m : monsters) { this.monsters.add(m); }
+        for(Monster m : monsters) { this.monsters.add(m); }
         if (directions != null) {
             this.roomType = RoomType.STD01;
             this.directions.add(Direction.STAY);
         } else {
             this.roomType = RoomType.NULL;
         }
+        if(chests != null) {  // change to this.chests.addAll(c); ??
+            for(Chest c : chests) { this.chests.add(c); }
+        }
+
     }
 
 
     // ********************** Accessor Methods ********************** //
 
-    public UUID getId() {
+    public Long getId() {
         return this.id;
     }
 
-    public void setId(UUID roomId) {
+    public void setId(Long roomId) {
         this.id = roomId;
     }
 
@@ -152,13 +151,13 @@ public class Room {
         this.roomType = rt;
     }
 
-    //TODO replace, or add this functionality to constructor.
-    public void addStarterChest() { this.chests.add(new Chest(true)); }
-
     public void addChest() {}
 
     public RoomType getRoomType() { return roomType; }
 
+    public Set<Chest> getChests() { return chests; }
+
+    public void setChests(LinkedHashSet<Chest> chests) { this.chests = chests; }
 
     public Set<Monster> getMonsters() { return monsters; }
     //TODO unsure if this need to be Set or LinkedHashSet
@@ -168,6 +167,14 @@ public class Room {
     public Set<Direction> getDirections() {
         return directions;
     }
+
+    public Set<Describable> getDescribables() {
+        describables.addAll(monsters);
+        describables.addAll(chests);
+
+        return describables;
+    }
+
 
     public void setDirections(LinkedHashSet<Direction> directions) {
         this.directions = directions;
@@ -209,9 +216,9 @@ public class Room {
             return false;
         }
         Room room = (Room) obj;
-        return id != null && id.equals(room.id);
+        return uuid != null && uuid.equals(room.uuid);
     }
 
     @Override
-    public int hashCode() { return Objects.hash(id); }
+    public int hashCode() { return uuid.hashCode(); }
 }
