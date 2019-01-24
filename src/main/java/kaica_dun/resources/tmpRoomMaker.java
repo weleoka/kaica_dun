@@ -3,14 +3,16 @@ package kaica_dun.resources;
 import kaica_dun.entities.Direction;
 import kaica_dun.entities.Monster;
 import kaica_dun.entities.Room;
+import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashSet;
 import java.util.Random;
 import java.util.Set;
 
+@Component
 public class tmpRoomMaker {
 
-    tmpRoomMaker() { }
+    protected tmpRoomMaker() { }
 
 
 
@@ -24,7 +26,7 @@ public class tmpRoomMaker {
         Set<Monster> monsters = new LinkedHashSet<>();        //make no monsters in the starter room, empty monster list.
         exits.add(Direction.S);                          //always exit the starter room to the south
 
-        return new Room(0, dungeonExit, exits, monsters);   //create the room using the params created above
+        return new Room(0, dungeonExit, exits, monsters, null);   //create the room using the params created above
     }
 
     /**
@@ -39,6 +41,6 @@ public class tmpRoomMaker {
         Set<Monster> monsters = new LinkedHashSet<Monster>();        //make monsters-list to be populated
         exits.add(Direction.E);                          //set exit direction, TODO PH
 
-        return new Room(0, incomingDoor, exits, monsters);   //create the room using the params created above
+        return new Room(0, incomingDoor, exits, monsters, null);   //create the room using the params created above
     }
 }

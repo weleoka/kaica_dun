@@ -34,7 +34,7 @@ public class AvatarFactory {
      * This class can be used to implement such things as Avatar guild/species/trade
      * an modify attributes of the avatar accordingly.
      */
-    private AvatarFactory() {}
+    protected AvatarFactory() {}
 
 
     /**
@@ -67,8 +67,9 @@ public class AvatarFactory {
     public Avatar makeTestAvatar(User user) {
         Weapon wep = createDefaultWeapon();
         Armor arm = createDefaultArmor();
-        Avatar avatar = new Avatar("Billy the Burly", "Oh, yeah!", user, "Berserker", 9000, 1, 2, wep, arm);
-
+        Avatar avatar = new Avatar(user, "Billy the Burly","Oh, yeah!", "Berserker", 9000, 1, 2);
+        avatar.getEquipment().equippItem(wep);
+        avatar.getEquipment().equippItem(arm);
         return avatar;
     }
 

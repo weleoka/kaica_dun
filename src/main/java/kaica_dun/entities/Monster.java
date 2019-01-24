@@ -8,6 +8,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.util.Objects;
 
 @Entity
 @DiscriminatorValue("MO")
@@ -115,11 +116,11 @@ public class Monster extends Fighter implements Describable {
             return false;
         }
         Monster monster = (Monster) obj;
-        return id != null && id.equals(monster.id);
+        return uuid != null && uuid.equals(monster.uuid);
     }
 
     @Override
-    public int hashCode() { return 13; }
+    public int hashCode() { return uuid.hashCode(); }
 
     @Override
     public String toString() {

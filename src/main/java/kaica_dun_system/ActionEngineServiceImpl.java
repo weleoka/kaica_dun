@@ -3,6 +3,7 @@ package kaica_dun_system;
 import kaica_dun.config.KaicaDunCfg;
 import kaica_dun.dao.AvatarInterface;
 import kaica_dun.entities.*;
+import kaica_dun.interfaces.Describable;
 import kaica_dun.util.GameOverException;
 import kaica_dun.util.GameWonException;
 import kaica_dun.util.MenuException;
@@ -37,6 +38,7 @@ public class ActionEngineServiceImpl implements ActionEngineService {
 
     private Set<Monster> monsters;
     private Set<Direction> directions;
+    private Set<Describable> describables;
 
     @Autowired
     private KaicaDunCfg kcfg;
@@ -57,7 +59,7 @@ public class ActionEngineServiceImpl implements ActionEngineService {
     /**
      * Creates a new dungeon and calls the operations to activate it.
      */
-    @Transactional
+    //@Transactional
     public void playNew(Avatar avatar) throws MenuException {
         log.debug("New game: ");
         Dungeon dungeon = null;
@@ -71,7 +73,6 @@ public class ActionEngineServiceImpl implements ActionEngineService {
             dungeon = avatar.getCurrDungeon();
         }
         msi.enterDungeon(avatar);
-        avatarInterface.save(avatar); // todo: calls save here msi.enterDungeon() does not;
 
         if (!kcfg.getDebug()) {
             UiString.printLoadingIntro();
@@ -99,8 +100,8 @@ public class ActionEngineServiceImpl implements ActionEngineService {
 
         if (!kcfg.getDebug()) {
             UiString.printLoadingIntro();
-            play(avatar);
         }
+        play(avatar);
     }
 
 
@@ -116,7 +117,7 @@ public class ActionEngineServiceImpl implements ActionEngineService {
         msi.enterDungeon(avatar);
         avatarInterface.save(avatar);
 
-        if (true) {
+        if (!kcfg.getDebug()) {
             UiString.printLoadingIntro();
             UiString.printGameIntro();
         }
@@ -140,6 +141,8 @@ public class ActionEngineServiceImpl implements ActionEngineService {
             if (avatar != null) {
                 monsters = avatar.getCurrRoom().getMonsters();
                 directions = avatar.getCurrRoom().getDirections();
+                describables = avatar.getCurrRoom().getDescribables();
+
             } else { break mainGameLoop; }
 
             try {
@@ -177,7 +180,7 @@ public class ActionEngineServiceImpl implements ActionEngineService {
         StringBuilder str;
         String monstersInTheRoom;
         String exitsFromTheRoom;
-        //String describablesInTheRoom;
+        String describablesInTheRoom;
 
         // Building monsters and foes
         str = new StringBuilder();
@@ -195,7 +198,7 @@ public class ActionEngineServiceImpl implements ActionEngineService {
         }
 
 
-        // Building directions and directions
+        // Building directions
         str = new StringBuilder();
 
         if (directions.size() > 0 ) {
@@ -212,18 +215,19 @@ public class ActionEngineServiceImpl implements ActionEngineService {
 
 
         // Building describables
-/*        str = new StringBuilder();
+        str = new StringBuilder();
 
         if (describables.size() > 0) {
-            str.append(String.format("There are %s thisng to look at in the room.", describables.size()));
+            str.append(String.format("There are %s things to look at in the room.", describables.size()));
 
             for (Describable describable : describables) {
-                str.append(String.format("%s, ", describable.getDescription()));
+                str.append(String.format("\n%s", describable.getName()));
             }
             describablesInTheRoom = str.toString();
+
         } else {
-            describablesInTheRoom = UiString.noDescribablesVisible;
-        }*/
+            describablesInTheRoom = "Nothing to look at in the room."; //UiString.noDescribablesVisible;
+        }
 
 
         // Combine it all to make sense.
@@ -232,7 +236,7 @@ public class ActionEngineServiceImpl implements ActionEngineService {
                 String.format("\n%s health: %s", avatar.getName(), avatar.getCurrHealth()) +
                 String.format("\n%s", monstersInTheRoom) +
                 String.format("\n%s", exitsFromTheRoom) +
-                //String.format("\n%s", describablesInTheRoom) +
+                String.format("\n%s", describablesInTheRoom) +
                 String.format("\n%s", UiString.randomSound()) +
                 String.format("\n%s", UiString.randomVisual())
         );
@@ -252,6 +256,9 @@ public class ActionEngineServiceImpl implements ActionEngineService {
         return directions;
     }
 
+    public Set<Describable> getDescribables() {
+        return describables;
+    }
 
 
     // ********************** Helper Methods ********************** //

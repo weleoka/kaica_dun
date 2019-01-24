@@ -1,11 +1,12 @@
 package kaica_dun.entities;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -15,16 +16,15 @@ import java.util.UUID;
 @Table(name = "Dungeon")
 public class Dungeon {
 
-    // Field variable declarations and Hibernate annotation scheme
     @Id
-    @Type(type="uuid-char")
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
+    @GeneratedValue
     @Column(name = "dungeonID", updatable = false, nullable = false)
-    private UUID id;
+    protected Long id;
+
+    @NaturalId
+    @Type(type="uuid-char")             //Will not match UUIDs i MySQL otherwise
+    @Column(nullable = false, unique = true)
+    protected UUID uuid = UUID.randomUUID();
 
     @Basic
     @Column(name = "room_rows")
@@ -78,9 +78,9 @@ public class Dungeon {
         this.roomColumns = roomColumns;
     }
 
-    public UUID getDungeonId() { return this.id; }
+    public Long getDungeonId() { return this.id; }
 
-    public void setDungeonId(UUID dungeonId) { this.id = dungeonId; }
+    public void setDungeonId(Long dungeonId) { this.id = dungeonId; }
 
     public Set<Room> getRooms() {
         return this.rooms;
@@ -148,11 +148,11 @@ public class Dungeon {
             return false;
         }
         Dungeon dungeon = (Dungeon) obj;
-        return id != null && id.equals(dungeon.id);
+        return uuid != null && uuid.equals(dungeon.uuid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return uuid.hashCode();
     }
 }
