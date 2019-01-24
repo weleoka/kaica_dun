@@ -198,7 +198,7 @@ public class ActionEngineServiceImpl implements ActionEngineService {
         }
 
 
-        // Building directions and directions
+        // Building directions
         str = new StringBuilder();
 
         if (directions.size() > 0 ) {
@@ -221,7 +221,7 @@ public class ActionEngineServiceImpl implements ActionEngineService {
             str.append(String.format("There are %s things to look at in the room.", describables.size()));
 
             for (Describable describable : describables) {
-                str.append(String.format("\n%s", describable.getDescription()));
+                str.append(String.format("\n%s", describable.getName()));
             }
             describablesInTheRoom = str.toString();
 

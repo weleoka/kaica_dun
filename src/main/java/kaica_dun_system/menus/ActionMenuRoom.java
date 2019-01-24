@@ -179,7 +179,7 @@ public class ActionMenuRoom extends ActionMenu {
 
         for (Describable describable : describables) {
             i++;
-            output.append(String.format("\n[%s] - %s.", i, describable.getDescription()));
+            output.append(String.format("\n[%s] - %s.", i, describable.getName()));
             lookAtOptions.put(i, describable);
         }
         lookAtOutput = output.toString();

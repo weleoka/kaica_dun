@@ -77,6 +77,7 @@ public class CombatServiceImpl {
      * @param monsters
      * @return
      */
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_UNCOMMITTED)
     public void combatRound(Avatar a, Set<Monster> monsters) throws GameWonException {
         for (Monster m : monsters) {
             int monsterDealsDamage = m.hit(a);

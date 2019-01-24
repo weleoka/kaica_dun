@@ -31,6 +31,7 @@ public class ActionMenuLootable extends ActionMenu {
 
     ActionMenuLootable() { }
 
+
     /**
      * Display the lootable action options.
      */
@@ -54,28 +55,21 @@ public class ActionMenuLootable extends ActionMenu {
     /**
      * Items in a lootable container have to be described.
      *
-     * todo: implement looking at items and other things, not only monsters.
      */
     private void buildLootOptions(Lootable lootable) {
-        List<Item> items = new ArrayList<>();
-        for(Item i : lootable.getContainer().getItems()) {
-            if(i != null) {
-                items.add(i);
-            }
-        }
         StringBuilder output = new StringBuilder();
         lootOptions = new HashMap<>();
-        //TODO this is broken because we now add nulls to the containers
-        log.debug("There are {} items in the lootable.", items.size());
-        int i = 0;
 
-        for (Item item : items) {
-            i++;
-            if(item != null) {
+        int i = 0;
+        for (Item item : lootable.getContainer().getItems()) {
+
+            if (item != null) {
+                i++;
                 output.append(String.format("\n[%s] - %s.", i, item.getName()));
                 lootOptions.put(i, item);
             }
         }
+        log.debug("There are {} items in the lootable.", output.length());
         lootOutput = output.toString();
     }
 
@@ -93,6 +87,7 @@ public class ActionMenuLootable extends ActionMenu {
         //System.out.println(item.getDescription());
         Util.sleeper(1800);
     }
+
 
     /**
      * At every iteration of the loot loop make sure to clear the options.

@@ -48,6 +48,7 @@ public class Chest implements Describable, Lootable {
     }
 
     public Chest(boolean startChest) {
+        this.name = "A chest";
         this.loot = new LootContainer(true);
     }
 
